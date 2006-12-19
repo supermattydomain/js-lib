@@ -1,6 +1,7 @@
 function Ajax(url, callback) {
   this.url = url;
   this.callback = callback;
+  this.error = false;
   try {
     // Firefox, Safari, IE7
     this.req = new XMLHttpRequest();
@@ -17,6 +18,9 @@ function Ajax(url, callback) {
       }
     }
   }
+  if (!this.req) {
+    this.error = true;
+  }
   this.isSuccessfulStatus = function(status) {
     return (200 <= status && status <= 299);
   };
@@ -29,6 +33,7 @@ function Ajax(url, callback) {
   };
   this.doRequest = function(data) {
     if (null == this.req) {
+      this.error = true;
       return false;
     }
     var self = this;
@@ -39,6 +44,7 @@ function Ajax(url, callback) {
           self.callback(self);
         } else {
           printMessage('Got non-success status ' + self.req.status);
+          self.error = true;
         }
       }
     }
@@ -51,10 +57,10 @@ function Ajax(url, callback) {
   };
   this.doGet = function() {
     this.method = 'GET';
-    this.doRequest(null);
+    return this.doRequest(null);
   }
   this.doPost = function(data) {
     this.method = 'POST';
-    this.doRequest(data);
+    return this.doRequest(data);
   }
 }
