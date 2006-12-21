@@ -14,6 +14,9 @@ function ArrayIter(array) {
   this.getCount = function() {
     return this.iterArray.length;
   }
+  this.hasMore = function() {
+    return (this.iterIndex < this.iterArray.length);
+  }
   this.getNext = function() {
     if (this.iterIndex >= this.iterArray.lenth) {
       return null;
