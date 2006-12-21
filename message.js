@@ -3,6 +3,8 @@ function printMessage(msg) {
   if (null == output) {
     output = document.createElement('div');
     output.setAttribute('id', 'messages');
+    // FIXME: Doesn't work in IE 6.
+    // document.documentElement is not, however, null
     document.documentElement.appendChild(output);
   }
   output.appendChild(document.createTextNode(msg));
