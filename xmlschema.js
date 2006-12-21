@@ -1,7 +1,31 @@
-var xml = null;
+var xmlDoc = null;
+var database = null;
+var tables = null;
 var externalCallbackFn = null;
+function printNode(node) {
+  var tag = '<' + node.nodeName;
+  var i;
+  if (null != node.attributes && undefined != node.attributes) {
+    for (i = 0; i < node.attributes.length; i++) {
+      var attr = node.attributes[i];
+      tag = tag + ' ' + attr.name + '=' + attr.value;
+    }
+  }
+  tag = tag + '>';
+  printMessage(tag);
+  if (null != node.childNodes && undefined != node.childNodes) {
+    for (i = 0; i < node.childNodes.length; i++) {
+      printNode(node.childNodes[i]);
+    }
+  }
+  tag = '</' + node.nodeName + '>';
+  printMessage(tag);
+}
 function dataCallback(ajax) {
-  xml = ajax.req.responseXML;
+  xmlDoc = ajax.req.responseXML;
+  // printMessage("Data callback: Document child count: " + xmlDoc.childNodes.length);
+  database = xmlDoc.getElementsByTagName('database');
+  tables = xmlDoc.getElementsByTagName('table');
   externalCallbackFn();
 }
 function fetchSchema(url, externalCallback) {
@@ -18,47 +42,32 @@ function fetchSchema(url, externalCallback) {
   return true;
 }
 function getNumTables() {
-  if (null == xml) {
+  if (null == tables) {
     return 0;
   }
-  var database = xml.firstChild;
-  var tables = database.childNodes;
   return tables.length;
+}
+function getNumFields(table) {
+  var fields = table.getElementsByTagName('field');
+  return fields.length;
 }
 function getTableName(table) {
   return table.getAttribute('name');
 }
-function getNumFields(table) {
-  var fields = table.childNodes;
-  return fields.length;
-}
 function getFieldName(field) {
   return field.getAttribute('name');
 }
-function enumTables(callback) {
-  if (null == xml) {
+function enumTables(tableCallback, args) {
+  if (null == database) {
     return 0;
   }
-  var database = xml.firstChild;
-  var tables = database.childNodes;
-  var i;
-  for (i = 0; i < tables.length; i++) {
-    var table = tables[i];
-    if (1 != table.nodeType) {
-      printMessage('Ignoring node of type ' + table.nodeType);
-    }
-    callback(table);
-  }
-  return i;
+  var iter = new ArrayIter(tables);
+  iter.forAll(tableCallback, args);
+  return iter.getCount();
 }
-function enumFields(table, callback) {
-  var fields = table.childNodes;
-  var i;
-  for (i = 0; i < fields.length; i++) {
-    var field = fields[i];
-    if (1 != field.nodeType) {
-      printMessage('Ignoring node of type ' + field.nodeType);
-    }
-    callback(table, field);
-  }
+function enumFields(table, fieldCallback, args) {
+  var fields = table.getElementsByTagName('field');
+  var iter = new ArrayIter(fields);
+  iter.forAll(fieldCallback, args);
+  return iter.getCount();
 }
