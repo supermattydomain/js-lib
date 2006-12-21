@@ -1,17 +1,11 @@
-function receiveField(table, field) {
-  printMessage('Found field ' + getTableName(table) + '.' + getFieldName(field) + '\n');
-}
-function receiveTable(table) {
-  printMessage('Found table ' + getTableName(table) + '\n');
-  enumFields(table, receiveField);
-}
 var xml = null;
-var dataCallback = function(ajax) {
-  // printMessage('Request done');
+var externalCallbackFn = null;
+function dataCallback(ajax) {
   xml = ajax.req.responseXML;
-  enumTables(receiveTable);
-};
-function fetchSchema(url) {
+  externalCallbackFn();
+}
+function fetchSchema(url, externalCallback) {
+  externalCallbackFn = externalCallback;
   var req = new Ajax(requestURL, dataCallback);
   if (null == req) {
     printMessage('Cannot create request');
