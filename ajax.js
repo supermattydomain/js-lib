@@ -1,53 +1,55 @@
 function Ajax(url, callback) {
+  this.method = null;
   this.url = url;
+  this.doc = null;
+  this.req = null;
   this.callback = callback;
   this.error = false;
-  try {
-    // Firefox, Safari, IE7
-    this.req = new XMLHttpRequest();
-  } catch (e) {
+  this.init = function() {
     try {
-      // Recent IE
-      this.req = new ActiveXObject('MSXML2.XMLHTTP');
+      // Firefox, Safari, IE7
+      this.req = new XMLHttpRequest();
     } catch (e) {
       try {
-        // Early IE
-        this.req = new ActiveXObject('Microsoft.XMLHTTP');
+        // Recent IE
+        this.req = new ActiveXObject('MSXML2.XMLHTTP');
       } catch (e) {
-        this.req = null;
+        try {
+          // Early IE
+          this.req = new ActiveXObject('Microsoft.XMLHTTP');
+        } catch (e) {
+        }
       }
     }
-  }
-  if (!this.req) {
-    this.error = true;
+    if (null == this.req) {
+      this.error = true;
+      return false;
+    }
+    this.error = false;
+    return true;
+  };
+  this.getResponseXML = function() {
+    if (this.error || null == this.req) {
+      return null;
+    }
+    return this.req.responseXML;
   }
   this.isSuccessfulStatus = function(status) {
     return (200 <= status && status <= 299);
   };
   this.abort = function() {
-    if (this.req) {
+    if (null != this.req) {
       this.req.onreadystatechange = function() { };
       this.req.abort();
       this.req = null;
     }
   };
   this.doRequest = function(data) {
-    if (null == this.req) {
-      this.error = true;
+    if (false == this.init()) {
+      printMessage('AJAX: Init failed');
       return false;
     }
-    var self = this;
-    this.req.onreadystatechange = function(evt) {
-      // printMessage('Reached readyState ' + self.req.readyState);
-      if (4 == self.req.readyState) {
-        if (self.isSuccessfulStatus(self.req.status)) {
-          self.callback(self);
-        } else {
-          printMessage('Got non-success status ' + self.req.status);
-          self.error = true;
-        }
-      }
-    }
+    this.req.onreadystatechange = this.onreadystatechange;
     if ('POST' == this.method) {
       this.req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     }
@@ -55,12 +57,24 @@ function Ajax(url, callback) {
     this.req.send(data);
     return true;
   };
+  var self = this;
+  this.onreadystatechange = function(evt) {
+    // printMessage('Reached readyState ' + self.req.readyState);
+    if (4 == self.req.readyState) {
+      if (self.isSuccessfulStatus(self.req.status)) {
+        self.callback(self);
+      } else {
+        printMessage('Got non-success status ' + self.req.status);
+        self.error = true;
+      }
+    }
+  };
   this.doGet = function() {
     this.method = 'GET';
     return this.doRequest(null);
-  }
+  };
   this.doPost = function(data) {
     this.method = 'POST';
     return this.doRequest(data);
-  }
+  };
 }
