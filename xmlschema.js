@@ -2,25 +2,6 @@ var xmlDoc = null;
 var database = null;
 var tables = null;
 var externalCallbackFn = null;
-function printNode(node) {
-  var tag = '<' + node.nodeName;
-  var i;
-  if (null != node.attributes && undefined != node.attributes) {
-    for (i = 0; i < node.attributes.length; i++) {
-      var attr = node.attributes[i];
-      tag = tag + ' ' + attr.name + '=' + attr.value;
-    }
-  }
-  tag = tag + '>';
-  printMessage(tag);
-  if (null != node.childNodes && undefined != node.childNodes) {
-    for (i = 0; i < node.childNodes.length; i++) {
-      printNode(node.childNodes[i]);
-    }
-  }
-  tag = '</' + node.nodeName + '>';
-  printMessage(tag);
-}
 function dataCallback(ajax) {
   xmlDoc = ajax.req.responseXML;
   // printMessage("Data callback: Document child count: " + xmlDoc.childNodes.length);
