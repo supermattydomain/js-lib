@@ -30,49 +30,14 @@ function SearchForm() {
     var url = '';
     return url;
   };
-  this.makeOption = function(label, value) {
-    var option = document.createElement("option");
-    option.setAttribute("label", label);
-    option.setAttribute("value", value);
-    option.appendChild(document.createTextNode(label));
-    return option;
-  };
-  this.addOption = function(select, label, value) {
-    select.appendChild(this.makeOption(label, value));
-  };
-  this.makeSelectOptionIter = function(name, optionNameIter, optionValueIter) {
-    var select = document.createElement("select");
-    select.setAttribute("name", name);
-    while (optionNameIter.hasMore() && optionValueIter.hasMore()) {
-	this.addOption(select, optionNameIter.getNext(), optionValueIter.getNext());
-    }
-    return select;
-  };
-  this.makeSelectOptionArray = function(name, optionNames, optionValues) {
-    var optionNameIter = new ArrayIter(optionNames);
-    var optionValueIter = new ArrayIter(optionValues);
-    return this.makeSelectOptionIter(name, optionNameIter, optionValueIter);
-  };
-  this.makeCriterion = function(num) {
-    var criterionDiv = document.createElement("div");
-    criterionDiv.setAttribute("id", "criterion" + num);
-    // criterionDiv.style.visible = false;
-    criterionDiv.appendChild(this.makeSelectOptionArray("field" + num, this.fieldLabels, fields));
-    criterionDiv.appendChild(this.makeSelectOptionArray("operation" + num, this.operations, this.operations));
-    var text_field = document.createElement("input");
-    text_field.setAttribute("name", "value" + num);
-    text_field.setAttribute("type", "text");
-    criterionDiv.appendChild(text_field);
-    return criterionDiv;
-  };
   this.addCriterion = function() {
     if (this.criteria.length >= this.maxCriteria) {
 	return;
     }
     this.makeFieldLabels();
-    var criterion = this.makeCriterion(this.criteria.length);
+    var criterion = new SearchCriterion(this.criteria.length, this.fieldLabels, fields, this.operations);
     this.criteria[this.criteria.length] = criterion;
-    this.searchForm.appendChild(criterion);
+    this.searchForm.appendChild(criterion.getDiv());
   };
   this.removeCriterion = function() {
     if (this.criteria.length < 1) {
@@ -92,7 +57,7 @@ function SearchForm() {
       // printMessage('Found field ' + self.schema.getTableName(table) + '.' + self.schema.getFieldName(field) + '\n');
       var label = ucFirst(self.schema.getTableName(table)) + ' ' + ucFirst(self.schema.getFieldName(field));
       var value = self.schema.getTableName(table) + '.' + self.schema.getFieldName(field);
-      self.addOption(select, label, value);
+      select.appendChild(makeOption(label, value));
     }, args);
     return select;
   };
