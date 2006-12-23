@@ -1,4 +1,4 @@
-function XMLSchema(url) {
+function DBSchema(url) {
   this.url = url;
   this.ajax = null;
   this.xmlDoc = null;
