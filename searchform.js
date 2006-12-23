@@ -1,5 +1,5 @@
 function SearchForm() {
-  this.numCriteria = 0;
+  this.criteria = new Array();
   this.maxCriteria = 20;
   this.fieldLabels = null;
   this.operations = new Array(
@@ -66,20 +66,22 @@ function SearchForm() {
     return criterionDiv;
   };
   this.addCriterion = function() {
-    if (this.numCriteria >= this.maxCriteria) {
+    if (this.criteria.length >= this.maxCriteria) {
 	return;
     }
     this.makeFieldLabels();
-    this.searchForm.appendChild(this.makeCriterion(this.numCriteria));
-    this.numCriteria++;
+    var criterion = this.makeCriterion(this.criteria.length);
+    this.criteria[this.criteria.length] = criterion;
+    this.searchForm.appendChild(criterion);
   };
   this.removeCriterion = function() {
-    if (this.numCriteria < 1) {
+    if (this.criteria.length < 1) {
 	return;
     }
-    var criterionDiv = document.getElementById("criterion" + (this.numCriteria - 1));
-    criterionDiv.parentNode.removeChild(criterionDiv);
-    this.numCriteria--;
+    var criterion = this.criteria[this.criteria.length - 1];
+    criterion.parentNode.removeChild(criterion);
+    this.criteria[this.criteria.length - 1] = null;
+    this.criteria.length--;
   };
   this.makeFieldSelectOneTable = function(controlName, table) {
     var select = document.createElement('select');
@@ -100,7 +102,7 @@ function SearchForm() {
     self.schema.enumTables(function(myargs) {
       var table = myargs[0];
       // printMessage('tables[' + tableNum + '] = ' + schema.getTableName(table) + '\n');
-      var select = self.makeFieldSelectOneTable('field' + self.numCriteria, table);
+      var select = self.makeFieldSelectOneTable('field' + self.criteria.length, table);
       self.searchForm.appendChild(select);
       tableNum++;
     }, args);
