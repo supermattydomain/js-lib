@@ -53,9 +53,16 @@ function Ajax(url, requestDoneCallback) {
     if ('POST' == this.method) {
       this.req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     }
-    this.req.open(this.method, this.url, true);
-    this.req.send(data);
-    return true;
+    try {
+      this.req.open(this.method, this.url, true);
+      this.req.send(data);
+      return true;
+    } catch (e) {
+      this.error = true;
+      return false;
+    }
+    this.error = true;
+    return false;
   };
   var self = this;
   this.onreadystatechange = function(evt) {
