@@ -15,6 +15,10 @@ function SearchForm() {
       this.fieldLabels[i] = ucFirstAll(fields[i].replace(/\./g, ' '));
     }
   };
+  this.makeSearchURL = function() {
+    var url = '';
+    return url;
+  };
   this.makeOption = function(label, value) {
     var option = document.createElement("option");
     option.setAttribute("label", label);
