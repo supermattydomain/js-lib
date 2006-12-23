@@ -72,3 +72,29 @@ function removeCriterion() {
     criterion_div.parentNode.removeChild(criterion_div);
     num_criteria--;
 }
+
+function receiveFieldForm(args) {
+  var field = args[0];
+  var table = field.parentNode;
+  printMessage('Found field ' + schema.getTableName(table) + '.' + schema.getFieldName(field) + '\n');
+}
+
+function receiveTableForm(args) {
+  var schema = args[0];
+  var table = args[1];
+  printMessage('Found table ' + schema.getTableName(table) + '\n');
+  fieldArgs = new Array();
+  schema.enumFields(table, receiveFieldForm, fieldArgs);
+}
+
+var onSchemaFetchedForm = function() {
+  // printMessage('Request done');
+  var args = new Array();
+  args[0] = schema;
+  schema.enumTables(receiveTableForm, args);
+};
+
+function populateForm() {
+  var schema = new DBSchema();
+  schema.fetchSchema(onSchemaFetchedForm);
+}

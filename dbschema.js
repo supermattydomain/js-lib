@@ -1,5 +1,5 @@
-function DBSchema(url) {
-  this.url = url;
+function DBSchema() {
+  this.url = 'xmlschema.cgi';;
   this.ajax = null;
   this.xmlDoc = null;
   this.database = null;
