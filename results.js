@@ -1,4 +1,3 @@
-var searchURL = "/musicdb/search.cgi?field0=vall.artist&operation0=contains&value0=Squarepusher&format=xml";
 var columnNum = 0;
 
 var addFieldToResult = function(args) {
@@ -79,7 +78,13 @@ var onResultSetLoaded = function(resultSet) {
   resultSet.enumResults(receiveResult, args);
 };
 
-function doSearch() {
+function doSearch(searchURL) {
   var resultSet = new ResultSet(searchURL);
+  resultSet.fetchResults(onResultSetLoaded);
+}
+
+function doTestSearch() {
+  var testSearchURL = "/musicdb/search.cgi?field0=vall.artist&operation0=contains&value0=Squarepusher&format=xml";
+  var resultSet = new ResultSet(testSearchURL);
   resultSet.fetchResults(onResultSetLoaded);
 }
