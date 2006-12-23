@@ -4,6 +4,7 @@ function SearchForm() {
   this.fieldLabels = null;
   this.searchForm = document.getElementById('searchform');
   var self = this;
+  this.schema = new DBSchema();
   this.makeFieldLabels = function() {
     if (null != this.fieldLabels) {
       return;
@@ -21,8 +22,8 @@ function SearchForm() {
     option.appendChild(document.createTextNode(label));
     return option;
   };
-  this.addOption = function(select, optionName, optionValue) {
-    select.appendChild(this.makeOption(optionName, optionValue));
+  this.addOption = function(select, label, value) {
+    select.appendChild(this.makeOption(label, value));
   };
   this.makeSelectOptionIter = function(name, optionNameIter, optionValueIter) {
     var select = document.createElement("select");
@@ -65,28 +66,29 @@ function SearchForm() {
     criterionDiv.parentNode.removeChild(criterionDiv);
     this.numCriteria--;
   };
-  this.receiveFieldForm = function(args) {
-    var schema = args[0];
-    var field = args[1];
-    var table = field.parentNode;
-    printMessage('Found field ' + schema.getTableName(table) + '.' + schema.getFieldName(field) + '\n');
-  };
-  this.receiveTableForm = function(args) {
-    var schema = args[0];
-    var table = args[1];
-    printMessage('Found table ' + schema.getTableName(table) + '\n');
-    fieldArgs = new Array();
-    fieldArgs[0] = schema;
-    schema.enumFields(table, self.receiveFieldForm, fieldArgs);
-  };
-  this.onSchemaFetchedForm = function(schema) {
-    // printMessage('Request done');
+  this.makeFieldSelectOneTable = function(controlName, table) {
+    var select = document.createElement('select');
+    select.setAttribute("name", controlName);
     var args = new Array();
-    args[0] = schema;
-    schema.enumTables(self.receiveTableForm, args);
+    this.schema.enumFields(table, function(myargs) {
+      var field = myargs[0];
+      // printMessage('Found field ' + self.schema.getTableName(table) + '.' + self.schema.getFieldName(field) + '\n');
+      var label = ucFirst(self.schema.getTableName(table)) + ' ' + ucFirst(self.schema.getFieldName(field));
+      var value = self.schema.getTableName(table) + '.' + self.schema.getFieldName(field);
+      self.addOption(select, label, value);
+    }, args);
+    return select;
   };
-  this.populateForm = function() {
-    var schema = new DBSchema();
-    schema.fetchSchema(this.onSchemaFetchedForm);
+  this.populate = function(schema) {
+    var tableNum = 0;
+    var args = new Array();
+    self.schema.enumTables(function(myargs) {
+      var table = myargs[0];
+      // printMessage('tables[' + tableNum + '] = ' + schema.getTableName(table) + '\n');
+      var select = self.makeFieldSelectOneTable('field' + self.numCriteria, table);
+      self.searchForm.appendChild(select);
+      tableNum++;
+    }, args);
   };
+  this.schema.fetchSchema(this.populate);
 }
