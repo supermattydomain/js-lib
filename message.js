@@ -1,4 +1,4 @@
-function printMessage(msg) {
+function showMessage(str) {
   var output = document.getElementById('messages');
   if (null == output) {
     output = document.createElement('div');
@@ -7,9 +7,16 @@ function printMessage(msg) {
     // document.documentElement is not, however, null
     document.documentElement.appendChild(output);
   }
-  output.appendChild(document.createTextNode(msg));
+  output.appendChild(document.createTextNode(str));
   output.appendChild(document.createElement('br'));
 }
+
+function printMessage(str) {
+  // doesn't work in Mozilla
+  // window.dump(str);
+  showMessage(str);
+}
+
 function printNode(node) {
   var tag = '<' + node.nodeName;
   var i;
@@ -27,5 +34,5 @@ function printNode(node) {
     }
   }
   tag = '</' + node.nodeName + '>';
-  printMessage(tag);
+  window.dump(tag);
 }
