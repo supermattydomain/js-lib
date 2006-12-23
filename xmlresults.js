@@ -6,9 +6,11 @@ function XMLResults(url) {
   this.externalCallbackFn = null;
   var self = this;
   this.dataCallbackFn = function(ajax) {
-    self.xmlDoc = self.ajax.getResponseXML();
-    // printMessage("Data callback: Document child count: " + self.xmlDoc.childNodes.length);
-    self.resultSet = self.xmlDoc.getElementsByTagName('resultset');
+    self.xmlDoc = ajax.getResponseXML();
+    // printMessage("Results loaded callback: Document child count: " + self.xmlDoc.childNodes.length);
+    var resultSets = self.xmlDoc.getElementsByTagName('resultset');
+    self.resultSet = resultSets[0];
+    // printNode(self.resultSet);
     self.externalCallbackFn(self);
   };
   this.fetchResults = function(externalCallback) {
@@ -25,16 +27,16 @@ function XMLResults(url) {
     return true;
   };
   this.getNumResults = function() {
-    if (null == this.resultset) {
+    if (null == this.resultSet) {
       return 0;
     }
     return this.resultSet.childNodes.length;
   };
   this.enumResults = function(rowCallback, args) {
-    if (null == this.resultset) {
+    if (null == this.resultSet) {
       return 0;
     }
-    var iter = new ArrayIter(this.resultset.childNodes);
+    var iter = new ArrayIter(this.resultSet.childNodes);
     iter.forAll(rowCallback, args);
     return iter.getCount();
   };

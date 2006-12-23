@@ -7,8 +7,8 @@ function XMLSchema(url) {
   this.externalCallbackFn = null;
   var self = this;
   this.dataCallbackFn = function(ajax) {
-    self.xmlDoc = self.ajax.getResponseXML();
-    // printMessage("Data callback: Document child count: " + self.xmlDoc.childNodes.length);
+    self.xmlDoc = ajax.getResponseXML();
+    // printMessage("Schema loaded callback: Document child count: " + self.xmlDoc.childNodes.length);
     self.database = self.xmlDoc.getElementsByTagName('database');
     self.tables = self.xmlDoc.getElementsByTagName('table');
     self.externalCallbackFn(self);

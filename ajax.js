@@ -1,9 +1,9 @@
-function Ajax(url, callback) {
+function Ajax(url, requestDoneCallback) {
   this.method = null;
   this.url = url;
   this.doc = null;
   this.req = null;
-  this.callback = callback;
+  this.requestDoneCallback = requestDoneCallback;
   this.error = false;
   this.init = function() {
     try {
@@ -62,7 +62,7 @@ function Ajax(url, callback) {
     // printMessage('Reached readyState ' + self.req.readyState);
     if (4 == self.req.readyState) {
       if (self.isSuccessfulStatus(self.req.status)) {
-        self.callback(self);
+        self.requestDoneCallback(self);
       } else {
         printMessage('Got non-success status ' + self.req.status);
         self.error = true;
