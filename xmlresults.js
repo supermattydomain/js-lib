@@ -7,7 +7,7 @@ function XMLResults(url) {
   var self = this;
   this.dataCallbackFn = function(ajax) {
     self.xmlDoc = ajax.getResponseXML();
-    // printMessage("Results loaded callback: Document child count: " + self.xmlDoc.childNodes.length);
+    // printMessage('Results loaded callback: Document child count: ' + self.xmlDoc.childNodes.length);
     var resultSets = self.xmlDoc.getElementsByTagName('resultset');
     self.resultSet = resultSets[0];
     // printNode(self.resultSet);
@@ -38,6 +38,11 @@ function XMLResults(url) {
     }
     var iter = new ArrayIter(this.resultSet.childNodes);
     iter.forAll(rowCallback, args);
+    return iter.getCount();
+  };
+  this.enumFields = function(resultNode, fieldCallback, args) {
+    var iter = new ArrayIter(resultNode.attributes);
+    iter.forAll(fieldCallback, args);
     return iter.getCount();
   };
 }
