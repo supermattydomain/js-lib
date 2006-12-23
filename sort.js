@@ -155,11 +155,18 @@ function sortTable(table, columnNum) {
 }
 
 function sortResults(columnNum) {
-  var resultsTable = document.getElementById('results');
+  var resultsTable = document.getElementById('resultstable');
   if (null == resultsTable) {
     printMessage('No results table to sort');
     return;
   }
-  var tbody = resultsTable.getElementsByTagName('tbody')[0];
-  sortTable(tbody, columnNum);
+  var tableBodies = resultsTable.getElementsByTagName('tbody');
+  var table;
+  if (0 == tableBodies.length) {
+    // printNode(resultsTable);
+    table = resultsTable;
+  } else {
+    table = tableBodies[0];
+  }
+  sortTable(table, columnNum);
 }
