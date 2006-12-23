@@ -1,4 +1,4 @@
-function XMLResults(url) {
+function ResultSet(url) {
   this.url = url;
   this.ajax = null;
   this.xmlDoc = null;

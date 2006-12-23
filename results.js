@@ -1,4 +1,5 @@
 var searchURL = "/musicdb/search.cgi?field0=vall.artist&operation0=contains&value0=Squarepusher&format=xml";
+var columnNum = 0;
 
 var addFieldToResult = function(args) {
     var resultSet = args[0];
@@ -14,8 +15,6 @@ var addFieldToResult = function(args) {
     tableCell.appendChild(document.createTextNode(field.value));
     tableRow.appendChild(tableCell);
 };
-
-var columnNum = 0;
 
 var addColumnToHeading = function(args) {
     var resultSet = args[0];
@@ -81,6 +80,6 @@ var onResultSetLoaded = function(resultSet) {
 };
 
 function doSearch() {
-  var resultSet = new XMLResults(searchURL);
+  var resultSet = new ResultSet(searchURL);
   resultSet.fetchResults(onResultSetLoaded);
 }
