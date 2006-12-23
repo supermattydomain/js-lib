@@ -8,7 +8,7 @@ function DBSchema() {
   var self = this;
   this.dataCallbackFn = function(ajax) {
     self.xmlDoc = ajax.getResponseXML();
-    // printMessage("Schema loaded callback: Document child count: " + self.xmlDoc.childNodes.length);
+    // printMessage("DBSchema: Document child count: " + self.xmlDoc.childNodes.length);
     self.database = self.xmlDoc.getElementsByTagName('database');
     self.tables = self.xmlDoc.getElementsByTagName('table');
     self.externalCallbackFn(self);
@@ -17,13 +17,13 @@ function DBSchema() {
     this.externalCallbackFn = externalCallback;
     this.ajax = new Ajax(this.url, this.dataCallbackFn);
     if (null == this.ajax) {
-      printMessage('XMLSchema: Cannot create request');
+      printMessage('DBSchema: Cannot create request');
       return false;
     } else if (!this.ajax.doGet()) {
-      printMessage('XMLSchema: Cannot start GET request');
+      printMessage('DBSchema: Cannot start GET request');
       return false;
     }
-    // printMessage('XMLSchema: Request started');
+    // printMessage('DBSchema: Request started');
     return true;
   };
   this.getNumTables = function() {

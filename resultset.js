@@ -7,7 +7,7 @@ function ResultSet(url) {
   var self = this;
   this.dataCallbackFn = function(ajax) {
     self.xmlDoc = ajax.getResponseXML();
-    // printMessage('Results loaded callback: Document child count: ' + self.xmlDoc.childNodes.length);
+    // printMessage('ResultSet: Document child count: ' + self.xmlDoc.childNodes.length);
     var resultSets = self.xmlDoc.getElementsByTagName('resultset');
     self.resultSet = resultSets[0];
     // printNode(self.resultSet);
@@ -17,10 +17,10 @@ function ResultSet(url) {
     this.externalCallbackFn = externalCallback;
     this.ajax = new Ajax(self.url, this.dataCallbackFn);
     if (null == this.ajax) {
-      printMessage('XMLResults: Cannot create request');
+      printMessage('ResultSet: Cannot create request');
       return false;
     } else if (!this.ajax.doGet()) {
-      printMessage('XMLResults: Cannot start GET request');
+      printMessage('ResultSet: Cannot start GET request');
       return false;
     }
     printMessage('Retrieving search results...');
