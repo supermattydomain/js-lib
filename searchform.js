@@ -2,6 +2,17 @@ function SearchForm() {
   this.numCriteria = 0;
   this.maxCriteria = 20;
   this.fieldLabels = null;
+  this.operations = new Array(
+    'contains',
+    'is equal to',
+    'is not equal to',
+    'is less than',
+    'is less than or equal to',
+    'is greater than',
+    'is greater than or equal to',
+    'is similar to',
+    'is in range'
+  );
   this.searchForm = document.getElementById('searchform');
   var self = this;
   this.schema = new DBSchema();
@@ -47,7 +58,7 @@ function SearchForm() {
     criterionDiv.setAttribute("id", "criterion" + num);
     // criterionDiv.style.visible = false;
     criterionDiv.appendChild(this.makeSelectOptionArray("field" + num, this.fieldLabels, fields));
-    criterionDiv.appendChild(this.makeSelectOptionArray("operation" + num, operations, operations));
+    criterionDiv.appendChild(this.makeSelectOptionArray("operation" + num, this.operations, this.operations));
     var text_field = document.createElement("input");
     text_field.setAttribute("name", "value" + num);
     text_field.setAttribute("type", "text");
