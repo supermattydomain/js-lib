@@ -6,10 +6,16 @@ var addFieldToResult = function(args) {
     var field = args[2];
     // printMessage('Got field');
     var tableCell = document.createElement('td');
-    tableCell.setAttribute('class', 'results');
+    if (oddRow) {
+      tableCell.setAttribute('class', 'results_odd');
+    } else {
+      tableCell.setAttribute('class', 'results_even');
+    }
     tableCell.appendChild(document.createTextNode(field.value));
     tableRow.appendChild(tableCell);
 };
+
+var columnNum = 0;
 
 var addColumnToHeading = function(args) {
     var resultSet = args[0];
@@ -19,15 +25,23 @@ var addColumnToHeading = function(args) {
     var headingCell = document.createElement('th');
     headingCell.setAttribute('class', 'results');
     headingCell.appendChild(document.createTextNode(field.name));
+    headingCell.columnNum = columnNum;
+    headingCell.onclick = function(evt) {
+      // printMessage('heading ' + headingCell.columnNum + ' clicked');
+	sortResults(headingCell.columnNum);
+    }
     tableRow.appendChild(headingCell);
+    columnNum++;
 };
 
 var tableHeaderDone = false;
+var oddRow = false;
 
 function addTableHeading(resultSet, resultsTable, resultRecord) {
     if (tableHeaderDone) {
 	return;
     }
+    columnNum = 0;
     tableHeaderDone = true;
     var headingRow = document.createElement('tr');
     headingRow.setAttribute('class', 'results');
@@ -46,6 +60,7 @@ function addTableRow(resultSet, resultsTable, resultRecord) {
     fieldArgs[1] = tableRow;
     resultSet.enumFields(resultRecord, addFieldToResult, fieldArgs);
     resultsTable.appendChild(tableRow);
+    oddRow = !oddRow;
 }
 
 var receiveResult = function(args) {
