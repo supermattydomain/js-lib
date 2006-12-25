@@ -36,7 +36,7 @@ function SearchCriterion(num, schema, table, operations) {
     schema.enumFields(table, function(myargs) {
       var field = myargs[0];
       // printMessage('Found field ' + schema.getTableName(table) + '.' + schema.getFieldName(field) + '\n');
-      var label = ucFirst(schema.getTableName(table)) + ' ' + ucFirst(schema.getFieldName(field));
+      var label = ucFirst(schema.getFieldName(field));
       var value = schema.getTableName(table) + '.' + schema.getFieldName(field);
       select.appendChild(makeOption(label, value));
     }, args);
