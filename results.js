@@ -17,7 +17,6 @@ var addColumnToHeading = function(args) {
 };
 
 var tableHeaderDone = false;
-var oddRow = false;
 
 function addTableHeading(resultSet, resultsTable, resultRecord) {
     if (tableHeaderDone) {
@@ -41,18 +40,7 @@ function addTableRow(resultSet, resultsTable, resultRecord) {
     fieldArgs[1] = tableRow;
     resultSet.enumFields(resultRecord, addFieldToResult, fieldArgs);
     resultsTable.appendChild(tableRow);
-    oddRow = !oddRow;
 }
-
-var receiveResult = function(args) {
-    // printMessage('Got result');
-    var resultSet = args[0];
-    var resultsTable = args[1];
-    var resultRecord = args[2];
-    // printNode(resultRecord);
-    addTableHeading(resultSet, resultsTable, resultRecord);
-    addTableRow(resultSet, resultsTable, resultRecord);
-};
 
 var onResultSetLoaded = function(resultSet) {
   showStatus('Displaying ' + resultSet.getNumResults() + ' results...');
@@ -65,7 +53,15 @@ var onResultSetLoaded = function(resultSet) {
   var args = new Array();
   args[0] = resultSet;
   args[1] = resultsTable;
-  resultSet.enumResults(receiveResult, args);
+  resultSet.enumResults(function(myargs) {
+    // printMessage('Got result');
+    var resultSet = myargs[0];
+    var resultsTable = myargs[1];
+    var resultRecord = myargs[2];
+    // printNode(resultRecord);
+    addTableHeading(resultSet, resultsTable, resultRecord);
+    addTableRow(resultSet, resultsTable, resultRecord);
+  }, args);
   showStatus(resultSet.getNumResults() + ' results displayed.');
 };
 
