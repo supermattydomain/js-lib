@@ -73,7 +73,7 @@ function Ajax(url, requestDoneCallback) {
   this.onreadystatechange = function(evt) {
     // printMessage('Reached readyState ' + self.req.readyState);
     if (4 == self.req.readyState) {
-      if (self.isSuccessfulStatus(self.req.status)) {
+      if (self.req.status && self.isSuccessfulStatus(self.req.status)) {
         self.requestDoneCallback(self);
       } else {
         printMessage('AJAX: Got non-success status ' + self.req.status + ' for URL ' + self.url);
