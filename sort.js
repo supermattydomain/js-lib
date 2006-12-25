@@ -72,8 +72,10 @@ function SortedTable() {
   this.realTable = document.createElement('table');
   this.realTable.setAttribute('class', 'results');
   this.realTable.setAttribute('id', 'resultstable');
-  var tableBodies = this.realTable.getElementsByTagName('tbody');
+  this.headingRow = null;
+  this.dataRows = new Array();
   var self = this;
+  var tableBodies = this.realTable.getElementsByTagName('tbody');
   if (0 == tableBodies.length) {
     // printNode(realTable);
     this.table = this.realTable;
@@ -109,6 +111,11 @@ function SortedTable() {
     }
     this.columnNum++;
     return headingCell;
+  };
+
+  this.addColumnHeading = function(fieldName) {
+    var headingCell = this.makeHeadingCell(fieldName);
+    this.headingRow.appendChild(headingCell);
   };
 
 this.compareRows = function(row1, row2) {
@@ -241,18 +248,21 @@ this.insertionSortTable = function() {
 
 this.sortTable = function() {
   var rows = this.table.getElementsByTagName('tr');
-  var dataRows = new Array();
+  this.dataRows = new Array();
   var r;
   var i;
-  var headingRow = null;
+  this.headingRow = null;
   for (i = r = 0; r < rows.length; r++) {
     var ths = rows[r].getElementsByTagName('th');
     if (ths && ths.length) {
-      headingRow = rows[r];
+      if (this.headingRow != null) {
+	throw 'Duplicate heading rows';
+      }
+      this.headingRow = rows[r];
     } else {
       var tds = rows[r].getElementsByTagName('td');
       if (tds && tds.length) {
-	dataRows[i++] = rows[r];
+	this.dataRows[i++] = rows[r];
       } else {
         printMessage('sortTable: unexpected row:');
 	printNode(rows[r]);
@@ -260,18 +270,18 @@ this.sortTable = function() {
       }
     }
   }
-  dataRows.sort(this.compareRows);
-  for (i = 0; i < dataRows.length; i++) {
-    this.table.removeChild(dataRows[i]);
+  this.dataRows.sort(this.compareRows);
+  for (i = 0; i < this.dataRows.length; i++) {
+    this.table.removeChild(this.dataRows[i]);
   }
-  this.table.removeChild(headingRow);
+  this.table.removeChild(this.headingRow);
   // printMessage('sortTable: should be empty:');
   // printNode(document.getElementById('resultstable'));
-  this.table.appendChild(headingRow);
-  for (i = 0; i < dataRows.length; i++) {
+  this.table.appendChild(this.headingRow);
+  for (i = 0; i < this.dataRows.length; i++) {
     var oddeven = (i % 2) ? 'odd' : 'even';
-    dataRows[i].setAttribute('class', 'results_' + oddeven);
-    this.table.appendChild(dataRows[i]);
+    this.dataRows[i].setAttribute('class', 'results_' + oddeven);
+    this.table.appendChild(this.dataRows[i]);
   }
 };
 
