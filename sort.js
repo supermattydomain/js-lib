@@ -1,5 +1,23 @@
-var sortColumnNum = 0;
-var firstUnsorted = 0;
+sortColumnNum = 0;
+firstUnsorted = 0;
+
+function findChildByType(node, type) {
+  if (node.nodeType == type) {
+    return node;
+  }
+  if (!node.hasChildNodes()) {
+    return null;
+  }
+  node = node.firstChild;
+  while (node != null && node != undefined) {
+    var child = findChildByType(node, type);
+    if (null != child) {
+      return child;
+    }
+  }
+  node = node.nextSibling;
+  return null;
+}
 
 function compareRows(row1, row2) {
   // printMessage('compareRows:');
@@ -10,14 +28,25 @@ function compareRows(row1, row2) {
   var cells1 = row1.getElementsByTagName('td');
   var cells2 = row2.getElementsByTagName('td');
   if (null == cells1 || undefined == cells1 || 0 == cells1.length) {
+    throw 'no td cells';
     ret = -1; // header row is always less
   } else if (null == cells2 || undefined == cells2 || 0 == cells2.length) {
+    throw 'no td cells';
     ret = -1; // header row is always less
   } else {
-    var node1 = cells1[sortColumnNum].firstChild.firstChild;
-    var node2 = cells2[sortColumnNum].firstChild.firstChild;
-    if (null == node1 || undefined == node1 || null == node2 || undefined == node2) {
-      return 0;
+    // var node1 = cells1[sortColumnNum].firstChild.firstChild;
+    // var node2 = cells2[sortColumnNum].firstChild.firstChild;
+    var node1 = findChildByType(cells1[sortColumnNum], 3);
+    var node2 = findChildByType(cells2[sortColumnNum], 3);
+    if (null == node1 || undefined == node1) {
+      if (null == node2 || undefined == node2) {
+	printMessage('No child text to compare');
+	return 0;
+      }
+      return -1;
+    } else if (null == node2 || undefined == node2) {
+      printMessage('No child text to compare');
+      return 1;
     }
     // printMessage('compareRows:');
     // printNode(node1);
@@ -139,8 +168,7 @@ function advanceUnsortedPos(table) {
   }
 }
 
-function sortTable(table, columnNum) {
-  sortColumnNum = columnNum;
+function insertionSortTable(table) {
   firstUnsorted = 0;
   advanceUnsortedPos(table);
   // printNode(table);
@@ -151,6 +179,41 @@ function sortTable(table, columnNum) {
     removePos(table, firstUnsorted);
     advanceUnsortedPos(table);
     insertRowSorted(table, row);
+  }
+}
+
+function sortTable(table) {
+  var rows = table.getElementsByTagName('tr');
+  var dataRows = new Array();
+  var r;
+  var i;
+  var headingRow = null;
+  for (i = r = 0; r < rows.length; r++) {
+    var ths = rows[r].getElementsByTagName('th');
+    if (ths && ths.length) {
+      headingRow = rows[r];
+    } else {
+      var tds = rows[r].getElementsByTagName('td');
+      if (tds && tds.length) {
+	dataRows[i++] = rows[r];
+      } else {
+        printMessage('sortTable: unexpected row:');
+	printNode(rows[r]);
+      }
+    }
+  }
+  dataRows.sort(compareRows);
+  for (i = 0; i < dataRows.length; i++) {
+    table.removeChild(dataRows[i]);
+  }
+  table.removeChild(headingRow);
+  // printMessage('sortTable: should be empty:');
+  // printNode(document.getElementById('resultstable'));
+  table.appendChild(headingRow);
+  for (i = 0; i < dataRows.length; i++) {
+    var oddeven = (i % 2) ? 'odd' : 'even';
+    dataRows[i].setAttribute('class', 'results_' + oddeven);
+    table.appendChild(dataRows[i]);
   }
 }
 
@@ -168,5 +231,9 @@ function sortResults(columnNum) {
   } else {
     table = tableBodies[0];
   }
-  sortTable(table, columnNum);
+  showStatus('Sorting results...');
+  sortColumnNum = columnNum;
+  sortTable(table);
+  showStatus('Results sorted.');
 }
+
