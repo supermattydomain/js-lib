@@ -1,17 +1,9 @@
-var columnNum = 0;
-
 var addFieldToResult = function(args) {
     var resultSet = args[0];
     var tableRow = args[1];
     var field = args[2];
     // printMessage('Got field');
-    var tableCell = document.createElement('td');
-    if (oddRow) {
-      tableCell.setAttribute('class', 'results_odd');
-    } else {
-      tableCell.setAttribute('class', 'results_even');
-    }
-    tableCell.appendChild(document.createTextNode(field.value));
+    var tableCell = resultsTable.makeCell(field.value);
     tableRow.appendChild(tableCell);
 };
 
@@ -20,16 +12,8 @@ var addColumnToHeading = function(args) {
     var tableRow = args[1];
     var field = args[2];
     // printMessage('Got field');
-    var headingCell = document.createElement('th');
-    headingCell.setAttribute('class', 'results');
-    headingCell.appendChild(document.createTextNode(field.name));
-    headingCell.columnNum = columnNum;
-    headingCell.onclick = function(evt) {
-      // printMessage('heading ' + headingCell.columnNum + ' clicked');
-	sortResults(headingCell.columnNum);
-    }
+    var headingCell = resultsTable.makeHeadingCell(field.name);
     tableRow.appendChild(headingCell);
-    columnNum++;
 };
 
 var tableHeaderDone = false;
@@ -39,7 +23,6 @@ function addTableHeading(resultSet, resultsTable, resultRecord) {
     if (tableHeaderDone) {
 	return;
     }
-    columnNum = 0;
     tableHeaderDone = true;
     var headingRow = document.createElement('tr');
     headingRow.setAttribute('class', 'results');

@@ -65,8 +65,10 @@ function compareCells(cell1, cell2) {
 }
 
 function SortedTable() {
+  this.columnNum = 0;
   this.sortColumnNum = 0;
   this.firstUnsorted = 0;
+  this.oddRow = false;
   this.realTable = document.createElement('table');
   this.realTable.setAttribute('class', 'results');
   this.realTable.setAttribute('id', 'resultstable');
@@ -84,6 +86,31 @@ function SortedTable() {
   this.setSortColumn = function(colNum) {
     self.sortColumnNum = colNum;
   };
+
+  this.makeCell = function(value) {
+    var tableCell = document.createElement('td');
+    if (this.oddRow) {
+      tableCell.setAttribute('class', 'results_odd');
+    } else {
+      tableCell.setAttribute('class', 'results_even');
+    }
+    tableCell.appendChild(document.createTextNode(value));
+    return tableCell;
+  };
+
+  this.makeHeadingCell = function(fieldName) {
+    var headingCell = document.createElement('th');
+    headingCell.setAttribute('class', 'results');
+    headingCell.appendChild(document.createTextNode(fieldName));
+    headingCell.columnNum = this.columnNum;
+    headingCell.onclick = function(evt) {
+      // printMessage('heading ' + headingCell.columnNum + ' clicked');
+        sortResults(headingCell.columnNum);
+    }
+    this.columnNum++;
+    return headingCell;
+  };
+
 this.compareRows = function(row1, row2) {
   // printMessage('compareRows:');
   // printMessage('node1:');
