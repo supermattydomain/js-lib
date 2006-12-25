@@ -13,23 +13,20 @@ function printMessage(str) {
   output.appendChild(document.createElement('br'));
 }
 
-function showMessage(str) {
-  var output = document.getElementById('messages');
-  if (null == output) {
-    output = document.createElement('div');
-    output.setAttribute('id', 'messages');
+function showStatus(str) {
+  var status = document.getElementById('status');
+  if (null == status) {
+    status = document.createElement('div');
+    status.setAttribute('id', 'status');
     // FIXME: Doesn't work in IE 6.
     // document.documentElement is not, however, null
-    document.documentElement.appendChild(output);
+    document.documentElement.appendChild(status);
   }
-  var textNode = output.firstChild;
-  if (null == textNode || undefined == textNode) {
-    textNode = document.createTextNode(str);
-    output.appendChild(textNode);
-    output.appendChild(document.createElement('br'));
-  } else {
-    textNode.nodeValue = str;
+  if (status.firstChild) {
+    status.removeChild(status.firstChild);
   }
+  var textNode = document.createTextNode(str);
+  status.appendChild(textNode);
 }
 
 function printNode(node) {
@@ -48,6 +45,9 @@ function printNode(node) {
       printNode(node.childNodes[i]);
     }
   }
+  if (null != node.nodeValue && undefined != node.nodeValue) {
+    printMessage(node.nodeValue);
+  }
   tag = '</' + node.nodeName + '>';
-  window.dump(tag);
+  printMessage(tag);
 }

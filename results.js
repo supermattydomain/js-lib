@@ -64,17 +64,24 @@ function addTableRow(resultSet, resultsTable, resultRecord) {
 var receiveResult = function(args) {
     // printMessage('Got result');
     var resultSet = args[0];
-    var resultRecord = args[1];
+    var resultsTable = args[1];
+    var resultRecord = args[2];
     // printNode(resultRecord);
-    var resultsTable = document.getElementById('resultstable');
     addTableHeading(resultSet, resultsTable, resultRecord);
     addTableRow(resultSet, resultsTable, resultRecord);
 };
 
 var onResultSetLoaded = function(resultSet) {
-  printMessage('Displaying ' + resultSet.getNumResults() + ' results...');
+  showStatus('Displaying ' + resultSet.getNumResults() + ' results...');
+  var resultsTable = document.getElementById('resultstable');
+  var tbodies = resultsTable.getElementsByTagName('tbody');
+  if (tbodies != null && tbodies != undefined && tbodies.length) {
+    resultsTable = tbodies[0];
+  }
+  // printNode(resultsTable);
   var args = new Array();
   args[0] = resultSet;
+  args[1] = resultsTable;
   resultSet.enumResults(receiveResult, args);
 };
 

@@ -11,6 +11,7 @@ function ResultSet(url) {
     var resultSets = self.xmlDoc.getElementsByTagName('resultset');
     self.resultSet = resultSets[0];
     // printNode(self.resultSet);
+    showStatus('Finished retrieving search results.');
     self.externalCallbackFn(self);
   };
   this.fetchResults = function(externalCallback) {
@@ -23,7 +24,7 @@ function ResultSet(url) {
       printMessage('ResultSet: Cannot start GET request using URL ' + this.url);
       return false;
     }
-    printMessage('Retrieving search results...');
+    showStatus('Retrieving search results...');
     return true;
   };
   this.getNumResults = function() {
