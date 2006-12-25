@@ -11,6 +11,7 @@ function DBSchema() {
     // printMessage("DBSchema: Document child count: " + self.xmlDoc.childNodes.length);
     self.database = self.xmlDoc.getElementsByTagName('database');
     self.tables = self.xmlDoc.getElementsByTagName('table');
+    showStatus('Schema loaded.');
     self.externalCallbackFn(self);
   };
   this.fetchSchema = function(externalCallback) {
@@ -23,7 +24,7 @@ function DBSchema() {
       printMessage('DBSchema: Cannot start GET request using URL ' + this.url);
       return false;
     }
-    // printMessage('DBSchema: Request started');
+    showStatus('Loading schema...');
     return true;
   };
   this.getNumTables = function() {

@@ -62,6 +62,7 @@ function SearchForm() {
     } else {
       // printMessage('searchform: found table ' + self.tableName);
       self.addCriterion();
+      showStatus('Ready.');
     }
   };
   this.schema = new DBSchema();

@@ -83,6 +83,7 @@ var onResultSetLoaded = function(resultSet) {
   args[0] = resultSet;
   args[1] = resultsTable;
   resultSet.enumResults(receiveResult, args);
+  showStatus('Ready.');
 };
 
 function doSearch(searchURL) {
