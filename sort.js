@@ -1,7 +1,7 @@
-sortColumnNum = 0;
-firstUnsorted = 0;
-
 function findChildByType(node, type) {
+  if (null == node || undefined == node) {
+    return null;
+  }
   if (node.nodeType == type) {
     return node;
   }
@@ -14,12 +14,77 @@ function findChildByType(node, type) {
     if (null != child) {
       return child;
     }
+    node = node.nextSibling;
   }
-  node = node.nextSibling;
   return null;
 }
 
-function compareRows(row1, row2) {
+function compareValues(val1, val2) {
+  var num1 = Number(val1);
+  var num2 = Number(val2);
+  if (isNaN(num1) || isNaN(num2)) {
+    val1 = val1.toLowerCase();
+    val2 = val2.toLowerCase();
+  } else {
+    val1 = num1;
+    val2 = num2;
+  }
+  // printMessage('compareValues: ' + val1 + ' ' + val2);
+  var ret;
+  if (val1 < val2) {
+    ret = -1;
+  } else if (val1 > val2) {
+    ret = 1;
+  } else {
+    ret = 0;
+  }
+  // printMessage('compareValues: ret=' + ret);
+  return ret;
+}
+
+function compareCells(cell1, cell2) {
+  var node1 = findChildByType(cell1, 3);
+  var node2 = findChildByType(cell2, 3);
+  if (null == node1 || undefined == node1) {
+    printMessage('compareCells: no child text to compare');
+    printNode(cell1);
+    if (null == node2 || undefined == node2) {
+      ret = 0;
+    } else {
+      ret = -1;
+    }
+  } else if (null == node2 || undefined == node2) {
+    printMessage('compareCells: no child text to compare');
+    printNode(cell2);
+    ret = 1;
+  } else {
+    ret = compareValues(node1.nodeValue, node2.nodeValue);
+  }
+  // printMessage('compareCells: returning ' + ret);
+  return ret;
+}
+
+function SortedTable() {
+  this.sortColumnNum = 0;
+  this.firstUnsorted = 0;
+  this.realTable = document.createElement('table');
+  this.realTable.setAttribute('class', 'results');
+  this.realTable.setAttribute('id', 'resultstable');
+  var tableBodies = this.realTable.getElementsByTagName('tbody');
+  var self = this;
+  if (0 == tableBodies.length) {
+    // printNode(realTable);
+    this.table = this.realTable;
+  } else {
+    this.table = tableBodies[0];
+  }
+  this.getTable = function() {
+    return this.realTable;
+  };
+  this.setSortColumn = function(colNum) {
+    self.sortColumnNum = colNum;
+  };
+this.compareRows = function(row1, row2) {
   // printMessage('compareRows:');
   // printMessage('node1:');
   // printNode(row1);
@@ -27,96 +92,61 @@ function compareRows(row1, row2) {
   // printNode(row2);
   var cells1 = row1.getElementsByTagName('td');
   var cells2 = row2.getElementsByTagName('td');
-  if (null == cells1 || undefined == cells1 || 0 == cells1.length) {
-    throw 'no td cells';
-    ret = -1; // header row is always less
-  } else if (null == cells2 || undefined == cells2 || 0 == cells2.length) {
-    throw 'no td cells';
-    ret = -1; // header row is always less
-  } else {
-    // var node1 = cells1[sortColumnNum].firstChild.firstChild;
-    // var node2 = cells2[sortColumnNum].firstChild.firstChild;
-    var node1 = findChildByType(cells1[sortColumnNum], 3);
-    var node2 = findChildByType(cells2[sortColumnNum], 3);
-    if (null == node1 || undefined == node1) {
-      if (null == node2 || undefined == node2) {
-	printMessage('No child text to compare');
-	return 0;
-      }
-      return -1;
-    } else if (null == node2 || undefined == node2) {
-      printMessage('No child text to compare');
-      return 1;
-    }
-    // printMessage('compareRows:');
-    // printNode(node1);
-    // printNode(node2);
-    var text1 = node1.nodeValue.toLowerCase();
-    var text2 = node2.nodeValue.toLowerCase();
-    var val1 = Number(text1);
-    var val2 = Number(text2);
-    if (isNaN(val1) || isNaN(val2)) {
-      val1 = text1;
-      val2 = text2;
-    }
-    // printMessage('compareRows: ' + val1 + ' ' + val2);
-    var ret;
-    if (val1 < val2) {
-      ret = -1;
-    } else if (val1 > val2) {
-      ret = 1;
-    } else {
-      ret = 0;
-    }
+  if (null == cells1 || undefined == cells1 || cells1.length <= self.sortColumnNum) {
+    throw 'compareRows: no td cells in comparison row 1';
   }
-  // printMessage('compareRows: ret=' + ret);
+  if (null == cells2 || undefined == cells2 || cells2.length <= self.sortColumnNum) {
+    throw 'compareRows: no td cells in comparison row 2';
+  }
+  var ret = compareCells(cells1[self.sortColumnNum], cells2[self.sortColumnNum]);
+  // printMessage('compareRows: returning ' + ret);
   return ret;
-}
+};
 
-function findInsertPos(table, row) {
+this.findInsertPos = function(row) {
   var pos;
   var lim;
-  if (firstUnsorted < table.childNodes.length) {
-    lim = firstUnsorted;
+  if (this.firstUnsorted < this.table.childNodes.length) {
+    lim = this.firstUnsorted;
   } else {
-    lim = table.childNodes.length;
+    lim = this.table.childNodes.length;
   }
   for (pos = 0; pos < lim; pos++) {
-    var node = table.childNodes[pos];
+    var node = this.table.childNodes[pos];
     if (1 != node.nodeType) {
       continue;
     } else if ('tr' != node.nodeName.toLowerCase()) {
       // printMessage('findInsertPos: Ignoring node ' + node.nodeName);
       continue;
     }	
-    if (compareRows(row, node) >= 0) {
+    if (this.compareRows(row, node) >= 0) {
       break;
     }
   }
   // printMessage('findInsertPos: ' + pos);
   return pos;
-}
+};
 
-function insertBefore(table, pos, row) {
+this.insertBefore = function(pos, row) {
   var nextNode = null;
-  if (pos > firstUnsorted) {
-    printMessage('Inserting after first unsorted row');
+  if (pos > this.firstUnsorted) {
+    throw 'Inserting after first unsorted row';
   }
-  if (pos < table.childNodes.length) {
-    table.insertBefore(row, table.childNodes[pos]);
+  if (pos < this.table.childNodes.length) {
+    this.table.insertBefore(row, this.table.childNodes[pos]);
   } else {
-    table.appendChild(row);
+    this.table.appendChild(row);
   }
   if (pos <= firstUnsorted) {
-    firstUnsorted++;
-    advanceUnsortedPos(table);
+    this.firstUnsorted++;
+    this.advanceUnsortedPos(table);
   }
-}
+};
 
-function findPos(table, row) {
+this.findPos = function(row) {
   var pos;
-  for (pos = 0; pos < table.childNodes.length; pos++) {
-    var node = table.childNodes[pos];
+  for (pos = 0; pos < this.table.childNodes.length; pos++) {
+    var node = this.table.childNodes[pos];
     if (1 != node.nodeType) {
       continue;
     } else if ('tr' != node.getNodeName()) {
@@ -128,62 +158,62 @@ function findPos(table, row) {
   }
   printMessage('Existing row not found');
   return null;
-}
+};
 
-function removePos(table, pos) {
-  var row = table.childNodes[pos];
+this.removePos = function(pos) {
+  var row = this.table.childNodes[pos];
   if (1 != row.nodeType || 'tr' != row.nodeName.toLowerCase()) {
-    printMessage('Trying to remove something other than a row');
+    throw 'Trying to remove something other than a row';
   }
-  table.removeChild(row);
-  if (pos < firstUnsorted) {
-    firstUnsorted--;
-    advanceUnsortedPos(table);
+  this.table.removeChild(row);
+  if (pos < this.firstUnsorted) {
+    this.firstUnsorted--;
+    this.advanceUnsortedPos();
   }
-}
+};
 
-function removeRow(table, row) {
-  if (row.parentNode != table) {
+this.removeRow = function(row) {
+  if (row.parentNode != this.table) {
     return;
   }
-  var pos = findPos(table, row);
-  removePos(table, pos);
-}
+  var pos = this.findPos(row);
+  this.removePos(pos);
+};
 
-function insertRowSorted(table, row) {
-  removeRow(table, row);
+this.insertRowSorted = function(row) {
+  this.removeRow(row);
   var pos;
-  pos = findInsertPos(table, row);
-  insertBefore(table, pos, row);
-}
+  pos = this.findInsertPos(row);
+  this.insertBefore(pos, row);
+};
 
-function advanceUnsortedPos(table) {
-  while (firstUnsorted < table.childNodes.length) {
-    var row = table.childNodes[firstUnsorted];
+this.advanceUnsortedPos = function() {
+  while (this.firstUnsorted < this.table.childNodes.length) {
+    var row = this.table.childNodes[this.firstUnsorted];
     if (1 == row.nodeType && 'tr' == row.nodeName.toLowerCase()) {
       return;
     }
     // printMessage('advanceUnsortedPos: Ignoring non-row node');
-    firstUnsorted++;
+    this.firstUnsorted++;
   }
-}
+};
 
-function insertionSortTable(table) {
-  firstUnsorted = 0;
-  advanceUnsortedPos(table);
+this.insertionSortTable = function() {
+  this.firstUnsorted = 0;
+  this.advanceUnsortedPos();
   // printNode(table);
-  while (firstUnsorted < table.childNodes.length) {
-    // printMessage('sortTable: ' + firstUnsorted + '/' + table.childNodes.length);
-    var row = table.childNodes[firstUnsorted];
+  while (this.firstUnsorted < this.table.childNodes.length) {
+    // printMessage('sortTable: ' + this.firstUnsorted + '/' + this.table.childNodes.length);
+    var row = this.table.childNodes[this.firstUnsorted];
     // printNode(row);
-    removePos(table, firstUnsorted);
-    advanceUnsortedPos(table);
-    insertRowSorted(table, row);
+    this.removePos(this.firstUnsorted);
+    this.advanceUnsortedPos();
+    this.insertRowSorted(row);
   }
-}
+};
 
-function sortTable(table) {
-  var rows = table.getElementsByTagName('tr');
+this.sortTable = function() {
+  var rows = this.table.getElementsByTagName('tr');
   var dataRows = new Array();
   var r;
   var i;
@@ -199,41 +229,30 @@ function sortTable(table) {
       } else {
         printMessage('sortTable: unexpected row:');
 	printNode(rows[r]);
+	throw 'Unexpected table row';
       }
     }
   }
-  dataRows.sort(compareRows);
+  dataRows.sort(this.compareRows);
   for (i = 0; i < dataRows.length; i++) {
-    table.removeChild(dataRows[i]);
+    this.table.removeChild(dataRows[i]);
   }
-  table.removeChild(headingRow);
+  this.table.removeChild(headingRow);
   // printMessage('sortTable: should be empty:');
   // printNode(document.getElementById('resultstable'));
-  table.appendChild(headingRow);
+  this.table.appendChild(headingRow);
   for (i = 0; i < dataRows.length; i++) {
     var oddeven = (i % 2) ? 'odd' : 'even';
     dataRows[i].setAttribute('class', 'results_' + oddeven);
-    table.appendChild(dataRows[i]);
+    this.table.appendChild(dataRows[i]);
   }
+};
+
 }
 
 function sortResults(columnNum) {
-  var resultsTable = document.getElementById('resultstable');
-  if (null == resultsTable) {
-    printMessage('No results table to sort');
-    return;
-  }
-  var tableBodies = resultsTable.getElementsByTagName('tbody');
-  var table;
-  if (0 == tableBodies.length) {
-    // printNode(resultsTable);
-    table = resultsTable;
-  } else {
-    table = tableBodies[0];
-  }
   showStatus('Sorting results...');
-  sortColumnNum = columnNum;
-  sortTable(table);
+  resultsTable.setSortColumn(columnNum);
+  resultsTable.sortTable();
   showStatus('Results sorted.');
-}
-
+};
