@@ -43,7 +43,7 @@ function SearchCriterion(num, schema, table, operations) {
     return select;
   };
   this.populate = function() {
-    printMessage('populate: table = ' + self.tableName + '\n');
+    // printMessage('populate: table = ' + self.tableName + '\n');
     self.div = document.createElement("div");
     self.div.setAttribute("id", "criterion" + self.criterionNum);
     self.fieldSelect = self.makeFieldSelectOneTable('field' + self.criterionNum, self.schema, self.table);
@@ -54,10 +54,17 @@ function SearchCriterion(num, schema, table, operations) {
     self.div.appendChild(self.fieldSelect);
     self.div.appendChild(self.operationSelect);
     self.div.appendChild(self.valueField);
-    printMessage('done populate: table = ' + self.tableName + '\n');
+    // printMessage('done populate: table = ' + self.tableName + '\n');
   };
   this.getDiv = function() {
     return this.div;
   };
+  this.getURL = function() {
+    var url = '';
+    url += this.fieldSelect.name + '=' + this.fieldSelect.value;
+    url += '&' + this.operationSelect.name + '=' + this.operationSelect.value;
+    url += '&' + this.valueField.name + '=' + this.valueField.value;
+    return url;
+  }
   this.populate();
 }

@@ -17,26 +17,34 @@ function SearchForm() {
   this.schema = null;
   this.table = null;
   this.tableName = 'vall';
-  this.makeSearchURL = function() {
+  this.getURL = function() {
     var url = '';
+    var i;
+    for (i = 0; i < this.criteria.length; i++) {
+      if (url.length != 0) {
+        url += '&';
+      }
+      url += this.criteria[i].getURL();
+    }
+    url = 'search.cgi?' + url + '&format=xml';
     return url;
   };
   this.addCriterion = function() {
+    // printMessage('In addCriterion');
     if (this.criteria.length >= this.maxCriteria) {
 	return;
     }
     var criterion = new SearchCriterion(this.criteria.length, this.schema, this.table, this.operations);
-    this.criteria[this.criteria.length] = criterion;
+    this.criteria.push(criterion);
     this.searchForm.appendChild(criterion.getDiv());
   };
   this.removeCriterion = function() {
     if (this.criteria.length < 1) {
 	return;
     }
-    var parentNode = this.criteria[this.criteria.length - 1].parentNode;
-    parentNode.removeChild(this.criteria[this.criteria.length - 1]);
-    // delete this.criteria[this.criteria.length - 1];
-    this.criteria.length--;
+    var criterion = this.criteria.pop();
+    this.searchForm.removeChild(criterion.getDiv());
+    delete criterion;
   };
   this.populate = function(schema) {
     this.table = null;

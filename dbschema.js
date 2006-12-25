@@ -17,10 +17,10 @@ function DBSchema() {
     this.externalCallbackFn = externalCallback;
     this.ajax = new Ajax(this.url, this.dataCallbackFn);
     if (null == this.ajax) {
-      printMessage('DBSchema: Cannot create request');
+      printMessage('DBSchema: Cannot create request using URL ' + this.url);
       return false;
     } else if (!this.ajax.doGet()) {
-      printMessage('DBSchema: Cannot start GET request');
+      printMessage('DBSchema: Cannot start GET request using URL ' + this.url);
       return false;
     }
     // printMessage('DBSchema: Request started');

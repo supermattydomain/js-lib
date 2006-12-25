@@ -30,6 +30,11 @@ function Ajax(url, requestDoneCallback) {
   };
   this.getResponseXML = function() {
     if (this.error || null == this.req) {
+      printMessage('AJAX: No XML response available due to request error');
+      return null;
+    } else if (null == this.req.responseXML || undefined == this.req.responseXML) {
+      printMessage('AJAX: No XML response returned');
+      printMessage(this.req.responseText);
       return null;
     }
     return this.req.responseXML;
@@ -71,7 +76,7 @@ function Ajax(url, requestDoneCallback) {
       if (self.isSuccessfulStatus(self.req.status)) {
         self.requestDoneCallback(self);
       } else {
-        printMessage('Got non-success status ' + self.req.status);
+        printMessage('AJAX: Got non-success status ' + self.req.status + ' for URL + ' + self.url);
         self.error = true;
       }
     }

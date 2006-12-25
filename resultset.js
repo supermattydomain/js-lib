@@ -17,10 +17,10 @@ function ResultSet(url) {
     this.externalCallbackFn = externalCallback;
     this.ajax = new Ajax(self.url, this.dataCallbackFn);
     if (null == this.ajax) {
-      printMessage('ResultSet: Cannot create request');
+      printMessage('ResultSet: Cannot create request using URL ' + this.url);
       return false;
     } else if (!this.ajax.doGet()) {
-      printMessage('ResultSet: Cannot start GET request');
+      printMessage('ResultSet: Cannot start GET request using URL ' + this.url);
       return false;
     }
     printMessage('Retrieving search results...');
