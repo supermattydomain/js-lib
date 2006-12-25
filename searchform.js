@@ -14,7 +14,9 @@ function SearchForm() {
   );
   this.searchForm = document.getElementById('searchform');
   var self = this;
-  this.schema = new DBSchema();
+  this.schema = null;
+  this.table = null;
+  this.tableName = 'vall';
   this.makeSearchURL = function() {
     var url = '';
     return url;
@@ -23,7 +25,7 @@ function SearchForm() {
     if (this.criteria.length >= this.maxCriteria) {
 	return;
     }
-    var criterion = new SearchCriterion(this.criteria.length, fields, this.operations);
+    var criterion = new SearchCriterion(this.criteria.length, this.schema, this.table, this.operations);
     this.criteria[this.criteria.length] = criterion;
     this.searchForm.appendChild(criterion.getDiv());
   };
@@ -31,16 +33,29 @@ function SearchForm() {
     if (this.criteria.length < 1) {
 	return;
     }
-    var criterion = this.criteria[this.criteria.length - 1];
-    criterion.parentNode.removeChild(criterion);
-    this.criteria[this.criteria.length - 1] = null;
+    var parentNode = this.criteria[this.criteria.length - 1].parentNode;
+    parentNode.removeChild(this.criteria[this.criteria.length - 1]);
+    // delete this.criteria[this.criteria.length - 1];
     this.criteria.length--;
   };
   this.populate = function(schema) {
+    this.table = null;
     var args = new Array();
-    arrayForAll(self.criteria, function(myargs) {
-      myargs[0].populate(schema);
+    schema.enumTables(function(myargs) {
+      var table = myargs[0];
+      var tableName = schema.getTableName(table);
+      // printMessage('table = ' + tableName + '\n');
+      if (self.tableName == tableName) {
+        self.table = table;
+      }
     }, args);
+    if (null == self.table) {
+      printMessage('Cannot find table ' + self.tableName);
+    } else {
+      // printMessage('searchform: found table ' + self.tableName);
+      self.addCriterion();
+    }
   };
+  this.schema = new DBSchema();
   this.schema.fetchSchema(this.populate);
 }
