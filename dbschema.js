@@ -40,8 +40,14 @@ function DBSchema() {
   this.getTableName = function(table) {
     return table.getAttribute('name');
   };
+  this.getTableComment = function(table) {
+    return table.getAttribute('comment');
+  };
   this.getFieldName = function(field) {
     return field.getAttribute('name');
+  };
+  this.getFieldComment = function(field) {
+    return field.getAttribute('comment');
   };
   this.enumTables = function(tableCallback, args) {
     if (null == this.tables) {
