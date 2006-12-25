@@ -33,16 +33,27 @@ function ResultSet(url) {
     }
     return this.resultSet.childNodes.length;
   };
+  this.getResultIter = function() {
+    if (null == this.resultSet) {
+      throw 'No resultset loaded';
+    }
+    var iter = new ArrayIter(this.resultSet.childNodes);
+    return iter;
+  };
   this.enumResults = function(rowCallback, args) {
     if (null == this.resultSet) {
       return 0;
     }
-    var iter = new ArrayIter(this.resultSet.childNodes);
+    var iter = this.getResultIter();
     iter.forAll(rowCallback, args);
     return iter.getCount();
   };
-  this.enumFields = function(resultNode, fieldCallback, args) {
+  this.getFieldIter = function(resultNode) {
     var iter = new ArrayIter(resultNode.attributes);
+    return iter;
+  };
+  this.enumFields = function(resultNode, fieldCallback, args) {
+    var iter = this.getFieldIter(resultNode);
     iter.forAll(fieldCallback, args);
     return iter.getCount();
   };
