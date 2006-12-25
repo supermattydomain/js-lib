@@ -76,7 +76,7 @@ function Ajax(url, requestDoneCallback) {
       if (self.isSuccessfulStatus(self.req.status)) {
         self.requestDoneCallback(self);
       } else {
-        printMessage('AJAX: Got non-success status ' + self.req.status + ' for URL + ' + self.url);
+        printMessage('AJAX: Got non-success status ' + self.req.status + ' for URL ' + self.url);
         self.error = true;
       }
     }
