@@ -1,4 +1,6 @@
-function showMessage(str) {
+function printMessage(str) {
+  // doesn't work in Mozilla
+  // window.dump(str);
   var output = document.getElementById('messages');
   if (null == output) {
     output = document.createElement('div');
@@ -11,10 +13,23 @@ function showMessage(str) {
   output.appendChild(document.createElement('br'));
 }
 
-function printMessage(str) {
-  // doesn't work in Mozilla
-  // window.dump(str);
-  showMessage(str);
+function showMessage(str) {
+  var output = document.getElementById('messages');
+  if (null == output) {
+    output = document.createElement('div');
+    output.setAttribute('id', 'messages');
+    // FIXME: Doesn't work in IE 6.
+    // document.documentElement is not, however, null
+    document.documentElement.appendChild(output);
+  }
+  var textNode = output.firstChild;
+  if (null == textNode || undefined == textNode) {
+    textNode = document.createTextNode(str);
+    output.appendChild(textNode);
+    output.appendChild(document.createElement('br'));
+  } else {
+    textNode.nodeValue = str;
+  }
 }
 
 function printNode(node) {
