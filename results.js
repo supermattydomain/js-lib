@@ -28,7 +28,8 @@ function addTableHeading(resultSet, resultsTable, resultRecord) {
     var fieldArgs = new Array();
     fieldArgs[0] = resultSet;
     fieldArgs[1] = headingRow;
-    resultSet.enumFields(resultRecord, addColumnToHeading, fieldArgs);
+    var iter = resultSet.getFieldIter(resultRecord);
+    iter.forAll(addColumnToHeading, fieldArgs);
     resultsTable.appendChild(headingRow);
 }
 
@@ -38,7 +39,8 @@ function addTableRow(resultSet, resultsTable, resultRecord) {
     var fieldArgs = new Array();
     fieldArgs[0] = resultSet;
     fieldArgs[1] = tableRow;
-    resultSet.enumFields(resultRecord, addFieldToResult, fieldArgs);
+    var iter = resultSet.getFieldIter(resultRecord);
+    iter.forAll(addFieldToResult, fieldArgs);
     resultsTable.appendChild(tableRow);
 }
 
