@@ -51,7 +51,8 @@ function SortedTable() {
 
   this.addRow = function(iter) {
     var tableRow = this.makeRow(iter);
-    this.insertRowSorted(tableRow);
+    // this.insertRowSorted(tableRow);
+    this.table.appendChild(tableRow);
   };
 
   this.makeHeadingCell = function(fieldName) {
