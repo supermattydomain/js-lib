@@ -232,15 +232,19 @@ this.sortTable = function() {
 };
 
   this.emptyTable = function() {
-    while (this.table.lastChild != this.headingRow) {
-      this.table.removeChild(this.table.lastChild);
-    }
     var i;
     for (i = 0; i < this.dataRows.length; i++) {
       delete this.dataRows[i];
       this.dataRows[i] = null;
     }
     this.dataRows = new Array();
+    while (this.realTable.rows.length > 1) {
+      if (this.headingRow == this.realTable.rows[0]) {
+	this.realTable.deleteRow(1);
+      } else {
+	this.realTable.deleteRow(0);
+      }
+    }
   };
 
 }
