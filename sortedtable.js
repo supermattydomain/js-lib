@@ -80,7 +80,6 @@ function SortedTable() {
     if (this.headingRow) {
       return;
     }
-    // this.headingRow = document.createElement('tr');
     this.headingRow = this.realTable.insertRow(0);
     this.headingRow.setAttribute('class', 'results');
     var args = new Array();
@@ -112,8 +111,6 @@ this.compareRows = function(row1, row2) {
   return ret;
 };
 
-/*
-
 this.findInsertIndex = function(row) {
   var i;
   for (i = 0; i < this.dataRows.length; i++) {
@@ -130,15 +127,6 @@ this.findInsertIndex = function(row) {
   }
   // printMessage('findInsertIndex: ' + i);
   return i;
-};
-
-this.insertBefore = function(index, row) {
-  var nextNode = null;
-  if (index < this.dataRows.length) {
-    this.table.insertBefore(row, this.table.childNodes[index]);
-  } else {
-    this.table.appendChild(row);
-  }
 };
 
 this.findIndex = function(row) {
@@ -159,30 +147,15 @@ this.findIndex = function(row) {
 };
 
 this.removeIndex = function(index) {
-  var row = this.dataRows[index];
-  if (1 != row.nodeType || 'tr' != row.nodeName.toLowerCase()) {
-    throw 'Trying to remove something other than a row';
-  }
-  this.table.removeChild(row);
+  this.realTable.removeRow(index);
 };
 
-this.removeRow = function(row) {
-  if (row.parentNode != this.table) {
-    // throw 'Trying to remove non-child';
-    return;
-  }
-  var index = this.findIndex(row);
-  this.removeIndex(index);
-};
-
-this.insertRowSorted = function(row) {
-  this.removeRow(row);
+this.insertRowSorted = function(iter) {
   var index;
   index = this.findInsertIndex(index);
+  var row = this.makeRow(iter);
   this.insertBefore(index, row);
 };
-
-*/
 
 this.tableToArray = function() {
   var rows = this.table.getElementsByTagName('tr');
