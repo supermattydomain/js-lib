@@ -54,9 +54,44 @@ function ChildIter(node) {
     return ret;
   };
   this.forAll = function(callback, args) {
+    printMessage('in ChildIter.forAll');
     arrayForAll(this.iterNode.childNodes, callback, args);
   };
   this.getIndex = function() {
     return this.iterIndex;
   };
 }
+
+function AttributeIter(node) {
+  this.iterNode = node;
+  this.base = ArrayIter;
+  this.base(this.iterNode.attributes);
+  printMessage('In AttributeIter: this.base=' + this.base);
+}
+AttributeIter.prototype = new ArrayIter;
+
+function FieldNameIter(recSet, rec) {
+  this.recSet = recSet;
+  this.rec = rec;
+  this.base = ChildIter;
+  this.base(this.rec);
+  printMessage('in FieldNameIter: this.base=' + this.base);
+  printMessage('in FieldNameIter: this.base.forAll=' + this.base.forAll);
+  this.getNext = function() {
+    printMessage('in FieldNameIter.getNext');
+    var next = this.base.getNext();
+    if (next) {
+      return this.recSet.getFieldName(next);
+    }
+    return next;
+  };
+  this.forAll = function(callback, args) {
+    printMessage('in FieldNameIter.forAll: this.base.forAll=' + this.base.forAll);
+    this.base.forAll(function(myargs) {
+      var field = myargs.pop();
+      myargs.push(this.recSet.getFieldName(field));
+      callback(myargs);
+    }, args);
+  };
+}
+FieldNameIter.prototype = new ChildIter;

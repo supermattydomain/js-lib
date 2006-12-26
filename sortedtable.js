@@ -114,9 +114,9 @@ this.insertBefore = function(pos, row) {
   } else {
     this.table.appendChild(row);
   }
-  if (pos <= firstUnsorted) {
+  if (pos <= this.firstUnsorted) {
     this.firstUnsorted++;
-    this.advanceUnsortedPos(table);
+    this.advanceUnsortedPos(this.table);
   }
 };
 

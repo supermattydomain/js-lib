@@ -72,11 +72,15 @@ function sortResults(columnNum) {
 };
 
 function addResultColumns(resultSet, resultRecord) {
-  var iter = resultSet.getFieldIter(resultRecord);
+  // var iter = resultSet.getFieldIter(resultRecord);
   // var iter = new ArrayIter(resultRecord.attributes);
+  var iter = new AttributeIter(resultRecord);
+  // var iter = new FieldNameIter(resultSet, resultRecord);
   var args = new Array();
   iter.forAll(function(myargs) {
+    // var fieldName = myargs[0];
     var field = myargs[0];
+    // var fieldName = resultSet.getFieldName(field);
     // printMessage('Got field');
     resultsTable.addColumnHeading(field.name);
   }, args);
@@ -90,4 +94,22 @@ function addTableHeading(resultSet, resultRecord) {
     }
     tableHeaderDone = true;
     addResultColumns(resultSet, resultRecord);
+}
+
+function addTableRow(resultSet, resultRecord) {
+    var tableRow = document.createElement('tr');
+    tableRow.setAttribute('class', 'results');
+    var fieldArgs = new Array();
+    fieldArgs[0] = resultSet;
+    fieldArgs[1] = tableRow;
+    var iter = resultSet.getFieldIter(resultRecord);
+    iter.forAll(function(args) {
+      var resultSet = args[0];
+      var tableRow = args[1];
+      var field = args[2];
+      // printMessage('Got field');
+      var tableCell = resultsTable.makeCell(field.value);
+      tableRow.appendChild(tableCell);
+    }, fieldArgs);
+    resultsTable.insertRowSorted(tableRow);
 }
