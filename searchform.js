@@ -9,8 +9,7 @@ function SearchForm() {
     'is less than or equal to',
     'is greater than',
     'is greater than or equal to',
-    'is similar to',
-    'is in range'
+    'is similar to'
   );
   this.searchForm = document.getElementById('searchform');
   var self = this;
