@@ -71,12 +71,26 @@ function Ajax(url, requestDoneCallback) {
   };
   var self = this;
   this.onreadystatechange = function(evt) {
-    // printMessage('Reached readyState ' + self.req.readyState);
+    /*
+    printMessage('onreadystatechange: readyState=' + self.req.readyState);
+    if (self.req.responseXML) {
+      printMessage('got XML');
+      if (self.req.responseXML.childNodes) {
+        printMessage('Reached readyState ' + self.req.readyState + '; children=' + self.req.responseXML.childNodes.length);
+      } else {
+        printMessage('Reached readyState ' + self.req.readyState + ' but no child nodes yet');
+      }
+    } else if (self.req.responseText) {
+      printMessage('Reached readyState ' + self.req.readyState + '; text=' + self.req.responseText.length);
+    } else {
+      printMessage('No data');
+    }
+    */
     if (4 == self.req.readyState) {
       if (self.req.status && self.isSuccessfulStatus(self.req.status)) {
         self.requestDoneCallback(self);
       } else {
-        printMessage('AJAX: Got non-success status ' + self.req.status + ' for URL ' + self.url);
+        printMessage('AJAX: ' + self.req.status + ' ' + self.req.statusText + ' for URL ' + self.url);
         self.error = true;
       }
     }
