@@ -7,13 +7,13 @@ function SortedTable() {
   this.dataRows = new Array();
   var self = this;
   var tableBodies = this.realTable.getElementsByTagName('tbody');
-  if (0 == tableBodies.length) {
+  if (tableBodies && tableBodies.length) {
+    this.table = tableBodies[0];
+  } else {
     // printNode(realTable);
     this.table = this.realTable;
-  } else {
-    this.table = tableBodies[0];
   }
-
+  // printNode(this.table);
   this.getTable = function() {
     return this.realTable;
   };
@@ -42,7 +42,8 @@ function SortedTable() {
   };
 
   this.makeRow = function(iter) {
-    var tableRow = document.createElement('tr');
+    // printMessage('makeRow');
+    var tableRow = this.realTable.insertRow(this.realTable.rows.length);
     tableRow.setAttribute('class', 'results');
     var args = new Array();
     args[0] = tableRow;
@@ -57,9 +58,8 @@ function SortedTable() {
   };
 
   this.addRow = function(iter) {
+    // printMessage('addRow');
     var tableRow = this.makeRow(iter);
-    // this.insertRowSorted(tableRow);
-    this.table.appendChild(tableRow);
     this.dataRows.push(tableRow);
   };
 
@@ -80,13 +80,9 @@ function SortedTable() {
     if (this.headingRow) {
       return;
     }
-    this.headingRow = document.createElement('tr');
+    // this.headingRow = document.createElement('tr');
+    this.headingRow = this.realTable.insertRow(0);
     this.headingRow.setAttribute('class', 'results');
-    if (this.table.firstChild) {
-      this.table.insertChild(this.headingRow, this.table.firstChild);
-    } else {
-      this.table.appendChild(this.headingRow);
-    }
     var args = new Array();
     args[0] = 0;
     iter.forAll(function(myargs) {
