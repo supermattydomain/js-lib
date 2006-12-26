@@ -26,6 +26,8 @@ function SearchForm() {
       url += this.criteria[i].getURL();
     }
     url = 'search.cgi?' + url + '&format=xml';
+    // TODO: replace with entry field
+    url += '&maxresults=200';
     return url;
   };
   this.addCriterion = function() {
