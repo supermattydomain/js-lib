@@ -1,8 +1,6 @@
 function SortedTable() {
   this.columnNum = 0;
-  this.sortColumnNum = 0;
-  this.firstUnsorted = 0;
-  this.oddRow = false;
+  this.sortColumnNum = -1;
   this.realTable = document.createElement('table');
   this.realTable.setAttribute('class', 'results');
   this.realTable.setAttribute('id', 'resultstable');
@@ -16,16 +14,22 @@ function SortedTable() {
   } else {
     this.table = tableBodies[0];
   }
+
   this.getTable = function() {
     return this.realTable;
   };
+
   this.setSortColumn = function(colNum) {
-    self.sortColumnNum = colNum;
+    if (this.sortColumnNum == colNum) {
+      return;
+    }
+    this.sortColumnNum = colNum;
+    this.sortTable();
   };
 
   this.makeCell = function(value) {
     var tableCell = document.createElement('td');
-    if (this.oddRow) {
+    if (this.dataRows.length % 2) {
       tableCell.setAttribute('class', 'results_odd');
     } else {
       tableCell.setAttribute('class', 'results_even');
@@ -53,6 +57,7 @@ function SortedTable() {
     var tableRow = this.makeRow(iter);
     // this.insertRowSorted(tableRow);
     this.table.appendChild(tableRow);
+    this.dataRows.push(tableRow);
   };
 
   this.makeHeadingCell = function(fieldName) {
@@ -68,28 +73,22 @@ function SortedTable() {
     return headingCell;
   };
 
-  this.addColumnHeading = function(fieldName) {
-    if (!this.headingRow) {
-      this.headingRow = document.createElement('tr');
-      this.headingRow.setAttribute('class', 'results');
-      if (this.table.firstChild) {
-        this.table.insertChild(this.headingRow, this.table.firstChild);
-      } else {
-	this.table.appendChild(this.headingRow);
-      }
-    }
-    var headingCell = this.makeHeadingCell(fieldName);
-    this.headingRow.appendChild(headingCell);
-  };
-
   this.addColumnHeadings = function(iter) {
     if (this.headingRow) {
       return;
     }
+    this.headingRow = document.createElement('tr');
+    this.headingRow.setAttribute('class', 'results');
+    if (this.table.firstChild) {
+      this.table.insertChild(this.headingRow, this.table.firstChild);
+    } else {
+      this.table.appendChild(this.headingRow);
+    }
     var args = new Array();
     iter.forAll(function(myargs) {
-      var text = myargs[0];
-      resultsTable.addColumnHeading(text);
+      var fieldName = myargs[0];
+      var headingCell = self.makeHeadingCell(fieldName);
+      self.headingRow.appendChild(headingCell);
     }, args);
   };
 
@@ -112,100 +111,77 @@ this.compareRows = function(row1, row2) {
   return ret;
 };
 
-this.findInsertPos = function(row) {
-  var pos;
-  var lim;
-  if (this.firstUnsorted < this.table.childNodes.length) {
-    lim = this.firstUnsorted;
-  } else {
-    lim = this.table.childNodes.length;
-  }
-  for (pos = 0; pos < lim; pos++) {
-    var node = this.table.childNodes[pos];
+/*
+
+this.findInsertIndex = function(row) {
+  var i;
+  for (i = 0; i < this.dataRows.length; i++) {
+    var node = this.dataRows[i];
     if (1 != node.nodeType) {
       continue;
     } else if ('tr' != node.nodeName.toLowerCase()) {
-      // printMessage('findInsertPos: Ignoring node ' + node.nodeName);
+      printMessage('findInsertIndex: Ignoring node ' + node.nodeName);
       continue;
     }	
     if (this.compareRows(row, node) >= 0) {
       break;
     }
   }
-  // printMessage('findInsertPos: ' + pos);
-  return pos;
+  // printMessage('findInsertIndex: ' + i);
+  return i;
 };
 
-this.insertBefore = function(pos, row) {
+this.insertBefore = function(index, row) {
   var nextNode = null;
-  if (pos > this.firstUnsorted) {
-    throw 'Inserting after first unsorted row';
-  }
-  if (pos < this.table.childNodes.length) {
-    this.table.insertBefore(row, this.table.childNodes[pos]);
+  if (index < this.dataRows.length) {
+    this.table.insertBefore(row, this.table.childNodes[index]);
   } else {
     this.table.appendChild(row);
   }
-  if (pos <= this.firstUnsorted) {
-    this.firstUnsorted++;
-    this.advanceUnsortedPos(this.table);
-  }
 };
 
-this.findPos = function(row) {
-  var pos;
-  for (pos = 0; pos < this.table.childNodes.length; pos++) {
-    var node = this.table.childNodes[pos];
+this.findIndex = function(row) {
+  var index;
+  for (index = 0; index < this.dataRows.length; pos++) {
+    var node = this.dataRows[index];
     if (1 != node.nodeType) {
       continue;
     } else if ('tr' != node.getNodeName()) {
       continue;
     }	
     if (row == node) {
-      return pos;
+      return index;
     }
   }
-  printMessage('Existing row not found');
+  throw 'Existing row not found';
   return null;
 };
 
-this.removePos = function(pos) {
-  var row = this.table.childNodes[pos];
+this.removeIndex = function(index) {
+  var row = this.dataRows[index];
   if (1 != row.nodeType || 'tr' != row.nodeName.toLowerCase()) {
     throw 'Trying to remove something other than a row';
   }
   this.table.removeChild(row);
-  if (pos < this.firstUnsorted) {
-    this.firstUnsorted--;
-    this.advanceUnsortedPos();
-  }
 };
 
 this.removeRow = function(row) {
   if (row.parentNode != this.table) {
+    // throw 'Trying to remove non-child';
     return;
   }
-  var pos = this.findPos(row);
-  this.removePos(pos);
+  var index = this.findIndex(row);
+  this.removeIndex(index);
 };
 
 this.insertRowSorted = function(row) {
   this.removeRow(row);
-  var pos;
-  pos = this.findInsertPos(row);
-  this.insertBefore(pos, row);
+  var index;
+  index = this.findInsertIndex(index);
+  this.insertBefore(index, row);
 };
 
-this.advanceUnsortedPos = function() {
-  while (this.firstUnsorted < this.table.childNodes.length) {
-    var row = this.table.childNodes[this.firstUnsorted];
-    if (1 == row.nodeType && 'tr' == row.nodeName.toLowerCase()) {
-      return;
-    }
-    printMessage('advanceUnsortedPos: Ignoring non-row node');
-    this.firstUnsorted++;
-  }
-};
+*/
 
 this.sortTable = function() {
   var rows = this.table.getElementsByTagName('tr');
@@ -231,19 +207,24 @@ this.sortTable = function() {
       }
     }
   }
-  this.dataRows.sort(this.compareRows);
   for (i = 0; i < this.dataRows.length; i++) {
     this.table.removeChild(this.dataRows[i]);
   }
   this.table.removeChild(this.headingRow);
+  this.dataRows.sort(this.compareRows);
   // printMessage('sortTable: should be empty:');
   // printNode(document.getElementById('resultstable'));
   this.table.appendChild(this.headingRow);
   for (i = 0; i < this.dataRows.length; i++) {
-    var oddeven = (i % 2) ? 'odd' : 'even';
-    this.dataRows[i].setAttribute('class', 'results_' + oddeven);
+    var oddEven = (i % 2) ? 'results_odd' : 'results_even';
+    var cells = this.dataRows[i].getElementsByTagName('td');
+    var j;
+    for (j = 0; j < cells.length; j++) {
+      cells[j].setAttribute('class', oddEven);
+    }
     this.table.appendChild(this.dataRows[i]);
   }
+  // printNode(document.getElementById('resultstable'));
 };
 
 }

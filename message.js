@@ -32,20 +32,26 @@ function showStatus(str) {
 function printNode(node) {
   var tag = '<' + node.nodeName;
   var i;
-  if (null != node.attributes && undefined != node.attributes) {
+  if (node.attributes) {
     for (i = 0; i < node.attributes.length; i++) {
       var attr = node.attributes[i];
-      tag = tag + ' ' + attr.name + '=' + attr.value;
+      tag = tag + ' ' + attr.name + '="' + attr.value + '"';
     }
   }
-  tag = tag + '>';
-  printMessage(tag);
-  if (null != node.childNodes && undefined != node.childNodes) {
+  if (node.hasChildNodes() || node.nodeValue) {
+    tag += '>';
+    printMessage(tag);
+  } else {
+    tag += '/>';
+    printMessage(tag);
+    return;
+  }
+  if (node.hasChildNodes()) {
     for (i = 0; i < node.childNodes.length; i++) {
       printNode(node.childNodes[i]);
     }
   }
-  if (null != node.nodeValue && undefined != node.nodeValue) {
+  if (node.nodeValue) {
     printMessage(node.nodeValue);
   }
   tag = '</' + node.nodeName + '>';
