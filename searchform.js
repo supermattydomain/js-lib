@@ -37,6 +37,10 @@ function SearchForm() {
     var criterion = new SearchCriterion(this.criteria.length, this.schema, this.table, this.operations);
     this.criteria.push(criterion);
     this.searchForm.appendChild(criterion.getDiv());
+    document.getElementById('fewerButton').disabled = false;
+    if (this.criteria.length >= this.maxCriteria) {
+	document.getElementById('moreButton').disabled = true;
+    }
   };
   this.removeCriterion = function() {
     if (this.criteria.length < 1) {
@@ -45,6 +49,10 @@ function SearchForm() {
     var criterion = this.criteria.pop();
     this.searchForm.removeChild(criterion.getDiv());
     delete criterion;
+    document.getElementById('moreButton').disabled = false;
+    if (this.criteria.length < 1) {
+	document.getElementById('fewerButton').disabled = true;
+    }
   };
   this.populate = function(schema) {
     this.table = null;
@@ -61,10 +69,13 @@ function SearchForm() {
       printMessage('Cannot find table ' + self.tableName);
     } else {
       // printMessage('searchform: found table ' + self.tableName);
+      document.getElementById('moreButton').disabled = false;
       self.addCriterion();
       showStatus('Ready.');
     }
   };
+  document.getElementById('moreButton').disabled = true;
+  document.getElementById('fewerButton').disabled = true;
   this.schema = new DBSchema();
   this.schema.fetchSchema(this.populate);
 }
