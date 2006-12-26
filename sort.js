@@ -114,6 +114,15 @@ function SortedTable() {
   };
 
   this.addColumnHeading = function(fieldName) {
+    if (!this.headingRow) {
+      this.headingRow = document.createElement('tr');
+      this.headingRow.setAttribute('class', 'results');
+      if (this.table.firstChild) {
+        this.table.insertChild(this.headingRow, this.table.firstChild);
+      } else {
+	this.table.appendChild(this.headingRow);
+      }
+    }
     var headingCell = this.makeHeadingCell(fieldName);
     this.headingRow.appendChild(headingCell);
   };
@@ -293,3 +302,24 @@ function sortResults(columnNum) {
   resultsTable.sortTable();
   showStatus('Results sorted.');
 };
+
+function addResultColumns(resultSet, resultRecord) {
+  var iter = resultSet.getFieldIter(resultRecord);
+  // var iter = new ArrayIter(resultRecord.attributes);
+  var args = new Array();
+  iter.forAll(function(myargs) {
+    var field = myargs[0];
+    // printMessage('Got field');
+    resultsTable.addColumnHeading(field.name);
+  }, args);
+}
+
+var tableHeaderDone = false;
+
+function addTableHeading(resultSet, resultRecord) {
+    if (tableHeaderDone) {
+	return;
+    }
+    tableHeaderDone = true;
+    addResultColumns(resultSet, resultRecord);
+}

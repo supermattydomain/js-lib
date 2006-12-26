@@ -7,32 +7,6 @@ var addFieldToResult = function(args) {
     tableRow.appendChild(tableCell);
 };
 
-var addColumnToHeading = function(args) {
-    var resultSet = args[0];
-    var tableRow = args[1];
-    var field = args[2];
-    // printMessage('Got field');
-    var headingCell = resultsTable.makeHeadingCell(field.name);
-    tableRow.appendChild(headingCell);
-};
-
-var tableHeaderDone = false;
-
-function addTableHeading(resultSet, resultsTable, resultRecord) {
-    if (tableHeaderDone) {
-	return;
-    }
-    tableHeaderDone = true;
-    var headingRow = document.createElement('tr');
-    headingRow.setAttribute('class', 'results');
-    var fieldArgs = new Array();
-    fieldArgs[0] = resultSet;
-    fieldArgs[1] = headingRow;
-    var iter = resultSet.getFieldIter(resultRecord);
-    iter.forAll(addColumnToHeading, fieldArgs);
-    resultsTable.appendChild(headingRow);
-}
-
 function addTableRow(resultSet, resultsTable, resultRecord) {
     var tableRow = document.createElement('tr');
     tableRow.setAttribute('class', 'results');
@@ -61,7 +35,7 @@ var onResultSetLoaded = function(resultSet) {
     var resultsTable = myargs[1];
     var resultRecord = myargs[2];
     // printNode(resultRecord);
-    addTableHeading(resultSet, resultsTable, resultRecord);
+    addTableHeading(resultSet, resultRecord);
     addTableRow(resultSet, resultsTable, resultRecord);
   }, args);
   showStatus(resultSet.getNumResults() + ' results displayed.');
