@@ -262,4 +262,16 @@ this.sortTable = function() {
   this.arrayToTable(data);
 };
 
+  this.emptyTable = function() {
+    while (this.table.lastChild != this.headingRow) {
+      this.table.removeChild(this.table.lastChild);
+    }
+    var i;
+    for (i = 0; i < this.dataRows.length; i++) {
+      delete this.dataRows[i];
+      this.dataRows[i] = null;
+    }
+    this.dataRows = new Array();
+  };
+
 }
