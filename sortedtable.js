@@ -58,7 +58,7 @@ function SortedTable() {
   this.makeHeadingCell = function(fieldName) {
     var headingCell = document.createElement('th');
     headingCell.setAttribute('class', 'results');
-    headingCell.appendChild(document.createTextNode(fieldName));
+    headingCell.appendChild(document.createTextNode(ucFirstAll(fieldName)));
     headingCell.columnNum = this.columnNum;
     headingCell.onclick = function(evt) {
       // printMessage('heading ' + headingCell.columnNum + ' clicked');
