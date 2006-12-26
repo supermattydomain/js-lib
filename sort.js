@@ -70,26 +70,3 @@ function sortResults(columnNum) {
   resultsTable.sortTable();
   showStatus('Results sorted.');
 };
-
-function addTableHeading(resultSet, resultRecord) {
-    var iter = new AttributeNameIter(resultRecord);
-    resultsTable.addColumnHeadings(iter);
-}
-
-function addTableRow(resultSet, resultRecord) {
-    var tableRow = document.createElement('tr');
-    tableRow.setAttribute('class', 'results');
-    var fieldArgs = new Array();
-    fieldArgs[0] = resultSet;
-    fieldArgs[1] = tableRow;
-    var iter = resultSet.getFieldIter(resultRecord);
-    iter.forAll(function(args) {
-      var resultSet = args[0];
-      var tableRow = args[1];
-      var field = args[2];
-      // printMessage('Got field');
-      var tableCell = resultsTable.makeCell(field.value);
-      tableRow.appendChild(tableCell);
-    }, fieldArgs);
-    resultsTable.insertRowSorted(tableRow);
-}

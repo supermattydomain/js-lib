@@ -2,13 +2,21 @@ var onResultSetLoaded = function(resultSet) {
   showStatus('Displaying ' + resultSet.getNumResults() + ' results...');
   var args = new Array();
   args[0] = resultSet;
+  args[1] = false;
   resultSet.enumResults(function(myargs) {
     // printMessage('Got result');
     var resultSet = myargs[0];
-    var resultRecord = myargs[1];
+    // doneHeading = myargs[1];
+    var resultRecord = myargs[2];
     // printNode(resultRecord);
-    addTableHeading(resultSet, resultRecord);
-    addTableRow(resultSet, resultRecord);
+    var iter;
+    if (!myargs[1]) {
+      myargs[1] = true;
+      iter = new AttributeNameIter(resultRecord);
+      resultsTable.addColumnHeadings(iter);
+    }
+    iter = new AttributeValueIter(resultRecord);
+    resultsTable.addRow(iter);
   }, args);
   showStatus(resultSet.getNumResults() + ' results displayed.');
 };

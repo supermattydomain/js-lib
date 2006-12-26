@@ -54,7 +54,6 @@ function ChildIter(node) {
     return ret;
   };
   this.forAll = function(callback, args) {
-    printMessage('in ChildIter.forAll');
     arrayForAll(this.iterNode.childNodes, callback, args);
   };
   this.getIndex = function() {
@@ -94,3 +93,27 @@ function AttributeNameIter(rec) {
   };
 }
 AttributeNameIter.prototype = new AttributeIter;
+
+function AttributeValueIter(rec) {
+  this.rec = rec;
+  this.base = AttributeIter;
+  this.base(this.rec);
+  this.parentGetNext = this.getNext;
+  this.getNext = function() {
+    var next = this.parentGetNext();
+    if (next) {
+      return next.value;
+    }
+    return next;
+  };
+  this.parentForAll = this.forAll;
+  this.forAll = function(callback, args) {
+    this.parentForAll(function(myargs) {
+      var attr = myargs.pop();
+      var value = attr.value;
+      myargs.push(value);
+      callback(myargs);
+    }, args);
+  };
+}
+AttributeValueIter.prototype = new AttributeIter;

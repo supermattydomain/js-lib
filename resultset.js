@@ -37,7 +37,7 @@ function ResultSet(url) {
     if (null == this.resultSet) {
       throw 'No resultset loaded';
     }
-    var iter = new ArrayIter(this.resultSet.childNodes);
+    var iter = new ChildIter(this.resultSet);
     return iter;
   };
   this.enumResults = function(rowCallback, args) {
@@ -49,7 +49,7 @@ function ResultSet(url) {
     return iter.getCount();
   };
   this.getFieldIter = function(resultNode) {
-    var iter = new ArrayIter(resultNode.attributes);
+    var iter = new AttributeIter(resultNode);
     return iter;
   };
   this.enumFields = function(resultNode, fieldCallback, args) {

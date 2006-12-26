@@ -34,6 +34,26 @@ function SortedTable() {
     return tableCell;
   };
 
+  this.makeRow = function(iter) {
+    var tableRow = document.createElement('tr');
+    tableRow.setAttribute('class', 'results');
+    var fieldArgs = new Array();
+    fieldArgs[0] = tableRow;
+    iter.forAll(function(args) {
+      // printMessage('Got field');
+      var tableRow = args[0];
+      var value = args[1];
+      var tableCell = self.makeCell(value);
+      tableRow.appendChild(tableCell);
+    }, fieldArgs);
+    return tableRow;
+  };
+
+  this.addRow = function(iter) {
+    var tableRow = this.makeRow(iter);
+    this.insertRowSorted(tableRow);
+  };
+
   this.makeHeadingCell = function(fieldName) {
     var headingCell = document.createElement('th');
     headingCell.setAttribute('class', 'results');
