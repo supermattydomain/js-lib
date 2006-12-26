@@ -61,6 +61,17 @@ function SortedTable() {
     this.headingRow.appendChild(headingCell);
   };
 
+  this.addColumnHeadings = function(iter) {
+    if (this.headingRow) {
+      return;
+    }
+    var args = new Array();
+    iter.forAll(function(myargs) {
+      var text = myargs[0];
+      resultsTable.addColumnHeading(text);
+    }, args);
+  };
+
 this.compareRows = function(row1, row2) {
   // printMessage('compareRows:');
   // printMessage('node1:');

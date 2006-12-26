@@ -65,33 +65,32 @@ function ChildIter(node) {
 function AttributeIter(node) {
   this.iterNode = node;
   this.base = ArrayIter;
-  this.base(this.iterNode.attributes);
-  printMessage('In AttributeIter: this.base=' + this.base);
+  if (node) {
+    this.base(this.iterNode.attributes);
+  }
 }
 AttributeIter.prototype = new ArrayIter;
 
-function FieldNameIter(recSet, rec) {
-  this.recSet = recSet;
+function AttributeNameIter(rec) {
   this.rec = rec;
-  this.base = ChildIter;
+  this.base = AttributeIter;
   this.base(this.rec);
-  printMessage('in FieldNameIter: this.base=' + this.base);
-  printMessage('in FieldNameIter: this.base.forAll=' + this.base.forAll);
+  this.parentGetNext = this.getNext;
   this.getNext = function() {
-    printMessage('in FieldNameIter.getNext');
-    var next = this.base.getNext();
+    var next = this.parentGetNext();
     if (next) {
-      return this.recSet.getFieldName(next);
+      return next.name;
     }
     return next;
   };
+  this.parentForAll = this.forAll;
   this.forAll = function(callback, args) {
-    printMessage('in FieldNameIter.forAll: this.base.forAll=' + this.base.forAll);
-    this.base.forAll(function(myargs) {
-      var field = myargs.pop();
-      myargs.push(this.recSet.getFieldName(field));
+    this.parentForAll(function(myargs) {
+      var attr = myargs.pop();
+      var name = attr.name;
+      myargs.push(name);
       callback(myargs);
     }, args);
   };
 }
-FieldNameIter.prototype = new ChildIter;
+AttributeNameIter.prototype = new AttributeIter;

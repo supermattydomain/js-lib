@@ -71,29 +71,9 @@ function sortResults(columnNum) {
   showStatus('Results sorted.');
 };
 
-function addResultColumns(resultSet, resultRecord) {
-  // var iter = resultSet.getFieldIter(resultRecord);
-  // var iter = new ArrayIter(resultRecord.attributes);
-  var iter = new AttributeIter(resultRecord);
-  // var iter = new FieldNameIter(resultSet, resultRecord);
-  var args = new Array();
-  iter.forAll(function(myargs) {
-    // var fieldName = myargs[0];
-    var field = myargs[0];
-    // var fieldName = resultSet.getFieldName(field);
-    // printMessage('Got field');
-    resultsTable.addColumnHeading(field.name);
-  }, args);
-}
-
-var tableHeaderDone = false;
-
 function addTableHeading(resultSet, resultRecord) {
-    if (tableHeaderDone) {
-	return;
-    }
-    tableHeaderDone = true;
-    addResultColumns(resultSet, resultRecord);
+    var iter = new AttributeNameIter(resultRecord);
+    resultsTable.addColumnHeadings(iter);
 }
 
 function addTableRow(resultSet, resultRecord) {
