@@ -1,6 +1,5 @@
 function SortedTable() {
-  this.columnNum = 0;
-  this.sortColumnNum = -1;
+  this.sortColumnNum = 0;
   this.realTable = document.createElement('table');
   this.realTable.setAttribute('class', 'results');
   this.realTable.setAttribute('id', 'resultstable');
@@ -34,22 +33,26 @@ function SortedTable() {
     } else {
       tableCell.setAttribute('class', 'results_even');
     }
-    tableCell.appendChild(document.createTextNode(value));
+    if ('' == value) {
+      tableCell.innerHTML = '&nbsp;';
+    } else {
+      tableCell.appendChild(document.createTextNode(value));
+    }
     return tableCell;
   };
 
   this.makeRow = function(iter) {
     var tableRow = document.createElement('tr');
     tableRow.setAttribute('class', 'results');
-    var fieldArgs = new Array();
-    fieldArgs[0] = tableRow;
-    iter.forAll(function(args) {
+    var args = new Array();
+    args[0] = tableRow;
+    iter.forAll(function(myargs) {
       // printMessage('Got field');
-      var tableRow = args[0];
-      var value = args[1];
+      var tableRow = myargs[0];
+      var value = myargs[1];
       var tableCell = self.makeCell(value);
       tableRow.appendChild(tableCell);
-    }, fieldArgs);
+    }, args);
     return tableRow;
   };
 
@@ -60,16 +63,16 @@ function SortedTable() {
     this.dataRows.push(tableRow);
   };
 
-  this.makeHeadingCell = function(fieldName) {
+  this.makeHeadingCell = function(fieldNum, fieldName) {
+    // printMessage('columnNum ' + fieldNum);
     var headingCell = document.createElement('th');
     headingCell.setAttribute('class', 'results');
     headingCell.appendChild(document.createTextNode(ucFirstAll(fieldName)));
-    headingCell.columnNum = this.columnNum;
     headingCell.onclick = function(evt) {
-      // printMessage('heading ' + headingCell.columnNum + ' clicked');
-        sortResults(headingCell.columnNum);
+      evt = getEventSource(evt);
+      // printMessage('makeHeadingCell: heading ' + fieldNum + ' clicked');
+      sortResults(fieldNum);
     }
-    this.columnNum++;
     return headingCell;
   };
 
@@ -85,10 +88,12 @@ function SortedTable() {
       this.table.appendChild(this.headingRow);
     }
     var args = new Array();
+    args[0] = 0;
     iter.forAll(function(myargs) {
-      var fieldName = myargs[0];
-      var headingCell = self.makeHeadingCell(fieldName);
+      var fieldName = myargs[1];
+      var headingCell = self.makeHeadingCell(myargs[0], fieldName);
       self.headingRow.appendChild(headingCell);
+      myargs[0]++;
     }, args);
   };
 
@@ -183,9 +188,9 @@ this.insertRowSorted = function(row) {
 
 */
 
-this.sortTable = function() {
+this.tableToArray = function() {
   var rows = this.table.getElementsByTagName('tr');
-  this.dataRows = new Array();
+  var data = new Array();
   var r;
   var i;
   this.headingRow = null;
@@ -197,9 +202,15 @@ this.sortTable = function() {
       }
       this.headingRow = rows[r];
     } else {
+      data[i] = new Array();
       var tds = rows[r].getElementsByTagName('td');
       if (tds && tds.length) {
-	this.dataRows[i++] = rows[r];
+        var t;
+        for (t = 0; t < tds.length; t++) {
+	  var textNode = findChildByType(tds[t], 3);
+          data[i][t] = textNode.nodeValue;
+        }
+        i++;
       } else {
         printMessage('sortTable: unexpected row:');
 	printNode(rows[r]);
@@ -207,24 +218,48 @@ this.sortTable = function() {
       }
     }
   }
-  for (i = 0; i < this.dataRows.length; i++) {
-    this.table.removeChild(this.dataRows[i]);
+  return data;
+};
+
+this.getSortColumnName = function() {
+  var cells = this.headingRow.getElementsByTagName('th');
+  var cell = cells[this.sortColumnNum];
+  var textNode = findChildByType(cell, 3);
+  return textNode.nodeValue;
+};
+
+this.arrayToTable = function(data) {
+  if (data.length != this.dataRows.length) {
+    fatal('Arrays not same size');
   }
-  this.table.removeChild(this.headingRow);
-  this.dataRows.sort(this.compareRows);
-  // printMessage('sortTable: should be empty:');
-  // printNode(document.getElementById('resultstable'));
-  this.table.appendChild(this.headingRow);
-  for (i = 0; i < this.dataRows.length; i++) {
-    var oddEven = (i % 2) ? 'results_odd' : 'results_even';
-    var cells = this.dataRows[i].getElementsByTagName('td');
+  var i;
+  for (i = 0; i < data.length; i++) {
+    var arr = data[i];
+    var tds = this.dataRows[i].getElementsByTagName('td');
     var j;
-    for (j = 0; j < cells.length; j++) {
-      cells[j].setAttribute('class', oddEven);
+    for (j = 0; j < arr.length; j++) {
+      var cell = tds[j];
+      var textNode = findChildByType(cell, 3);
+      textNode.nodeValue = arr[j];
     }
-    this.table.appendChild(this.dataRows[i]);
   }
-  // printNode(document.getElementById('resultstable'));
+};
+
+this.compareArrays = function(arr1, arr2) {
+  // printMessage('compareArrays:');
+  if (arr1.length != arr2.length) {
+    printMessage('Arrays different sizes');
+    throw 'Arrays different sizes';
+  }
+  var val1 = arr1[self.sortColumnNum];
+  var val2 = arr2[self.sortColumnNum];
+  return compareValues(val1, val2);
+}
+
+this.sortTable = function() {
+  var data = this.tableToArray();
+  data.sort(this.compareArrays);
+  this.arrayToTable(data);
 };
 
 }

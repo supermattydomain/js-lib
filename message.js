@@ -57,3 +57,38 @@ function printNode(node) {
   tag = '</' + node.nodeName + '>';
   printMessage(tag);
 }
+function getEventSource(e) {
+  if (!e) {
+    e = window.event;
+  }
+  if (e.srcElement) {
+    return e.srcElement;
+  } else if (e.target) {
+    return e.target;
+  }
+  throw 'Cannot find event target';
+}
+function findChildByType(node, type) {
+  if (null == node || undefined == node) {
+    return null;
+  }
+  if (node.nodeType == type) {
+    return node;
+  }
+  if (!node.hasChildNodes()) {
+    return null;
+  }
+  node = node.firstChild;
+  while (node != null && node != undefined) {
+    var child = findChildByType(node, type);
+    if (null != child) {
+      return child;
+    }
+    node = node.nextSibling;
+  }
+  return null;
+}
+function fatal(msg) {
+  printMessage(msg);
+  throw msg;
+}
