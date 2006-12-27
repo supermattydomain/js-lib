@@ -4,9 +4,8 @@ function SortedTable() {
   this.table.setAttribute('class', 'results');
   this.table.setAttribute('id', 'resultstable');
   this.headingRow = null;
-  this.dataRows = new Array();
   var self = this;
-  // printNode(this.table);
+
   this.getTable = function() {
     return this.table;
   };
@@ -20,13 +19,15 @@ function SortedTable() {
   };
 
   this.makeCell = function(value) {
+    // printMessage('makeCell');
     var tableCell = document.createElement('td');
-    if (this.dataRows.length % 2) {
+    if (this.table.rows.length % 2) {
       tableCell.setAttribute('class', 'results_odd');
     } else {
       tableCell.setAttribute('class', 'results_even');
     }
     if ('' == value) {
+      // FIXME: don't know how to do this using a textNode
       tableCell.innerHTML = '&nbsp;';
     } else {
       tableCell.appendChild(document.createTextNode(value));
@@ -34,8 +35,8 @@ function SortedTable() {
     return tableCell;
   };
 
-  this.makeRow = function(iter) {
-    // printMessage('makeRow');
+  this.addRow = function(iter) {
+    // printMessage('addRow');
     var tableRow = this.table.insertRow(this.table.rows.length);
     tableRow.setAttribute('class', 'results');
     var args = new Array();
@@ -46,14 +47,9 @@ function SortedTable() {
       var value = myargs[1];
       var tableCell = self.makeCell(value);
       tableRow.appendChild(tableCell);
+      // printMessage('Added table cell');
     }, args);
-    return tableRow;
-  };
-
-  this.addRow = function(iter) {
-    // printMessage('addRow');
-    var tableRow = this.makeRow(iter);
-    this.dataRows.push(tableRow);
+    // printNode(tableRow);
   };
 
   this.makeHeadingCell = function(fieldNum, fieldName) {
@@ -106,8 +102,8 @@ this.compareRows = function(row1, row2) {
 
 this.findInsertIndex = function(row) {
   var i;
-  for (i = 0; i < this.dataRows.length; i++) {
-    var node = this.dataRows[i];
+  for (i = 0; i < this.table.rows.length; i++) {
+    var node = this.table.rows[i];
     if (1 != node.nodeType) {
       continue;
     } else if ('tr' != node.nodeName.toLowerCase()) {
@@ -124,8 +120,8 @@ this.findInsertIndex = function(row) {
 
 this.findIndex = function(row) {
   var index;
-  for (index = 0; index < this.dataRows.length; pos++) {
-    var node = this.dataRows[index];
+  for (index = 0; index < this.table.rows.length; pos++) {
+    var node = this.table.rows[index];
     if (1 != node.nodeType) {
       continue;
     } else if ('tr' != node.getNodeName()) {
@@ -139,33 +135,25 @@ this.findIndex = function(row) {
   return null;
 };
 
-this.removeIndex = function(index) {
-  this.table.removeRow(index);
-};
-
-this.insertRowSorted = function(iter) {
-  var index;
-  index = this.findInsertIndex(index);
-  var row = this.makeRow(iter);
-  this.insertBefore(index, row);
-};
+  this.removeIndex = function(index) {
+    this.table.removeRow(index);
+  };
 
 this.tableToArray = function() {
-  var rows = this.table.getElementsByTagName('tr');
   var data = new Array();
   var r;
   var i;
   this.headingRow = null;
-  for (i = r = 0; r < rows.length; r++) {
-    var ths = rows[r].getElementsByTagName('th');
+  for (i = r = 0; r < this.table.rows.length; r++) {
+    var ths = this.table.rows[r].getElementsByTagName('th');
     if (ths && ths.length) {
       if (this.headingRow != null) {
 	throw 'Duplicate heading rows';
       }
-      this.headingRow = rows[r];
+      this.headingRow = this.table.rows[r];
     } else {
       data[i] = new Array();
-      var tds = rows[r].getElementsByTagName('td');
+      var tds = this.table.rows[r].getElementsByTagName('td');
       if (tds && tds.length) {
         var t;
         for (t = 0; t < tds.length; t++) {
@@ -175,7 +163,7 @@ this.tableToArray = function() {
         i++;
       } else {
         printMessage('sortTable: unexpected row:');
-	printNode(rows[r]);
+	printNode(this.table.rows[r]);
 	throw 'Unexpected table row';
       }
     }
@@ -194,27 +182,32 @@ this.getSortColumnName = function() {
 };
 
 this.arrayToTable = function(data) {
-  if (data.length != this.dataRows.length) {
-    fatal('Arrays not same size');
+  if (data.length != this.table.rows.length - 1) {
+    fatal('Arrays not same size ' + data.length + '/' + this.table.rows.length);
   }
+  var r;
   var i;
-  for (i = 0; i < data.length; i++) {
+  for (i = r = 0; r < this.table.rows.length; r++) {
+    var row = this.table.rows[r];
+    if (row == this.headingRow) {
+      continue;
+    }
     var arr = data[i];
-    var tds = this.dataRows[i].getElementsByTagName('td');
+    var tds = row.getElementsByTagName('td');
     var j;
     for (j = 0; j < arr.length; j++) {
       var cell = tds[j];
       var textNode = findChildByType(cell, 3);
       textNode.nodeValue = arr[j];
     }
+    i++;
   }
 };
 
 this.compareArrays = function(arr1, arr2) {
   // printMessage('compareArrays:');
   if (arr1.length != arr2.length) {
-    printMessage('Arrays different sizes');
-    throw 'Arrays different sizes';
+    fatal('Arrays different sizes');
   }
   var val1 = arr1[self.sortColumnNum];
   var val2 = arr2[self.sortColumnNum];
@@ -231,12 +224,6 @@ this.compareArrays = function(arr1, arr2) {
   };
 
   this.emptyTable = function() {
-    var i;
-    for (i = 0; i < this.dataRows.length; i++) {
-      delete this.dataRows[i];
-      this.dataRows[i] = null;
-    }
-    this.dataRows = new Array();
     while (this.table.rows.length > 1) {
       if (this.headingRow == this.table.rows[0]) {
 	this.table.deleteRow(1);
