@@ -12,9 +12,15 @@ function DBSchema() {
     self.database = self.xmlDoc.getElementsByTagName('database');
     self.tables = self.xmlDoc.getElementsByTagName('table');
     showStatus('Schema loaded.');
+    if (!self.externalCallbackFn) {
+      fatal('DBSchema: No external callback');
+    }
     self.externalCallbackFn(self);
   };
   this.fetchSchema = function(externalCallback) {
+    if (!externalCallback) {
+      fatal('DBSchema: Bad external callback');
+    }
     this.externalCallbackFn = externalCallback;
     this.ajax = new Ajax(this.url, this.dataCallbackFn);
     if (null == this.ajax) {

@@ -29,11 +29,14 @@ function ArrayIter(array) {
   this.getIndex = function() {
     return this.iterIndex;
   };
+  this.reset = function() {
+    this.iterIndex = 0;
+  };
 }
 
 function ChildIter(node) {
   this.iterNode = node;
-  this.currentChild = null;
+  this.currentChild = node.firstChild;
   this.iterIndex = 0;
   this.getCount = function() {
     if (this.iterNode.hasChildNodes()) {
@@ -58,6 +61,10 @@ function ChildIter(node) {
   };
   this.getIndex = function() {
     return this.iterIndex;
+  };
+  this.reset = function() {
+    this.currentChild = this.iterNode.firstChild;
+    this.iterIndex = 0;
   };
 }
 

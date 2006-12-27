@@ -29,10 +29,11 @@ function Ajax(url, requestDoneCallback) {
     return true;
   };
   this.getResponseXML = function() {
-    if (this.error || null == this.req) {
-      printMessage('AJAX: No XML response available due to request error');
+    if (this.error) {
+      fatal('AJAX: No XML response available due to request error');
+    } else if (!this.req) {
       return null;
-    } else if (null == this.req.responseXML || undefined == this.req.responseXML) {
+    } else if (!this.req.responseXML) {
       printMessage('AJAX: No XML response returned');
       printMessage(this.req.responseText);
       return null;

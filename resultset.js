@@ -12,9 +12,15 @@ function ResultSet(url) {
     self.resultSet = resultSets[0];
     // printNode(self.resultSet);
     showStatus('Finished retrieving search results.');
+    if (!self.externalCallbackFn) {
+      fatal('ResultSet: No loaded callback');
+    }
     self.externalCallbackFn(self);
   };
   this.fetchResults = function(externalCallback) {
+    if (!externalCallback) {
+      fatal('Bad loaded callback');
+    }
     this.externalCallbackFn = externalCallback;
     this.ajax = new Ajax(self.url, this.dataCallbackFn);
     if (null == this.ajax) {
