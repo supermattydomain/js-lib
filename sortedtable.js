@@ -24,15 +24,14 @@ this.findInsertIndex = function(iter) {
     if (this.headingRow == row) {
       continue;
     }
-    var tds = row.getElementsByTagName('td');
     var j;
     iter.reset();
-    for (j = 0; j < tds.length; j++) {
+    for (j = 0; j < row.cells.length; j++) {
       if (j != this.sortColumnNum) {
         continue;
       }
       var value = iter.getNext();
-      var textNode = findChildByType(tds[j], 3);
+      var textNode = findChildByType(row.cells[j], 3);
       if (compareValues(value, textNode.nodeValue) >= 0) {
         return i;
       }
@@ -116,19 +115,13 @@ this.findInsertIndex = function(iter) {
 
 this.compareRows = function(row1, row2) {
   // printMessage('compareRows:');
-  // printMessage('node1:');
-  // printNode(row1);
-  // printMessage('node2:');
-  // printNode(row2);
-  var cells1 = row1.getElementsByTagName('td');
-  var cells2 = row2.getElementsByTagName('td');
-  if (null == cells1 || undefined == cells1 || cells1.length <= self.sortColumnNum) {
-    throw 'compareRows: no td cells in comparison row 1';
+  if (row1.cells.length <= self.sortColumnNum) {
+    fatal('compareRows: unsufficient td cells in comparison row 1');
   }
-  if (null == cells2 || undefined == cells2 || cells2.length <= self.sortColumnNum) {
-    throw 'compareRows: no td cells in comparison row 2';
+  if (row2.cells.length <= self.sortColumnNum) {
+    fatal('compareRows: unsufficient td cells in comparison row 2');
   }
-  var ret = compareCells(cells1[self.sortColumnNum], cells2[self.sortColumnNum]);
+  var ret = compareCells(row1.cells[self.sortColumnNum], row2.cells[self.sortColumnNum]);
   // printMessage('compareRows: returning ' + ret);
   return ret;
 };
@@ -161,26 +154,24 @@ this.tableToArray = function() {
   var i;
   this.headingRow = null;
   for (i = r = 0; r < this.table.rows.length; r++) {
-    var ths = this.table.rows[r].getElementsByTagName('th');
+    var row = this.table.rows[r];
+    var ths = row.getElementsByTagName('th');
     if (ths && ths.length) {
       if (this.headingRow != null) {
 	throw 'Duplicate heading rows';
       }
-      this.headingRow = this.table.rows[r];
-    } else {
+      this.headingRow = row;
+    } else if (row.cells.length) {
       data[i] = new Array();
-      var tds = this.table.rows[r].getElementsByTagName('td');
-      if (tds && tds.length) {
-        var t;
-        for (t = 0; t < tds.length; t++) {
-	  var textNode = findChildByType(tds[t], 3);
-          data[i][t] = textNode.nodeValue;
-        }
-        i++;
-      } else {
-	printNode(this.table.rows[r]);
-	fatal('SortedTable.sortTable: Unexpected table row');
+      var t;
+      for (t = 0; t < row.cells.length; t++) {
+	var textNode = findChildByType(row.cells[t], 3);
+        data[i][t] = textNode.nodeValue;
       }
+      i++;
+    } else {
+      printNode(row);
+      fatal('SortedTable.sortTable: Unexpected table row');
     }
   }
   return data;
