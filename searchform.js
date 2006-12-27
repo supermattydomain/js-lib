@@ -11,7 +11,13 @@ function SearchForm() {
     'is greater than or equal to',
     'is similar to'
   );
-  this.searchForm = document.getElementById('searchform');
+  this.searchForm = document.createElement('form');
+  this.searchForm.setAttribute('id', 'searchform');
+  this.searchForm.method = 'GET';
+  this.searchForm.action = 'search.cgi';
+  this.getForm = function() {
+    return this.searchForm;
+  };
   var self = this;
   this.schema = null;
   this.table = null;

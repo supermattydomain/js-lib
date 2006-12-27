@@ -87,10 +87,18 @@ function Ajax(url, requestDoneCallback) {
     }
     */
     if (4 == self.req.readyState) {
-      if (self.req.status && self.isSuccessfulStatus(self.req.status)) {
+      var status;
+      try {
+	status = self.req.status;
+	statusText = self.req.statusText;
+      } catch (e) {
+	status = null;
+	statusText = null;
+      }
+      if (status && self.isSuccessfulStatus(status)) {
         self.requestDoneCallback(self);
       } else {
-        printMessage('AJAX: ' + self.req.status + ' ' + self.req.statusText + ' for URL ' + self.url);
+        printMessage('AJAX: ' + status + ' ' + self.req.statusText + ' for URL ' + self.url);
         self.error = true;
       }
     }
