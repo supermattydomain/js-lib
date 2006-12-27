@@ -1,5 +1,5 @@
 function SortedTable() {
-  this.sortColumnNum = 0;
+  this.sortColumnNum = -1;
   this.table = document.createElement('table');
   this.table.setAttribute('class', 'results');
   this.table.setAttribute('id', 'resultstable');
@@ -184,6 +184,9 @@ this.tableToArray = function() {
 };
 
 this.getSortColumnName = function() {
+  if (this.sortColumnNum < 0) {
+    return 'None';
+  }
   var cells = this.headingRow.getElementsByTagName('th');
   var cell = cells[this.sortColumnNum];
   var textNode = findChildByType(cell, 3);
@@ -216,13 +219,16 @@ this.compareArrays = function(arr1, arr2) {
   var val1 = arr1[self.sortColumnNum];
   var val2 = arr2[self.sortColumnNum];
   return compareValues(val1, val2);
-}
-
-this.sortTable = function() {
-  var data = this.tableToArray();
-  data.sort(this.compareArrays);
-  this.arrayToTable(data);
 };
+
+  this.sortTable = function() {
+    if (this.sortColumnNum < 0) {
+      return;
+    }
+    var data = this.tableToArray();
+    data.sort(this.compareArrays);
+    this.arrayToTable(data);
+  };
 
   this.emptyTable = function() {
     var i;
