@@ -21,9 +21,9 @@ function compareCells(cell1, cell2) {
 }
 
 function sortResults(columnNum) {
-  resultsTable.setSortColumn(columnNum);
-  var colName = resultsTable.getSortColumnName();
+  results.setSortColumn(columnNum);
+  var colName = results.getSortColumnName();
   showStatus('Sorting results by ' + colName + '...');
-  resultsTable.sortTable();
+  results.sortTable();
   showStatus('Results sorted by ' + colName + '.');
 };

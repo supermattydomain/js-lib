@@ -20,7 +20,7 @@ function onTestSearchButton() {
 search.testSearchButton.onclick = onTestSearchButton;
 
 function onResetButton() {
-  resultsTable.emptyTable();
+  results.emptyTable();
 }
 search.resetButton.onclick = onResetButton;
 
@@ -32,5 +32,5 @@ search.searchForm.onsubmit = function() {
 document.getElementById('searchdiv').appendChild(search.getForm());
 
 var resultsDiv = document.getElementById('resultsdiv');
-var resultsTable = new SortedTable();
-resultsDiv.appendChild(resultsTable.getTable());
+var results = new ResultsTable();
+resultsDiv.appendChild(results.getTable());

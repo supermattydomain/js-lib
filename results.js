@@ -11,10 +11,10 @@ var onResultSetLoaded = function(resultSet) {
     if (!myargs[0]) {
       myargs[0] = true;
       iter = new AttributeNameIter(resultRecord);
-      resultsTable.addColumnHeadings(iter);
+      results.addColumnHeadings(iter);
     }
     iter = new AttributeValueIter(resultRecord);
-    resultsTable.addRow(iter);
+    results.addRow(iter);
   }, args);
   showStatus(resultSet.getNumResults() + ' results displayed.');
 };
