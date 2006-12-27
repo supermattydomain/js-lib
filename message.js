@@ -13,6 +13,11 @@ function printMessage(str) {
   output.appendChild(document.createElement('br'));
 }
 
+function fatal(msg) {
+  printMessage(msg);
+  throw msg;
+}
+
 function showStatus(str) {
   var status = document.getElementById('status');
   if (null == status) {
@@ -57,6 +62,7 @@ function printNode(node) {
   tag = '</' + node.nodeName + '>';
   printMessage(tag);
 }
+
 function getEventSource(e) {
   if (!e) {
     e = window.event;
@@ -68,6 +74,7 @@ function getEventSource(e) {
   }
   throw 'Cannot find event target';
 }
+
 function findChildByType(node, type) {
   if (null == node || undefined == node) {
     return null;
@@ -88,7 +95,8 @@ function findChildByType(node, type) {
   }
   return null;
 }
-function fatal(msg) {
-  printMessage(msg);
-  throw msg;
+
+function setClass(node, className) {
+  node.setAttribute('class', className);
+  node.className = className;
 }

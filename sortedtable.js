@@ -2,7 +2,7 @@ function SortedTable() {
 
   this.sortColumnNum = -1;
   this.table = document.createElement('table');
-  this.table.setAttribute('class', 'results');
+  setClass(this.table, 'results');
   this.table.setAttribute('id', 'resultstable');
   this.headingRow = null;
   this.sorted = true;
@@ -46,9 +46,9 @@ this.findInsertIndex = function(iter) {
     // printMessage('makeCell');
     var tableCell = document.createElement('td');
     if (this.table.rows.length % 2) {
-      tableCell.setAttribute('class', 'results_odd');
+      setClass(tableCell, 'results_odd');
     } else {
-      tableCell.setAttribute('class', 'results_even');
+      setClass(tableCell, 'results_even');
     }
     if ('' == value) {
       // FIXME: don't know how to do this using a textNode
@@ -68,7 +68,7 @@ this.findInsertIndex = function(iter) {
       index = this.table.rows.length;
     }
     var tableRow = this.table.insertRow(index);
-    tableRow.setAttribute('class', 'results');
+    setClass(tableRow, 'results');
     var args = new Array();
     args[0] = tableRow;
     iter.reset();
@@ -86,7 +86,7 @@ this.findInsertIndex = function(iter) {
   this.makeHeadingCell = function(fieldNum, fieldName) {
     // printMessage('columnNum ' + fieldNum);
     var headingCell = document.createElement('th');
-    headingCell.setAttribute('class', 'results');
+    setClass(headingCell, 'results');
     headingCell.appendChild(document.createTextNode(ucFirstAll(fieldName)));
     headingCell.onclick = function(evt) {
       evt = getEventSource(evt);
@@ -102,7 +102,7 @@ this.findInsertIndex = function(iter) {
       return;
     }
     this.headingRow = this.table.insertRow(0);
-    this.headingRow.setAttribute('class', 'results');
+    setClass(this.headingRow, 'results');
     var args = new Array();
     args[0] = 0;
     iter.forAll(function(myargs) {
@@ -257,10 +257,9 @@ this.compareArrays = function(arr1, arr2) {
 	continue;
       }
       var oddeven = (even) ? 'even' : 'odd';
-      var tds = row.getAttributesByTagName('td');
       var j;
-      for (j = 0; j < tds.length; j++) {
-	tds[j].setAttribute('class', 'results_' + oddeven);
+      for (j = 0; j < row.cells.length; j++) {
+        setClass(row.cells[j], 'results_' + oddeven);
       }
       even = !even;
     }
