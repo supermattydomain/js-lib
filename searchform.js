@@ -38,9 +38,9 @@ function SearchForm() {
     var criterion = new SearchCriterion(this.criteria.length, this.schema, this.table, this.operations);
     this.criteria.push(criterion);
     this.searchForm.appendChild(criterion.getDiv());
-    document.getElementById('fewerButton').disabled = false;
+    this.fewerButton.disabled = false;
     if (this.criteria.length >= this.maxCriteria) {
-	document.getElementById('moreButton').disabled = true;
+	this.moreButton.disabled = true;
     }
   };
   this.removeCriterion = function() {
@@ -50,11 +50,36 @@ function SearchForm() {
     var criterion = this.criteria.pop();
     this.searchForm.removeChild(criterion.getDiv());
     delete criterion;
-    document.getElementById('moreButton').disabled = false;
+    this.moreButton.disabled = false;
     if (this.criteria.length < 1) {
-	document.getElementById('fewerButton').disabled = true;
+	this.fewerButton.disabled = true;
     }
   };
+  self.makeButton = function(name, label) {
+    button = document.createElement('input');
+    button.setAttribute('id', name + 'Button');
+    button.setAttribute('type', 'button');
+    button.setAttribute('name', name);
+    button.setAttribute('value', label);
+    return button;
+  };
+  this.addButtons = function() {
+    this.moreButton = this.makeButton('more', 'More choices');
+    this.fewerButton = this.makeButton('fewer', 'Fewer choices');
+    this.searchButton = this.makeButton('search', 'Search');
+    this.testSearchButton = this.makeButton('testSearch', 'Example search');
+    this.resetButton = this.makeButton('reset', 'Reset');
+    this.moreButton.disabled = true;
+    this.fewerButton.disabled = true;
+    this.searchButton.disabled = true;
+    this.testSearchButton.disabled = true;
+    this.resetButton.disabled = true;
+    this.searchForm.appendChild(this.moreButton);
+    this.searchForm.appendChild(this.fewerButton);
+    this.searchForm.appendChild(this.resetButton);
+    this.searchForm.appendChild(this.testSearchButton);
+    this.searchForm.appendChild(this.searchButton);
+  }
   this.populate = function(schema) {
     this.table = null;
     var args = new Array();
@@ -70,13 +95,15 @@ function SearchForm() {
       printMessage('Cannot find table ' + self.tableName);
     } else {
       // printMessage('searchform: found table ' + self.tableName);
-      document.getElementById('moreButton').disabled = false;
+      self.moreButton.disabled = false;
       self.addCriterion();
+      self.resetButton.disabled = false;
+      self.testSearchButton.disabled = false;
+      self.searchButton.disabled = false;
       showStatus('Ready.');
     }
   };
-  document.getElementById('moreButton').disabled = true;
-  document.getElementById('fewerButton').disabled = true;
   this.schema = new DBSchema();
+  self.addButtons();
   this.schema.fetchSchema(this.populate);
 }
