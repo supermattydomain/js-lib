@@ -1,21 +1,14 @@
 function SortedTable() {
   this.sortColumnNum = 0;
-  this.realTable = document.createElement('table');
-  this.realTable.setAttribute('class', 'results');
-  this.realTable.setAttribute('id', 'resultstable');
+  this.table = document.createElement('table');
+  this.table.setAttribute('class', 'results');
+  this.table.setAttribute('id', 'resultstable');
   this.headingRow = null;
   this.dataRows = new Array();
   var self = this;
-  var tableBodies = this.realTable.getElementsByTagName('tbody');
-  if (tableBodies && tableBodies.length) {
-    this.table = tableBodies[0];
-  } else {
-    // printNode(realTable);
-    this.table = this.realTable;
-  }
   // printNode(this.table);
   this.getTable = function() {
-    return this.realTable;
+    return this.table;
   };
 
   this.setSortColumn = function(colNum) {
@@ -43,7 +36,7 @@ function SortedTable() {
 
   this.makeRow = function(iter) {
     // printMessage('makeRow');
-    var tableRow = this.realTable.insertRow(this.realTable.rows.length);
+    var tableRow = this.table.insertRow(this.table.rows.length);
     tableRow.setAttribute('class', 'results');
     var args = new Array();
     args[0] = tableRow;
@@ -80,7 +73,7 @@ function SortedTable() {
     if (this.headingRow) {
       return;
     }
-    this.headingRow = this.realTable.insertRow(0);
+    this.headingRow = this.table.insertRow(0);
     this.headingRow.setAttribute('class', 'results');
     var args = new Array();
     args[0] = 0;
@@ -147,7 +140,7 @@ this.findIndex = function(row) {
 };
 
 this.removeIndex = function(index) {
-  this.realTable.removeRow(index);
+  this.table.removeRow(index);
 };
 
 this.insertRowSorted = function(iter) {
@@ -238,12 +231,33 @@ this.sortTable = function() {
       this.dataRows[i] = null;
     }
     this.dataRows = new Array();
-    while (this.realTable.rows.length > 1) {
-      if (this.headingRow == this.realTable.rows[0]) {
-	this.realTable.deleteRow(1);
+    while (this.table.rows.length > 1) {
+      if (this.headingRow == this.table.rows[0]) {
+	this.table.deleteRow(1);
       } else {
-	this.realTable.deleteRow(0);
+	this.table.deleteRow(0);
       }
+    }
+    if (this.table.rows.length && this.headingRow != this.table.rows[0]) {
+      this.table.deleteRow(0);
+    }
+  };
+
+  this.updateRowStyles = function() {
+    var even = true;
+    var i;
+    for (i = 0; i < this.table.rows.length; i++) {
+      var row = this.table.rows[i];
+      if (this.headingRow == row) {
+	continue;
+      }
+      var oddeven = (even) ? 'even' : 'odd';
+      var tds = row.getAttributesByTagName('td');
+      var j;
+      for (j = 0; j < tds.length; j++) {
+	tds[j].setAttribute('class', 'results_' + oddeven);
+      }
+      even = !even;
     }
   };
 
