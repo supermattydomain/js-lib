@@ -6,6 +6,8 @@ function MyTable() {
   this.table.setAttribute('id', 'resultstable');
   this.headingRow = null;
 
+  var self = this;
+
   this.getTable = function() {
     return this.table;
   };
@@ -32,6 +34,28 @@ function MyTable() {
       setClass(tableCell, tableCell.oldClassName);
     };
     return tableCell;
+  };
+
+  this.addRowIndex = function(iter, index) {
+    // printMessage('addRow');
+    var tableRow = this.table.insertRow(index);
+    setClass(tableRow, 'results');
+    var args = new Array();
+    args[0] = tableRow;
+    iter.reset();
+    iter.forAll(function(myargs) {
+      // printMessage('Got field');
+      var tableRow = myargs[0];
+      var value = myargs[1];
+      var tableCell = self.makeCell(value);
+      tableRow.appendChild(tableCell);
+      // printMessage('Added table cell');
+    }, args);
+    // printNode(tableRow);
+  };
+
+  this.addRow = function(iter) {
+    this.addRowIndex(iter, this.table.rows.length);
   };
 
   this.removeRowIndex = function(index) {
@@ -109,30 +133,6 @@ this.findInsertIndex = function(iter) {
   // printMessage('findInsertIndex: ' + i);
   return i;
 };
-
-  this.addRow = function(iter) {
-    // printMessage('addRow');
-    var index;
-    if (this.sortColumnNum > 0) {
-      index = this.findInsertIndex(iter);
-    } else {
-      index = this.table.rows.length;
-    }
-    var tableRow = this.table.insertRow(index);
-    setClass(tableRow, 'results');
-    var args = new Array();
-    args[0] = tableRow;
-    iter.reset();
-    iter.forAll(function(myargs) {
-      // printMessage('Got field');
-      var tableRow = myargs[0];
-      var value = myargs[1];
-      var tableCell = self.makeCell(value);
-      tableRow.appendChild(tableCell);
-      // printMessage('Added table cell');
-    }, args);
-    // printNode(tableRow);
-  };
 
   this.makeHeadingCell = function(fieldNum, fieldName) {
     // printMessage('columnNum ' + fieldNum);
@@ -288,6 +288,16 @@ this.compareArrays = function(arr1, arr2) {
     } else if (this.sorted && this.sortColumnNum >= 0 && columnNum < this.sortColumnNum) {
       this.sortColumnNum--;
     }
+  };
+
+  this.addRow = function(iter) {
+    var index;
+    if (this.sortColumnNum > 0 && this.sorted) {
+      index = this.findInsertIndex(iter);
+    } else {
+      index = this.table.rows.length;
+    }
+    this.addRowIndex(iter, index);
   };
 
 }
