@@ -214,8 +214,7 @@ this.getSortColumnName = function() {
   if (this.sortColumnNum < 0) {
     return 'None';
   }
-  var cells = this.headingRow.getElementsByTagName('th');
-  var cell = cells[this.sortColumnNum];
+  var cell = this.headingRow.cells[this.sortColumnNum];
   var textNode = findChildByType(cell, 3);
   return textNode.nodeValue;
 };
