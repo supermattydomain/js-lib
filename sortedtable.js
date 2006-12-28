@@ -143,23 +143,6 @@ this.compareRows = function(row1, row2) {
   return ret;
 };
 
-this.findIndex = function(row) {
-  var index;
-  for (index = 0; index < this.table.rows.length; index++) {
-    var node = this.table.rows[index];
-    if (1 != node.nodeType) {
-      continue;
-    } else if ('tr' != node.getNodeName()) {
-      continue;
-    }	
-    if (row == node) {
-      return index;
-    }
-  }
-  throw 'Existing row not found';
-  return null;
-};
-
   this.removeIndex = function(index) {
     this.table.removeRow(index);
     this.sorted = false;
@@ -279,6 +262,19 @@ this.compareArrays = function(arr1, arr2) {
         setClass(row.cells[j], 'results_' + oddeven);
       }
       even = !even;
+    }
+  };
+
+  this.removeColumn = function(columnNum) {
+    var i;
+    for (i = 0; i < this.table.rows.lenght; i++) {
+      this.table.rows[i].deleteCell(columnNum);
+    }
+    if (this.sortColumnNum == columnNum) {
+      this.sortColumnNum = -1;
+      this.sorted = false;
+    } else if (this.sorted && this.sortColumnNum >= 0 && columnNum < this.sortColumnNum) {
+      this.sortColumnNum--;
     }
   };
 
