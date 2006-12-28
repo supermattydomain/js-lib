@@ -115,7 +115,7 @@ this.findInsertIndex = function(iter) {
 
   this.addColumnHeadings = function(iter) {
     // printMessage('addColumnHeadings');
-    if (this.headingRow != null) {
+    if (this.headingRow) {
       return;
     }
     this.headingRow = this.table.insertRow(0);
