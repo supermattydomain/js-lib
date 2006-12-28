@@ -38,11 +38,28 @@ function MySelect(controlName) {
   };
 }
 
+function MySelectOptionIter(controlName, optionNameIter, optionValueIter) {
+  this.base = MySelect;
+  this.base(controlName);
+  this.select.viewObject = this;
+  this.addOptionsIter(optionNameIter, optionValueIter);
+}
+MySelectOptionIter.prototype = new MySelect;
+
+function MySelectOptionArray(controlName, optionNames, optionValues) {
+  this.base = MySelect;
+  this.base(controlName);
+  this.select.viewObject = this;
+  this.addOptionsArray(optionNames, optionValues);
+}
+MySelectOptionArray.prototype = new MySelect;
+
 function FieldSelect(controlName, schema, table) {
   this.schema = schema;
   this.table = table;
   this.base = MySelect;
   this.base(controlName);
+  this.select.viewObject = this;
   var self = this;
   this.addOptions = function(schema, table) {
     // printMessage('In FieldSelect.addOptions');
