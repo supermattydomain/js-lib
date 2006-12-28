@@ -34,6 +34,7 @@ function SearchForm(tableName) {
     url = 'search.cgi?' + url + '&format=xml';
     // TODO: replace with entry field
     url += '&maxresults=1000';
+    // printMessage('SearchForm: Generated URL ' + url);
     return url;
   };
   this.addCriterion = function() {

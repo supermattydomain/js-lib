@@ -1,7 +1,7 @@
-function SearchCriterion(num, schema, table, operations) {
+function SearchCriterion(ident, schema, table, operations) {
   var self = this;
+  this.ident = ident;
   this.div = null;
-  this.criterionNum = num;
   this.fieldSelect = null;
   this.operationSelect = null;
   this.schema = schema;
@@ -11,11 +11,11 @@ function SearchCriterion(num, schema, table, operations) {
   this.populate = function() {
     // printMessage('populate: table = ' + self.tableName + '\n');
     self.div = document.createElement("div");
-    self.div.setAttribute("id", "criterion" + self.criterionNum);
-    self.fieldSelect = new FieldSelect('field' + self.criterionNum, self.schema, self.table);
-    self.operationSelect = new MySelectOptionArray('operation' + self.criterionNum, self.operations, self.operations);
+    self.div.viewObject = self;
+    self.fieldSelect = new FieldSelect('field', self.schema, self.table);
+    self.operationSelect = new MySelectOptionArray('operation', self.operations, self.operations);
     self.valueField = document.createElement("input");
-    self.valueField.setAttribute('name', 'value' + self.criterionNum);
+    self.valueField.setAttribute('name', 'value');
     self.valueField.setAttribute('type', 'text');
     self.div.appendChild(self.fieldSelect.getSelect());
     self.div.appendChild(self.operationSelect.getSelect());
@@ -27,9 +27,9 @@ function SearchCriterion(num, schema, table, operations) {
   };
   this.getURL = function() {
     var url = '';
-    url += this.fieldSelect.getName() + '=' + this.fieldSelect.getValue();
-    url += '&' + this.operationSelect.getName() + '=' + this.operationSelect.getValue();
-    url += '&' + this.valueField.name + '=' + this.valueField.value;
+    url += this.fieldSelect.getName() + this.ident + '=' + this.fieldSelect.getValue();
+    url += '&' + this.operationSelect.getName() + this.ident + '=' + this.operationSelect.getValue();
+    url += '&' + this.valueField.name + this.ident + '=' + this.valueField.value;
     return url;
   }
   this.populate();
