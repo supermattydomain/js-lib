@@ -56,6 +56,13 @@ this.findInsertIndex = function(iter) {
     } else {
       tableCell.appendChild(document.createTextNode(value));
     }
+    tableCell.onmouseover = function(evt) {
+      tableCell.oldClassName = tableCell.className;
+      setClass(tableCell, tableCell.className + '_hover');
+    };
+    tableCell.onmouseout = function(evt) {
+      setClass(tableCell, tableCell.oldClassName);
+    };
     return tableCell;
   };
 
@@ -92,7 +99,17 @@ this.findInsertIndex = function(iter) {
       evt = getEventSource(evt);
       // printMessage('makeHeadingCell: heading ' + fieldNum + ' clicked');
       sortResults(fieldNum);
-    }
+    };
+    headingCell.onmouseover = function(evt) {
+      // printMessage('hover');
+      evt = getEventSource(evt);
+      setClass(headingCell, 'results_hover');
+    };
+    headingCell.onmouseout = function(evt) {
+      // printMessage('hover');
+      evt = getEventSource(evt);
+      setClass(headingCell, 'results');
+    };
     return headingCell;
   };
 
@@ -171,7 +188,7 @@ this.tableToArray = function() {
       i++;
     } else {
       printNode(row);
-      fatal('SortedTable.sortTable: Unexpected table row');
+      fatal('SortedTable.tableToArray: Unexpected table row');
     }
   }
   return data;
