@@ -17,41 +17,29 @@ function SearchCriterion(num, schema, table, operations) {
   this.operations = operations;
   this.tableName = this.schema.getTableName(this.table);
   this.makeSelectOptionIter = function(name, optionNameIter, optionValueIter) {
-    var select = document.createElement("select");
-    select.setAttribute("name", name);
-    while (optionNameIter.hasMore() && optionValueIter.hasMore()) {
-	select.appendChild(makeOption(optionNameIter.getNext(), optionValueIter.getNext()));
-    }
-    return select;
+    var select = new MySelect(name);
+    select.addOptionsIter(optionNameIter, optionValueIter);
+    return select.getSelect();
   };
   this.makeSelectOptionArray = function(name, optionNames, optionValues) {
-    var optionNameIter = new ArrayIter(optionNames);
-    var optionValueIter = new ArrayIter(optionValues);
-    return this.makeSelectOptionIter(name, optionNameIter, optionValueIter);
+    var select = new MySelect(name);
+    select.addOptionsArray(optionNames, optionValues);
+    return select.getSelect();
   };
   this.makeFieldSelectOneTable = function(controlName, schema, table) {
-    var select = document.createElement('select');
-    select.setAttribute("name", controlName);
-    var args = new Array();
-    schema.enumFields(table, function(myargs) {
-      var field = myargs[0];
-      // printMessage('Found field ' + schema.getTableName(table) + '.' + schema.getFieldName(field) + '\n');
-      var label = ucFirst(schema.getFieldName(field));
-      var value = schema.getTableName(table) + '.' + schema.getFieldName(field);
-      select.appendChild(makeOption(label, value));
-    }, args);
-    return select;
+    var select = new FieldSelect(controlName, schema, table);
+    return select.getSelect();
   };
   this.populate = function() {
     // printMessage('populate: table = ' + self.tableName + '\n');
     self.div = document.createElement("div");
     self.div.setAttribute("id", "criterion" + self.criterionNum);
-    self.fieldSelect = self.makeFieldSelectOneTable('field' + self.criterionNum, self.schema, self.table);
+    self.fieldSelect = new FieldSelect('field' + self.criterionNum, self.schema, self.table);
     self.operationSelect = self.makeSelectOptionArray('operation' + self.criterionNum, self.operations, self.operations);
     self.valueField = document.createElement("input");
     self.valueField.setAttribute('name', 'value' + self.criterionNum);
     self.valueField.setAttribute('type', 'text');
-    self.div.appendChild(self.fieldSelect);
+    self.div.appendChild(self.fieldSelect.getSelect());
     self.div.appendChild(self.operationSelect);
     self.div.appendChild(self.valueField);
     // printMessage('done populate: table = ' + self.tableName + '\n');
@@ -61,7 +49,7 @@ function SearchCriterion(num, schema, table, operations) {
   };
   this.getURL = function() {
     var url = '';
-    url += this.fieldSelect.name + '=' + this.fieldSelect.value;
+    url += this.fieldSelect.getName() + '=' + this.fieldSelect.getValue();
     url += '&' + this.operationSelect.name + '=' + this.operationSelect.value;
     url += '&' + this.valueField.name + '=' + this.valueField.value;
     return url;
