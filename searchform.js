@@ -1,4 +1,4 @@
-function SearchForm() {
+function SearchForm(tableName) {
   this.criteria = new Array();
   this.maxCriteria = 20;
   this.operations = new Array(
@@ -21,7 +21,7 @@ function SearchForm() {
   var self = this;
   this.schema = null;
   this.table = null;
-  this.tableName = 'vall';
+  this.tableName = tableName;
   this.getURL = function() {
     var url = '';
     var i;

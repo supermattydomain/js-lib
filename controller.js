@@ -1,6 +1,6 @@
 var search;
 try {
-  search = new SearchForm();
+  search = new SearchForm('vall');
 } catch (e) {
   search = null;
 }
