@@ -13,30 +13,6 @@ function MyTable() {
     return this.table;
   };
 
-  this.makeCell = function(value) {
-    // printMessage('makeCell');
-    var tableCell = document.createElement('td');
-    if (this.table.rows.length % 2) {
-      setClass(tableCell, 'results_odd');
-    } else {
-      setClass(tableCell, 'results_even');
-    }
-    if ('' == value) {
-      // FIXME: don't know how to do this using a textNode
-      tableCell.innerHTML = '&nbsp;';
-    } else {
-      tableCell.appendChild(document.createTextNode(value));
-    }
-    tableCell.onmouseover = function(evt) {
-      tableCell.oldClassName = tableCell.className;
-      setClass(tableCell, tableCell.className + '_hover');
-    };
-    tableCell.onmouseout = function(evt) {
-      setClass(tableCell, tableCell.oldClassName);
-    };
-    return tableCell;
-  };
-
   this.updateRowStyles = function() {
     if (this.rowStylesClean == this.table.rows.length) {
       return;
@@ -60,6 +36,25 @@ function MyTable() {
     this.rowStylesClean = this.table.rows.length;
   };
 
+  this.makeCell = function(contents) {
+    // printMessage('makeCell');
+    var tableCell = document.createElement('td');
+    if (this.table.rows.length % 2) {
+      setClass(tableCell, 'results_odd');
+    } else {
+      setClass(tableCell, 'results_even');
+    }
+    tableCell.appendChild(contents);
+    tableCell.onmouseover = function(evt) {
+      tableCell.oldClassName = tableCell.className;
+      setClass(tableCell, tableCell.className + '_hover');
+    };
+    tableCell.onmouseout = function(evt) {
+      setClass(tableCell, tableCell.oldClassName);
+    };
+    return tableCell;
+  };
+
   this.addRowIndex = function(iter, index) {
     // printMessage('addRow');
     var tableRow = this.table.insertRow(index);
@@ -71,7 +66,15 @@ function MyTable() {
       // printMessage('Got field');
       var tableRow = myargs[0];
       var value = myargs[1];
-      var tableCell = self.makeCell(value);
+      var contents;
+      if ('' == value) {
+        // FIXME: don't know how to do this using a textNode
+        contents = document.createTextNode('');
+        contents.innerHTML = '&nbsp;';
+      } else {
+        contents = document.createTextNode(value);
+      }
+      var tableCell = self.makeCell(contents);
       tableRow.appendChild(tableCell);
       // printMessage('Added table cell');
     }, args);
