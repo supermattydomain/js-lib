@@ -5,6 +5,7 @@ function MyTable() {
   setClass(this.table, 'results');
   this.table.setAttribute('id', 'resultstable');
   this.headingRow = null;
+  this.rowStylesClean = 0;
 
   var self = this;
 
@@ -36,6 +37,29 @@ function MyTable() {
     return tableCell;
   };
 
+  this.updateRowStyles = function() {
+    if (this.rowStylesClean == this.table.rows.length) {
+      return;
+    }
+    var odd = (this.rowStylesClean % 2);
+    if (this.headingRow) {
+      odd = !odd;
+    }
+    var i;
+    for (i = this.rowStylesClean; i < this.table.rows.length; i++) {
+      var row = this.table.rows[i];
+      if (this.headingRow == row) {
+	continue;
+      }
+      var j;
+      for (j = 0; j < row.cells.length; j++) {
+        setClass(row.cells[j], 'results_' + (odd ? 'odd' : 'even'));
+      }
+      odd = !odd;
+    }
+    this.rowStylesClean = this.table.rows.length;
+  };
+
   this.addRowIndex = function(iter, index) {
     // printMessage('addRow');
     var tableRow = this.table.insertRow(index);
@@ -52,6 +76,8 @@ function MyTable() {
       // printMessage('Added table cell');
     }, args);
     // printNode(tableRow);
+    this.rowStylesClean = index;
+    this.updateRowStyles();
   };
 
   this.addRow = function(iter) {
@@ -72,23 +98,6 @@ function MyTable() {
   this.emptyTable = function() {
     while (this.table.rows.length) {
       this.table.deleteRow(0);
-    }
-  };
-
-  this.updateRowStyles = function() {
-    var even = true;
-    var i;
-    for (i = 0; i < this.table.rows.length; i++) {
-      var row = this.table.rows[i];
-      if (this.headingRow == row) {
-	continue;
-      }
-      var oddeven = (even) ? 'even' : 'odd';
-      var j;
-      for (j = 0; j < row.cells.length; j++) {
-        setClass(row.cells[j], 'results_' + oddeven);
-      }
-      even = !even;
     }
   };
 
