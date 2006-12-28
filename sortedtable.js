@@ -67,13 +67,7 @@ function MyTable() {
       var tableRow = myargs[0];
       var value = myargs[1];
       var contents;
-      if ('' == value) {
-        // FIXME: don't know how to do this using a textNode
-        contents = document.createTextNode('');
-        contents.innerHTML = '&nbsp;';
-      } else {
-        contents = document.createTextNode(value);
-      }
+      contents = document.createTextNode(value);
       var tableCell = self.makeCell(contents);
       tableRow.appendChild(tableCell);
       // printMessage('Added table cell');
