@@ -8,6 +8,27 @@ if (!search) {
   fatal('Failed to create search form');
 }
 
+var results;
+try {
+  results = new ResultsTable();
+} catch (e) {
+  results = null;
+}
+if (results == undefined || results == null) {
+  fatal('Failed to create results table');
+}
+
+function doSearch(searchURL) {
+  var resultSet = new ResultSet(searchURL);
+  resultSet.fetchResults(results.loadResultSet);
+}
+
+function doTestSearch() {
+  var testSearchURL = "/musicdb/search.cgi?field0=vall.artist&operation0=contains&value0=Squarepusher&format=xml";
+  var resultSet = new ResultSet(testSearchURL);
+  resultSet.fetchResults(results.loadResultSet);
+}
+
 function onMoreButton() {
   search.addCriterion();
 }
@@ -19,6 +40,7 @@ function onFewerButton() {
 search.fewerButton.onclick = onFewerButton;
 
 function onSearchButton() {
+  // printMessage('onSearchButton');
   doSearch(search.getURL());
 }
 search.searchButton.onclick = onSearchButton;
@@ -40,6 +62,10 @@ search.searchForm.onsubmit = function() {
 
 document.getElementById('searchdiv').appendChild(search.getForm());
 
+
+var resultsDiv = document.getElementById('resultsdiv');
+resultsDiv.appendChild(results.getTable());
+
 function sortResults(columnNum) {
   results.setSortColumn(columnNum);
   var colName = results.getSortColumnName();
@@ -47,26 +73,3 @@ function sortResults(columnNum) {
   results.sortTable();
   showStatus('Results sorted by ' + colName + '.');
 };
-
-var resultsDiv = document.getElementById('resultsdiv');
-var results;
-try {
-  results = new ResultsTable();
-} catch (e) {
-  results = null;
-}
-if (results == undefined || results == null) {
-  fatal('Failed to create results table');
-}
-resultsDiv.appendChild(results.getTable());
-
-function doSearch(searchURL) {
-  var resultSet = new ResultSet(searchURL);
-  resultSet.fetchResults(onResultSetLoaded);
-}
-
-function doTestSearch() {
-  var testSearchURL = "/musicdb/search.cgi?field0=vall.artist&operation0=contains&value0=Squarepusher&format=xml";
-  var resultSet = new ResultSet(testSearchURL);
-  resultSet.fetchResults(results.loadResultSet);
-}
