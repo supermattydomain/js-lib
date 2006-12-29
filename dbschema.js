@@ -9,8 +9,10 @@ function DBSchema() {
   this.dataCallbackFn = function(ajax) {
     self.xmlDoc = ajax.getResponseXML();
     // printMessage("DBSchema: Document child count: " + self.xmlDoc.childNodes.length);
-    self.database = self.xmlDoc.getElementsByTagName('database');
-    self.tables = self.xmlDoc.getElementsByTagName('table');
+    // self.database = self.xmlDoc.getElementsByTagName('database');
+    self.database = self.xmlDoc.firstChild;
+    // self.tables = self.xmlDoc.getElementsByTagName('table');
+    self.tables = self.database.childNodes;
     showStatus('Schema loaded.');
     if (!self.externalCallbackFn) {
       fatal('DBSchema: No external callback');
@@ -34,14 +36,13 @@ function DBSchema() {
     return true;
   };
   this.getNumTables = function() {
-    if (null == this.tables) {
+    if (null == this.database) {
       return 0;
     }
-    return this.tables.length;
+    return this.database.childNodes.length;
   };
   this.getNumFields = function(table) {
-    var fields = table.getElementsByTagName('field');
-    return fields.length;
+    return table.childNodes.length;
   };
   this.getTableName = function(table) {
     return table.getAttribute('name');
@@ -55,17 +56,36 @@ function DBSchema() {
   this.getFieldComment = function(field) {
     return field.getAttribute('comment');
   };
+  this.isFieldNumeric = function(field) {
+    var type = field.getAttribute('type');
+    if (type.indexOf('text') >= 0) {
+      return false;
+    }
+    if (type.indexOf('int') >= 0) {
+      return true;
+    }
+    printMessage('Unsure about type of field ' + this.getFieldName(field));
+    return true;
+  };
+  this.getTableIter = function() {
+    if (null == this.database) {
+      return new ArrayIter(new Array());
+    }
+    return new ChildIter(this.database);
+  };
   this.enumTables = function(tableCallback, args) {
     if (null == this.tables) {
       return 0;
     }
-    var iter = new ArrayIter(this.tables);
+    var iter = this.getTableIter();
     iter.forAll(tableCallback, args);
     return iter.getCount();
   };
+  this.getFieldIter = function(table) {
+    return new ChildIter(table);
+  };
   this.enumFields = function(table, fieldCallback, args) {
-    var fields = table.getElementsByTagName('field');
-    var iter = new ArrayIter(fields);
+    var iter = new ChildIter(table);
     iter.forAll(fieldCallback, args);
     return iter.getCount();
   };
