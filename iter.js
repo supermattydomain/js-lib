@@ -36,7 +36,11 @@ function ArrayIter(array) {
 
 function ChildIter(node) {
   this.iterNode = node;
-  this.currentChild = node.firstChild;
+  if (this.iterNode) {
+    this.currentChild = node.firstChild;
+  } else {
+    this.currentChild = null;
+  }
   this.iterIndex = 0;
   this.getCount = function() {
     if (this.iterNode.hasChildNodes()) {

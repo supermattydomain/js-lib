@@ -1,3 +1,14 @@
+var schema;
+
+try {
+  schema = new DBSchema('schema.xml');
+} catch (e) {
+  schema = null;
+}
+if (!schema) {
+  fatal('Failed to create schema');
+}
+
 var search;
 try {
   search = new SearchForm('vall');
@@ -62,7 +73,6 @@ search.searchForm.onsubmit = function() {
 
 document.getElementById('searchdiv').appendChild(search.getForm());
 
-
 var resultsDiv = document.getElementById('resultsdiv');
 resultsDiv.appendChild(results.getTable());
 
@@ -73,3 +83,5 @@ function sortResults(columnNum) {
   results.sortTable();
   showStatus('Results sorted by ' + colName + '.');
 };
+
+schema.fetchSchema(search.populate);

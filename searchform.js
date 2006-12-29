@@ -1,4 +1,8 @@
 function SearchForm(tableName) {
+  this.searchURLRoot = 'search.cgi?';
+  var self = this;
+  this.tableName = tableName;
+  this.table = null;
   this.criteria = new Array();
   this.maxCriteria = 20;
   this.operations = new Array(
@@ -15,13 +19,14 @@ function SearchForm(tableName) {
   this.searchForm.setAttribute('id', 'searchform');
   this.searchForm.method = 'GET';
   this.searchForm.action = 'search.cgi';
+  this.urlDiv = document.createElement('div');
+  this.urlLink = document.createElement('a');
+  this.urlText = document.createTextNode('');
+  this.urlLink.appendChild(this.urlText);
+  this.urlDiv.appendChild(this.urlLink);
   this.getForm = function() {
     return this.searchForm;
   };
-  var self = this;
-  this.schema = null;
-  this.table = null;
-  this.tableName = tableName;
   this.getURL = function() {
     var url = '';
     var i;
@@ -31,10 +36,12 @@ function SearchForm(tableName) {
       }
       url += this.criteria[i].getURL();
     }
-    url = 'search.cgi?' + url + '&format=xml';
+    url = this.searchURLRoot + url + '&format=xml';
     // TODO: replace with entry field
     url += '&maxresults=1000';
     // printMessage('SearchForm: Generated URL ' + url);
+    this.urlText.nodeValue = url;
+    this.urlLink.setAttribute('href', url);
     return url;
   };
   this.addCriterion = function() {
@@ -42,7 +49,7 @@ function SearchForm(tableName) {
     if (this.criteria.length >= this.maxCriteria) {
 	return;
     }
-    var criterion = new SearchCriterion(this.criteria.length, this.schema, this.table, this.operations);
+    var criterion = new SearchCriterion(this.criteria.length, this.table, this.operations);
     this.criteria.push(criterion);
     this.searchForm.appendChild(criterion.getDiv());
     this.fewerButton.disabled = false;
@@ -62,7 +69,7 @@ function SearchForm(tableName) {
 	this.fewerButton.disabled = true;
     }
   };
-  self.makeButton = function(name, label) {
+  this.makeButton = function(name, label) {
     button = document.createElement('input');
     button.setAttribute('id', name + 'Button');
     button.setAttribute('type', 'button');
@@ -88,11 +95,13 @@ function SearchForm(tableName) {
     this.searchForm.appendChild(this.searchButton);
   }
   this.populate = function(schema) {
+    // printMessage('In SearchForm.populate');
     this.table = null;
     var args = new Array();
     schema.enumTables(function(myargs) {
       var table = myargs[0];
-      var tableName = schema.getTableName(table);
+      // printMessage('searchform: got table ' + table);
+      var tableName = table.getName();
       // printMessage('table = ' + tableName + '\n');
       if (self.tableName == tableName) {
         self.table = table;
@@ -110,7 +119,6 @@ function SearchForm(tableName) {
       showStatus('Ready.');
     }
   };
-  this.schema = new DBSchema();
-  self.addButtons();
-  this.schema.fetchSchema(this.populate);
+  this.searchForm.appendChild(this.urlDiv);
+  this.addButtons();
 }

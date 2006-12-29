@@ -1,18 +1,17 @@
-function SearchCriterion(ident, schema, table, operations) {
+function SearchCriterion(ident, table, operations) {
   var self = this;
   this.ident = ident;
   this.div = null;
   this.fieldSelect = null;
   this.operationSelect = null;
-  this.schema = schema;
   this.table = table;
   this.operations = operations;
-  this.tableName = this.schema.getTableName(this.table);
+  this.tableName = this.table.getName();
   this.populate = function() {
     // printMessage('populate: table = ' + self.tableName + '\n');
     self.div = document.createElement("div");
     self.div.viewObject = self;
-    self.fieldSelect = new FieldSelect('field', self.schema, self.table);
+    self.fieldSelect = new FieldSelect('field', self.table);
     self.operationSelect = new MySelectOptionArray('operation', self.operations, self.operations);
     self.valueField = document.createElement("input");
     self.valueField.setAttribute('name', 'value');

@@ -54,28 +54,23 @@ function MySelectOptionArray(controlName, optionNames, optionValues) {
 }
 MySelectOptionArray.prototype = new MySelect;
 
-function FieldSelect(controlName, schema, table) {
-  this.schema = schema;
+function FieldSelect(controlName, table) {
   this.table = table;
   this.base = MySelect;
   this.base(controlName);
   this.select.viewObject = this;
   var self = this;
-  this.addOptions = function(schema, table) {
-    // printMessage('In FieldSelect.addOptions');
+  this.addOptions = function() {
+    // printMessage('In FieldSelect.addOptions table=' + this.table.getName());
     var args = new Array();
-    args[0] = schema;
-    args[1] = table;
-    schema.enumFields(table, function(myargs) {
-      var schema = myargs[0];
-      var table = myargs[1];
-      var field = myargs[2];
-      // printMessage('FieldSelect: found field ' + schema.getTableName(table) + '.' + schema.getFieldName(field) + '\n');
-      var label = ucFirst(schema.getFieldName(field));
-      var value = schema.getTableName(table) + '.' + schema.getFieldName(field);
+    this.table.enumFields(function(myargs) {
+      var field = myargs[0];
+      // printMessage('FieldSelect: found field ' + self.table.getName() + '.' + field.getName() + '\n');
+      var label = ucFirst(field.getName());
+      var value = self.table.getName() + '.' + field.getName();
       self.addOption(label, value);
     }, args);
   };
-  this.addOptions(this.schema, this.table);
+  this.addOptions();
 }
 FieldSelect.prototype = new MySelect;
