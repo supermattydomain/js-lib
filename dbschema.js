@@ -74,9 +74,6 @@ function DBSchema() {
     return new ChildIter(this.database);
   };
   this.enumTables = function(tableCallback, args) {
-    if (null == this.tables) {
-      return 0;
-    }
     var iter = this.getTableIter();
     iter.forAll(tableCallback, args);
     return iter.getCount();
@@ -85,7 +82,7 @@ function DBSchema() {
     return new ChildIter(table);
   };
   this.enumFields = function(table, fieldCallback, args) {
-    var iter = new ChildIter(table);
+    var iter = this.getFieldIter(table);
     iter.forAll(fieldCallback, args);
     return iter.getCount();
   };
