@@ -8,12 +8,12 @@ function SearchCriterion(ident, table, operations) {
   this.operations = operations;
   this.tableName = this.table.getName();
   this.populate = function() {
-    // printMessage('populate: table = ' + self.tableName + '\n');
+    // printMessage('populate: table = ' + self.table.getName() + '\n');
     self.div = document.createElement("div");
     self.div.viewObject = self;
     self.fieldSelect = new FieldSelect('field', self.table);
     self.operationSelect = new MySelectOptionArray('operation', self.operations, self.operations);
-    self.valueField = document.createElement("input");
+    self.valueField = document.createElement('input');
     self.valueField.setAttribute('name', 'value');
     self.valueField.setAttribute('type', 'text');
     self.div.appendChild(self.fieldSelect.getSelect());
