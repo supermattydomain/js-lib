@@ -1,3 +1,14 @@
+function createFieldDisplay(field) {
+  if (field.name == 'path') {
+    var a = document.createElement('a');
+    var text = document.createTextNode(field.value);
+    a.appendChild(text);
+    a.setAttribute('href', 'edit.cgi?');
+    return a;
+  }
+  return document.createTextNode(field.value);
+}
+
 function MyTable() {
 
   this.table = document.createElement('table');
@@ -65,9 +76,9 @@ function MyTable() {
     iter.forAll(function(myargs) {
       // printMessage('Got field');
       var tableRow = myargs[0];
-      var value = myargs[1];
+      var field = myargs[1];
       var contents;
-      contents = document.createTextNode(value);
+      contents = createFieldDisplay(field);
       var tableCell = self.makeCell(contents);
       tableRow.appendChild(tableCell);
       // printMessage('Added table cell');
@@ -78,6 +89,7 @@ function MyTable() {
   };
 
   this.addRow = function(iter) {
+    // FIXME: Shouldn't this conditionally insert sorted?
     this.addRowIndex(iter, this.table.rows.length);
   };
 
