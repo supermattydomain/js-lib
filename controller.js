@@ -78,10 +78,7 @@ resultsDiv.appendChild(results.getTable());
 
 function sortResults(columnNum) {
   results.setSortColumn(columnNum);
-  var colName = results.getSortColumnName();
-  showStatus('Sorting results by ' + colName + '...');
   results.sortTable();
-  showStatus('Results sorted by ' + colName + '.');
 };
 
 schema.fetchSchema(search.populate);

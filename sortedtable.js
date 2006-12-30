@@ -106,7 +106,7 @@ function SortedTable() {
   this.base();
 
   this.sortColumnNum = -1;
-  this.sorted = true;
+  this.sorted = false;
   this.table.viewObject = this;
   var self = this;
 
@@ -262,10 +262,12 @@ this.compareArrays = function(arr1, arr2) {
     if (this.sortColumnNum < 0 || this.sorted) {
       return;
     }
+    showStatus('Sorting results by ' + this.getSortColumnName() + '...');
     var data = this.tableToArray();
     data.sort(this.compareArrays);
     this.arrayToTable(data);
     this.sorted = true;
+    showStatus('Results sorted by ' + this.getSortColumnName() + '.');
   };
 
   this.setSortColumn = function(colNum) {
@@ -274,7 +276,7 @@ this.compareArrays = function(arr1, arr2) {
     }
     this.sortColumnNum = colNum;
     this.sorted = false;
-    this.sortTable();
+    // this.sortTable();
   };
 
   this.parentEmptyTable = this.emptyTable;
@@ -298,7 +300,7 @@ this.compareArrays = function(arr1, arr2) {
 
   this.addRow = function(iter) {
     var index;
-    if (this.sortColumnNum > 0 && this.sorted) {
+    if (this.sortColumnNum >= 0 && this.sorted) {
       index = this.findInsertIndex(iter);
     } else {
       index = this.table.rows.length;
