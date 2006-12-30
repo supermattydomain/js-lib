@@ -193,6 +193,15 @@ this.compareRows = function(row1, row2) {
   return ret;
 };
 
+this.getSortColumnName = function() {
+  if (this.sortColumnNum < 0) {
+    return 'None';
+  }
+  var cell = this.headingRow.cells[this.sortColumnNum];
+  var textNode = findChildByType(cell, 3);
+  return textNode.nodeValue;
+};
+
 this.tableToArray = function() {
   var data = new Array();
   var r;
@@ -216,15 +225,6 @@ this.tableToArray = function() {
   return data;
 };
 
-this.getSortColumnName = function() {
-  if (this.sortColumnNum < 0) {
-    return 'None';
-  }
-  var cell = this.headingRow.cells[this.sortColumnNum];
-  var textNode = findChildByType(cell, 3);
-  return textNode.nodeValue;
-};
-
 this.arrayToTable = function(data) {
   if (data.length != this.table.rows.length - 1) {
     fatal('Arrays not same size ' + data.length + '/' + this.table.rows.length);
@@ -237,10 +237,9 @@ this.arrayToTable = function(data) {
       continue;
     }
     var arr = data[i];
-    var tds = row.getElementsByTagName('td');
     var j;
     for (j = 0; j < arr.length; j++) {
-      var cell = tds[j];
+      var cell = row.cells[j];
       var textNode = findChildByType(cell, 3);
       textNode.nodeValue = arr[j];
     }
