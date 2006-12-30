@@ -81,4 +81,7 @@ function sortResults(columnNum) {
   results.sortTable();
 };
 
-schema.fetchSchema(search.populate);
+function onSchemaFetched(schema) {
+  search.populate(schema);
+
+schema.fetchSchema(onSchemaFetched);
