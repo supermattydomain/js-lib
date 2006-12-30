@@ -71,7 +71,8 @@ search.searchForm.onsubmit = function() {
   return false;
 }
 
-document.getElementById('searchdiv').appendChild(search.getForm());
+var searchDiv = document.getElementById('searchdiv');
+searchDiv.appendChild(search.getForm());
 
 var resultsDiv = document.getElementById('resultsdiv');
 resultsDiv.appendChild(results.getTable());
@@ -79,9 +80,10 @@ resultsDiv.appendChild(results.getTable());
 function sortResults(columnNum) {
   results.setSortColumn(columnNum);
   results.sortTable();
-};
+}
 
 function onSchemaFetched(schema) {
   search.populate(schema);
+}
 
 schema.fetchSchema(onSchemaFetched);
