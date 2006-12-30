@@ -146,7 +146,7 @@ this.findInsertIndex = function(iter) {
     setClass(headingCell, 'results');
     headingCell.appendChild(document.createTextNode(ucFirstAll(fieldName)));
     headingCell.onclick = function(evt) {
-      evt = getEventSource(evt);
+      // evt = getEventSource(evt);
       // printMessage('makeHeadingCell: heading ' + fieldNum + ' clicked');
       sortResults(fieldNum);
     };
