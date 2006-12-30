@@ -1,6 +1,6 @@
-function DBField(fieldNode) {
+function DBField(table, fieldNode) {
+  this.table = table;
   this.field = fieldNode;
-  this.field.modelObject = this;
   this.getName = function() {
     return this.field.getAttribute('name');
   };
@@ -8,7 +8,7 @@ function DBField(fieldNode) {
     return this.field.getAttribute('comment');
   };
   this.getTable = function() {
-    return this.field.parentNode.modelObject;
+    return this.table;
   };
   this.getType = function() {
     return this.field.getAttribute('type');
@@ -41,12 +41,7 @@ function DBFieldIter(table) {
     if (!next) {
       return next;
     }
-    if (next.modelObject) {
-      // printMessage('Returning cached field object');
-      return next.modelObject;
-    }
-    // printMessage('Creating new field object');
-    return new DBField(next);
+    return new DBField(this.table, next);
   };
   this.parentForAll = this.forAll;
   this.forAll = function(fieldCallback, args) {
@@ -54,16 +49,9 @@ function DBFieldIter(table) {
     // printNode(this.iterNode);
     this.parentForAll(function(myargs) {
       var node = myargs.pop();
-      var field = null;
-      if (node.modelObject) {
-        // printMessage('Returning cached field object');
-        field = node.modelObject;
-      } else {
-        // printMessage('Creating new field object');
-	field = new DBField(node);
-      }
-      myargs.push(field);
       // printNode(node);
+      var field = new DBField(table, node);
+      myargs.push(field);
       fieldCallback(myargs);
     }, args);
   };
@@ -72,10 +60,6 @@ DBFieldIter.prototype = new ChildIter;
 
 function DBTable(tableNode) {
   this.table = tableNode;
-  this.table.modelObject = this;
-  this.getSchema = function() {
-    return this.table.parentNode.modelObject;
-  };
   this.getName = function() {
     return this.table.getAttribute('name');
   };
@@ -105,11 +89,6 @@ function DBTableIter(schema) {
     if (!next) {
       return next;
     }
-    if (next.modelObject) {
-      // printMessage('Returning cached table object');
-      return next.modelObject;
-    }
-    // printMessage('Creating new table object');
     return new DBTable(next);
   };
   this.parentForAll = this.forAll;
@@ -117,14 +96,7 @@ function DBTableIter(schema) {
     // printMessage('In DBTableIter.forAll');
     this.parentForAll(function(myargs) {
       var node = myargs.pop();
-      var table;
-      if (node.modelObject) {
-        // printMessage('Returning cached table object');
-	table = node.modelObject;
-      } else {
-        // printMessage('Creating new table object');
-	table = new DBTable(node);
-      }
+      var table = new DBTable(node);
       myargs.push(table);
       // printNode(node);
       tableCallback(myargs);
@@ -136,18 +108,21 @@ DBTableIter.prototype = new ChildIter;
 function DBSchema(url) {
   this.url = url;
   this.ajax = null;
-  this.xmlDoc = null;
   this.database = null;
-  this.tables = null;
   this.externalCallbackFn = null;
   var self = this;
   this.dataCallbackFn = function(ajax) {
-    self.xmlDoc = ajax.getResponseXML();
-    // printMessage("DBSchema: Document child count: " + self.xmlDoc.childNodes.length);
-    // self.database = self.xmlDoc.getElementsByTagName('database');
-    self.database = self.xmlDoc.firstChild;
-    self.database.modelObject = this;
-    self.tables = self.database.childNodes;
+    var xmlDoc = ajax.getResponseXML();
+    // printMessage("DBSchema: Document child count: " + xmlDoc.childNodes.length);
+    // self.database = xmlDoc.getElementsByTagName('database');
+    self.database = xmlDoc.firstChild;
+    if (self.database.nextSibling) {
+      self.database = self.database.nextSibling;
+    }
+    if (null == self.database || undefined == self.database) {
+      fatal('No database');
+    }
+    // printNode(self.database);
     showStatus('Schema loaded.');
     if (!self.externalCallbackFn) {
       fatal('DBSchema: No external callback');
@@ -172,7 +147,7 @@ function DBSchema(url) {
   };
   this.getNumTables = function() {
     if (!this.database) {
-      fatal('No tables');
+      fatal('No database');
     }
     return this.database.childNodes.length;
   };
