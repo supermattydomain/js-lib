@@ -1,9 +1,16 @@
+// TODO: Belongs in ResultsTable, not here.
 function createFieldDisplay(field) {
   if (field.name == 'path') {
     var a = document.createElement('a');
     var text = document.createTextNode(field.value);
     a.appendChild(text);
-    a.setAttribute('href', 'edit.cgi?');
+    a.setAttribute('href', field.value);
+    /*
+    a.onclick = function(evt) {
+      editFile(field.value);
+      return false;
+    };
+    */
     return a;
   }
   return document.createTextNode(field.value);
