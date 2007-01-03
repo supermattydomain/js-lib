@@ -1,17 +1,22 @@
 function DBField(table, fieldNode) {
+  // printMessage('In DBField constructor');
   this.table = table;
   this.field = fieldNode;
+  if (!this.table || !this.field) {
+    fatal('Bad table and/or field');
+  }
   this.getName = function() {
-    return this.field.getAttribute('name');
+    return this.field.getAttribute('Field');
   };
   this.getComment = function() {
-    return this.field.getAttribute('comment');
+    // return this.field.getAttribute('Comment');
+    return '';
   };
   this.getTable = function() {
     return this.table;
   };
   this.getType = function() {
-    return this.field.getAttribute('type');
+    return this.field.getAttribute('Type');
   };
   this.isNumeric = function() {
     var type = this.getType();
@@ -37,11 +42,17 @@ function DBFieldIter(table) {
   this.parentGetNext = this.getNext;
   this.getNext = function() {
     // printMessage('In DBFieldIter.getNext');
-    var next = this.parentGetNext();
-    if (!next) {
-      return next;
+    for (;;) {
+      var next = this.parentGetNext();
+      if (!next) {
+        return next;
+      }
+      if (next.nodeName.toLowerCase() == 'field') {
+	// printMessage('Processing node ' + next.nodeName);
+        return new DBField(this.table, next);
+      }
+      // printMessage('Ignoring node ' + next.nodeName);
     }
-    return new DBField(this.table, next);
   };
   this.parentForAll = this.forAll;
   this.forAll = function(fieldCallback, args) {
@@ -49,6 +60,12 @@ function DBFieldIter(table) {
     // printNode(this.iterNode);
     this.parentForAll(function(myargs) {
       var node = myargs.pop();
+      if (node.nodeName.toLowerCase() != 'field') {
+	// printMessage('Ignoring node ' + node.nodeName);
+        myargs.push(node);
+	return;
+      }
+      // printMessage('Processing node ' + node.nodeName);
       // printNode(node);
       var field = new DBField(table, node);
       myargs.push(field);
@@ -60,14 +77,28 @@ DBFieldIter.prototype = new ChildIter;
 
 function DBTable(tableNode) {
   this.table = tableNode;
+  var options = this.table.getElementsByTagName('options');
+  if (!options || !options.length) {
+    fatal('No table options');
+  }
+  this.options = options[0];
+  this.fields = this.table.getElementsByTagName('field');
+  if (!this.fields || !this.fields.length) {
+    fatal('No table options');
+  }
   this.getName = function() {
     return this.table.getAttribute('name');
   };
   this.getComment = function() {
-    return this.table.getAttribute('comment');
+    var comment = this.options.getAttribute('Comment');
+    var i = comment.indexOf(';');
+    if (i >= 0) {
+      return comment.substr(0, i);
+    }
+    return comment;
   };
   this.getNumFields = function() {
-    return this.table.childNodes.length;
+    return this.fields.length;
   };
   this.getFieldIter = function() {
     return new DBFieldIter(this);
@@ -85,20 +116,32 @@ function DBTableIter(schema) {
   this.parentGetNext = this.getNext;
   this.getNext = function() {
     // printMessage('In DBTableIter.getNext');
-    var next = this.parentGetNext();
-    if (!next) {
-      return next;
+    for (;;) {
+      var next = this.parentGetNext();
+      if (!next) {
+        return next;
+      }
+      if (next.nodeName.toLowerCase() == 'table_structure') {
+	// printMessage('Processing node ' + next.nodeName);
+        return new DBTable(next);
+      }
+      // printMessage('Ignoring node ' + next.nodeName);
     }
-    return new DBTable(next);
   };
   this.parentForAll = this.forAll;
   this.forAll = function(tableCallback, args) {
-    // printMessage('In DBTableIter.forAll');
+    printMessage('In DBTableIter.forAll');
     this.parentForAll(function(myargs) {
       var node = myargs.pop();
+      if (node.nodeName.toLowerCase() != 'table_structure') {
+	// printMessage('Ignoring node ' + node.nodeName);
+        myargs.push(node);
+	return;
+      }
+      // printMessage('Processing node ' + node.nodeName);
+      // printNode(node);
       var table = new DBTable(node);
       myargs.push(table);
-      // printNode(node);
       tableCallback(myargs);
     }, args);
   };
@@ -114,11 +157,14 @@ function DBSchema(url) {
   this.dataCallbackFn = function(ajax) {
     var xmlDoc = ajax.getResponseXML();
     // printMessage("DBSchema: Document child count: " + xmlDoc.childNodes.length);
-    // self.database = xmlDoc.getElementsByTagName('database');
+    var databases = xmlDoc.getElementsByTagName('database');
+    self.database = databases[0];
+    /*
     self.database = xmlDoc.firstChild;
     if (self.database.nextSibling) {
       self.database = self.database.nextSibling;
     }
+    */
     if (null == self.database || undefined == self.database) {
       fatal('No database');
     }
