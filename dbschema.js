@@ -9,8 +9,7 @@ function DBField(table, fieldNode) {
     return this.field.getAttribute('Field');
   };
   this.getComment = function() {
-    // return this.field.getAttribute('Comment');
-    return '';
+    return this.field.getAttribute('Comment');
   };
   this.getTable = function() {
     return this.table;
