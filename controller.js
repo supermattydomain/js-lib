@@ -82,6 +82,10 @@ function sortResults(columnNum) {
   results.sortTable();
 }
 
+function editFile(fileName) {
+  printMessage('Edit file ' + fileName);
+}
+
 function onSchemaFetched(schema) {
   search.populate(schema);
 }
