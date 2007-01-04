@@ -53,7 +53,6 @@ function SearchForm(tableName) {
     var criterion = new SearchCriterion(this, this.criteria.length, this.table, this.operations);
     this.criteria.push(criterion);
     this.searchForm.appendChild(criterion.getDiv());
-    this.fewerButton.disabled = false;
     if (this.criteria.length >= this.maxCriteria) {
 	this.moreButton.disabled = true;
     }
@@ -74,9 +73,6 @@ function SearchForm(tableName) {
   	this.criteria.splice(i, 1);
     this.searchForm.removeChild(criterion.getDiv());
     this.moreButton.disabled = false;
-    if (this.criteria.length < 1) {
-	this.fewerButton.disabled = true;
-    }
   };
   this.removeLastCriterion = function() {
     if (this.criteria.length < 1) {
@@ -86,9 +82,6 @@ function SearchForm(tableName) {
     this.searchForm.removeChild(criterion.getDiv());
     delete criterion;
     this.moreButton.disabled = false;
-    if (this.criteria.length < 1) {
-	this.fewerButton.disabled = true;
-    }
   };
   this.makeButton = function(name, label) {
     button = document.createElement('input');
@@ -100,19 +93,16 @@ function SearchForm(tableName) {
   };
   this.addButtons = function() {
     this.moreButton = this.makeButton('more', 'More choices');
-    this.fewerButton = this.makeButton('fewer', 'Fewer choices');
     this.searchButton = this.makeButton('search', 'Search');
-    this.testSearchButton = this.makeButton('testSearch', 'Example search');
+    this.testSearchButton = this.makeButton('testSearch', 'Test');
     this.resetButton = this.makeButton('reset', 'Reset');
     this.moreButton.disabled = true;
-    this.fewerButton.disabled = true;
     this.searchButton.disabled = true;
     this.testSearchButton.disabled = true;
     this.resetButton.disabled = true;
     this.searchForm.appendChild(this.moreButton);
-    this.searchForm.appendChild(this.fewerButton);
-    this.searchForm.appendChild(this.resetButton);
     this.searchForm.appendChild(this.testSearchButton);
+    this.searchForm.appendChild(this.resetButton);
     this.searchForm.appendChild(this.searchButton);
   }
   this.populate = function(schema) {

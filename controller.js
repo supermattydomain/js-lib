@@ -45,11 +45,6 @@ function onMoreButton() {
 }
 search.moreButton.onclick = onMoreButton;
 
-function onFewerButton() {
-  search.removeLastCriterion();
-}
-search.fewerButton.onclick = onFewerButton;
-
 function onSearchButton() {
   // printMessage('onSearchButton');
   doSearch(search.getURL());
