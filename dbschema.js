@@ -38,11 +38,11 @@ function DBFieldIter(table) {
   }
   this.base = ChildIter;
   this.base(this.table.table);
-  this.parentGetNext = this.getNext;
+  this.DBFieldIterGetNext = this.getNext;
   this.getNext = function() {
     // printMessage('In DBFieldIter.getNext');
     for (;;) {
-      var next = this.parentGetNext();
+      var next = this.DBFieldIterGetNext();
       if (!next) {
         return next;
       }
@@ -53,11 +53,11 @@ function DBFieldIter(table) {
       // printMessage('Ignoring node ' + next.nodeName);
     }
   };
-  this.parentForAll = this.forAll;
+  this.DBFieldIterForAll = this.forAll;
   this.forAll = function(fieldCallback, args) {
     // printMessage('In DBFieldIter.forAll ' + this.iterNode);
     // printNode(this.iterNode);
-    this.parentForAll(function(myargs) {
+    this.DBFieldIterForAll(function(myargs) {
       var node = myargs.pop();
       if (node.nodeName.toLowerCase() != 'field') {
 	// printMessage('Ignoring node ' + node.nodeName);
@@ -73,6 +73,121 @@ function DBFieldIter(table) {
   };
 }
 DBFieldIter.prototype = new ChildIter;
+
+function DBKey(table, keyNode) {
+  this.table = table;
+  this.key = keyNode;
+  this.getTable = function() {
+  	return this.table;
+  }
+  this.getName = function() {
+  	return this.key.getAttribute('Key_name');
+  };
+  this.getColumns = function() {
+  	var columnStr = this.key.getAttribute('Column_name');
+  	return columnStr.split(',');
+  };
+}
+
+function DBKeyIter(table) {
+  this.table = table;
+  // printMessage('In DBKeyIter constructor');
+  if (!table || !table.table) {
+    fatal('Bad table ' + table);
+  }
+  this.base = ChildIter;
+  this.base(this.table.table);
+  this.DBKeyIterGetNext = this.getNext;
+  this.getNext = function() {
+    // printMessage('In DBKeyIter.getNext');
+    for (;;) {
+      var next = this.DBKeyIterGetNext();
+      if (!next) {
+        return next;
+      }
+      if (next.nodeName.toLowerCase() == 'key') {
+	// printMessage('Processing node ' + next.nodeName);
+        return new DBKey(this.table, next);
+      }
+      // printMessage('Ignoring node ' + next.nodeName);
+    }
+  };
+  this.DBKeyIterForAll = this.forAll;
+  this.forAll = function(keyCallback, args) {
+    // printMessage('In DBKeyIter.forAll ' + this.iterNode);
+    // printNode(this.iterNode);
+    this.DBKeyIterForAll(function(myargs) {
+      var node = myargs.pop();
+      if (node.nodeName.toLowerCase() != 'key') {
+	// printMessage('Ignoring node ' + node.nodeName);
+        myargs.push(node);
+	return;
+      }
+      // printMessage('Processing node ' + node.nodeName);
+      // printNode(node);
+      var field = new DBKey(table, node);
+      myargs.push(field);
+      keyCallback(myargs);
+    }, args);
+  };
+}
+DBKeyIter.prototype = new ChildIter;
+
+function DBForeignKey(table, foreignKeyNode) {
+  this.base = DBKey;
+  this.base(table, foreignKeyNode);
+  this.getReferencedTable = function() {
+  	return this.key.getAttribute('Referenced_table_name');
+  };
+  this.getReferencedColumn = function() {
+  	return this.key.getAttribute('Referenced_column_name');
+  };
+}
+DBForeignKey.prototype = new DBKey;
+
+function DBForeignKeyIter(table) {
+  this.table = table;
+  // printMessage('In DBForeignKeyIter constructor');
+  if (!table || !table.table) {
+    fatal('Bad table ' + table);
+  }
+  this.base = ChildIter;
+  this.base(this.table.table);
+  this.DBForeignKeyIterGetNext = this.getNext;
+  this.getNext = function() {
+    // printMessage('In DBForeignKeyIter.getNext');
+    for (;;) {
+      var next = this.DBForeignKeyIterGetNext();
+      if (!next) {
+        return next;
+      }
+      if (next.nodeName.toLowerCase() == 'foreign_key') {
+	// printMessage('Processing node ' + next.nodeName);
+        return new DBForeignKey(this.table, next);
+      }
+      // printMessage('Ignoring node ' + next.nodeName);
+    }
+  };
+  this.DBForeignKeyIterForAll = this.forAll;
+  this.forAll = function(foreignKeyCallback, args) {
+    // printMessage('In DBForeignKeyIter.forAll ' + this.iterNode);
+    // printNode(this.iterNode);
+    this.DBForeignKeyIterForAll(function(myargs) {
+      var node = myargs.pop();
+      if (node.nodeName.toLowerCase() != 'foreign_key') {
+	// printMessage('Ignoring node ' + node.nodeName);
+        myargs.push(node);
+	return;
+      }
+      // printMessage('Processing node ' + node.nodeName);
+      // printNode(node);
+      var field = new DBForeignKey(table, node);
+      myargs.push(field);
+      foreignKeyCallback(myargs);
+    }, args);
+  };
+}
+DBForeignKeyIter.prototype = new ChildIter;
 
 function DBTable(tableNode) {
   this.table = tableNode;
@@ -109,16 +224,32 @@ function DBTable(tableNode) {
     iter.forAll(fieldCallback, args);
     return iter.getCount();
   };
+  this.getKeyIter = function() {
+    return new DBKeyIter(this);
+  };
+  this.enumKeys = function(keyCallback, args) {
+    var iter = this.getKeyIter();
+    iter.forAll(keyCallback, args);
+    return iter.getCount();
+  };
+  this.getForeignKeyIter = function() {
+    return new DBForeignKeyIter(this);
+  };
+  this.enumForeignKeys = function(foreignKeyCallback, args) {
+    var iter = this.getForeignKeyIter();
+    iter.forAll(foreignKeyCallback, args);
+    return iter.getCount();
+  };
 }
 
 function DBTableIter(schema) {
   this.base = ChildIter;
   this.base(schema.database);
-  this.parentGetNext = this.getNext;
+  this.DBTableIterGetNext = this.getNext;
   this.getNext = function() {
     // printMessage('In DBTableIter.getNext');
     for (;;) {
-      var next = this.parentGetNext();
+      var next = this.DBTableIterGetNext();
       if (!next) {
         return next;
       }
@@ -129,10 +260,10 @@ function DBTableIter(schema) {
       // printMessage('Ignoring node ' + next.nodeName);
     }
   };
-  this.parentForAll = this.forAll;
+  this.DBTableIterForAll = this.forAll;
   this.forAll = function(tableCallback, args) {
     // printMessage('In DBTableIter.forAll');
-    this.parentForAll(function(myargs) {
+    this.DBTableIterForAll(function(myargs) {
       var node = myargs.pop();
       if (node.nodeName.toLowerCase() != 'table_structure') {
 	// printMessage('Ignoring node ' + node.nodeName);

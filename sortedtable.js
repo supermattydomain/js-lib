@@ -297,17 +297,17 @@ this.compareArrays = function(arr1, arr2) {
     // this.sortTable();
   };
 
-  this.parentEmptyTable = this.emptyTable;
+  this.SortedTableEmptyTable = this.emptyTable;
   this.emptyTable = function() {
-    this.parentEmptyTable();
+    this.SortedTableEmptyTable();
     this.headingRow = null;
     this.sortColumnNum = -1;
     this.sorted = false;
   };
 
-  this.parentRemoveColumnIndex = this.removeColumnIndex;
+  this.SortedTableRemoveColumnIndex = this.removeColumnIndex;
   this.removeColumnIndex = function(columnNum) {
-    this.parentRemoveColumnIndex(columnNum);
+    this.SortedTableRemoveColumnIndex(columnNum);
     if (this.sortColumnNum == columnNum) {
       this.sortColumnNum = -1;
       this.sorted = false;

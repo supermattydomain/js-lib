@@ -85,17 +85,17 @@ function AttributeNameIter(rec) {
   this.rec = rec;
   this.base = AttributeIter;
   this.base(this.rec);
-  this.parentGetNext = this.getNext;
+  this.AttributeNameIterGetNext = this.getNext;
   this.getNext = function() {
-    var next = this.parentGetNext();
+    var next = this.AttributeNameIterGetNext();
     if (next) {
       return next.name;
     }
     return next;
   };
-  this.parentForAll = this.forAll;
+  this.AttributeNameIterForAll = this.forAll;
   this.forAll = function(callback, args) {
-    this.parentForAll(function(myargs) {
+    this.AttributeNameIterForAll(function(myargs) {
       var attr = myargs.pop();
       var name = attr.name;
       myargs.push(name);
@@ -109,17 +109,17 @@ function AttributeValueIter(rec) {
   this.rec = rec;
   this.base = AttributeIter;
   this.base(this.rec);
-  this.parentGetNext = this.getNext;
+  this.AttributeValueIterGetNext = this.getNext;
   this.getNext = function() {
-    var next = this.parentGetNext();
+    var next = this.AttributeValueIterGetNext();
     if (next) {
       return next.value;
     }
     return next;
   };
-  this.parentForAll = this.forAll;
+  this.AttributeValueIterForAll = this.forAll;
   this.forAll = function(callback, args) {
-    this.parentForAll(function(myargs) {
+    this.AttributeValueIterForAll(function(myargs) {
       var attr = myargs.pop();
       var value = attr.value;
       myargs.push(value);
