@@ -17,6 +17,7 @@ function SearchForm(tableName) {
   );
   this.searchForm = document.createElement('form');
   this.searchForm.setAttribute('id', 'searchform');
+  this.searchForm.setAttribute('class', 'search');
   this.searchForm.method = 'GET';
   this.searchForm.action = 'search.cgi';
   this.urlDiv = document.createElement('div');

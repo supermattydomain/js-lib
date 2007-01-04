@@ -45,10 +45,7 @@ function MyTable() {
       if (this.headingRow == row) {
 	continue;
       }
-      var j;
-      for (j = 0; j < row.cells.length; j++) {
-        setClass(row.cells[j], 'results_' + (odd ? 'odd' : 'even'));
-      }
+      setClass(row, 'results_' + (odd ? 'odd' : 'even'));
       odd = !odd;
     }
     this.rowStylesClean = this.table.rows.length;
@@ -57,11 +54,7 @@ function MyTable() {
   this.makeCell = function(contents) {
     // printMessage('makeCell');
     var tableCell = document.createElement('td');
-    if (this.table.rows.length % 2) {
-      setClass(tableCell, 'results_odd');
-    } else {
-      setClass(tableCell, 'results_even');
-    }
+    setClass(tableCell, 'results');
     tableCell.appendChild(contents);
     tableCell.onmouseover = function(evt) {
       tableCell.oldClassName = tableCell.className;
@@ -76,7 +69,11 @@ function MyTable() {
   this.addRowIndex = function(iter, index) {
     // printMessage('addRow');
     var tableRow = this.table.insertRow(index);
-    setClass(tableRow, 'results');
+    if (this.table.rows.length % 2) {
+      setClass(tableRow, 'results_odd');
+    } else {
+      setClass(tableRow, 'results_even');
+    }
     var args = new Array();
     args[0] = tableRow;
     iter.reset();
@@ -172,12 +169,13 @@ this.findInsertIndex = function(iter) {
     headingCell.onmouseover = function(evt) {
       // printMessage('hover');
       evt = getEventSource(evt);
-      setClass(headingCell, 'results_hover');
+      headingCell.oldClassName = headingCell.className;
+      setClass(headingCell, headingCell.className + '_hover');
     };
     headingCell.onmouseout = function(evt) {
       // printMessage('hover');
       evt = getEventSource(evt);
-      setClass(headingCell, 'results');
+      setClass(headingCell, headingCell.oldClassName);
     };
     return headingCell;
   };
