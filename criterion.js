@@ -1,12 +1,12 @@
-function SearchCriterion(ident, table, operations) {
+function SearchCriterion(parent, ident, table, operations) {
   var self = this;
+  this.parent = parent;
   this.ident = ident;
   this.div = null;
   this.fieldSelect = null;
   this.operationSelect = null;
   this.table = table;
   this.operations = operations;
-  this.tableName = this.table.getName();
   this.populate = function() {
     // printMessage('populate: table = ' + self.table.getName() + '\n');
     self.div = document.createElement("div");
@@ -16,10 +16,19 @@ function SearchCriterion(ident, table, operations) {
     self.valueField = document.createElement('input');
     self.valueField.setAttribute('name', 'value');
     self.valueField.setAttribute('type', 'text');
+    self.removeButton = document.createElement('input');
+    self.removeButton.setAttribute('id', 'buttonRemoveCriterion' + ident);
+    self.removeButton.setAttribute('type', 'button');
+    self.removeButton.setAttribute('name', 'buttonRemoveCriterion' + ident);
+    self.removeButton.setAttribute('value', 'Remove');
+    self.removeButton.onclick = function(evt) {
+    	self.parent.removeCriterion(self);
+    };
     self.div.appendChild(self.fieldSelect.getSelect());
     self.div.appendChild(self.operationSelect.getSelect());
     self.div.appendChild(self.valueField);
-    // printMessage('done populate: table = ' + self.tableName + '\n');
+    self.div.appendChild(self.removeButton);
+    // printMessage('done populate: table = ' + self.table.getName() + '\n');
   };
   this.getDiv = function() {
     return this.div;

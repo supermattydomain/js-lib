@@ -46,7 +46,7 @@ function onMoreButton() {
 search.moreButton.onclick = onMoreButton;
 
 function onFewerButton() {
-  search.removeCriterion();
+  search.removeLastCriterion();
 }
 search.fewerButton.onclick = onFewerButton;
 

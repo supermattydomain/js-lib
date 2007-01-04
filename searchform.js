@@ -49,7 +49,7 @@ function SearchForm(tableName) {
     if (this.criteria.length >= this.maxCriteria) {
 	return;
     }
-    var criterion = new SearchCriterion(this.criteria.length, this.table, this.operations);
+    var criterion = new SearchCriterion(this, this.criteria.length, this.table, this.operations);
     this.criteria.push(criterion);
     this.searchForm.appendChild(criterion.getDiv());
     this.fewerButton.disabled = false;
@@ -57,7 +57,27 @@ function SearchForm(tableName) {
 	this.moreButton.disabled = true;
     }
   };
-  this.removeCriterion = function() {
+  this.removeCriterion = function(criterion) {
+  	var i;
+  	var found = null;
+  	for (i = 0; i < this.criteria.length; i++) {
+  		if (this.criteria[i] == criterion) {
+  			found = this.criteria[i];
+  			break;
+  		}
+  	}
+  	if (!found) {
+  		fatal('Trying to remove criterion that is not a child of mine');
+  	}
+  	delete this.criteria[i];
+  	this.criteria.splice(i, 1);
+    this.searchForm.removeChild(criterion.getDiv());
+    this.moreButton.disabled = false;
+    if (this.criteria.length < 1) {
+	this.fewerButton.disabled = true;
+    }
+  };
+  this.removeLastCriterion = function() {
     if (this.criteria.length < 1) {
 	return;
     }
