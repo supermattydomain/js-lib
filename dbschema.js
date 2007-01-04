@@ -25,7 +25,7 @@ function DBField(table, fieldNode) {
     if (type.indexOf('int') >= 0) {
       return true;
     }
-    printMessage('Unsure about type of field ' + this.getName());
+    printMessage('Unrecognised type "' + type + '" of field ' + this.getName());
     return true;
   };
 }
@@ -78,12 +78,14 @@ function DBTable(tableNode) {
   this.table = tableNode;
   var options = this.table.getElementsByTagName('options');
   if (!options || !options.length) {
+    printNode(this.table);
     fatal('No table options');
   }
   this.options = options[0];
   this.fields = this.table.getElementsByTagName('field');
   if (!this.fields || !this.fields.length) {
-    fatal('No table options');
+	printNode(this.table);
+    fatal('No table fields');
   }
   this.getName = function() {
     return this.table.getAttribute('name');
@@ -121,7 +123,7 @@ function DBTableIter(schema) {
         return next;
       }
       if (next.nodeName.toLowerCase() == 'table_structure') {
-	// printMessage('Processing node ' + next.nodeName);
+	    // printMessage('Processing node ' + next.nodeName);
         return new DBTable(next);
       }
       // printMessage('Ignoring node ' + next.nodeName);
@@ -129,7 +131,7 @@ function DBTableIter(schema) {
   };
   this.parentForAll = this.forAll;
   this.forAll = function(tableCallback, args) {
-    printMessage('In DBTableIter.forAll');
+    // printMessage('In DBTableIter.forAll');
     this.parentForAll(function(myargs) {
       var node = myargs.pop();
       if (node.nodeName.toLowerCase() != 'table_structure') {
