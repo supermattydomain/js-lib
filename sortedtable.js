@@ -13,10 +13,12 @@ function changePrefix(val, from, to) {
 // TODO: Belongs in ResultsTable, not here.
 function createFieldDisplay(field) {
   if (field.name == 'path') {
-    var value = removePrefix(field.value, '/music/');
+  	// FireFox disallows Web pages or their scripts from linking to local file:/// URLs.
+    // var value = removePrefix(field.value, '/music/');
     // value = 'file:///M:/' + encodeURI(value);
-    value = 'file:///M:/' + value;
+    // value = 'file:///M:/' + value;
     // var value = value.replace(/\//g, '\\');
+    var value = field.value;
     var a = dce('a');
     a.setAttribute('href', value);
     a.appendChild(dctn(value));
