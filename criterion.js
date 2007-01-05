@@ -7,52 +7,61 @@ function SearchCriterion(parent, ident, table, operations) {
   this.operationSelect = null;
   this.table = table;
   this.operations = operations;
-  this.populate = function() {
-    // printMessage('populate: table = ' + self.table.getName() + '\n');
-    self.div = document.createElement("div");
-    self.div.setAttribute('class', 'criterion');
-    self.div.setAttribute('id', 'criterion' + ident);
-    self.div.viewObject = self;
-    self.fieldSelect = new FieldSelect('field', self.table);
-    self.operationSelect = new MySelectOptionArray('operation', self.operations, self.operations);
-    self.valueField = document.createElement('input');
-    self.valueField.setAttribute('name', 'value');
-    self.valueField.setAttribute('type', 'text');
-    // self.removeButton = document.createElement('input');
-    /*
-    self.removeButton = document.createElement('div');
-    self.removeButton.setAttribute('id', 'button_remove_criterion' + ident);
-    self.removeButton.setAttribute('class', 'remove_criterion');
-    // self.removeButton.setAttribute('alt', 'Remove criterion ' + ident);
-    */
-    var removeAnchor = document.createElement('a');
-    removeAnchor.setAttribute('class', 'remove_criterion');
-    removeAnchor.setAttribute('href', 'javascript:return true;');
+  this.makeFieldSelect = function() {
+  	return new FieldSelect('criterion', 'field' + this.ident, this.table);
+  };
+  this.makeOperationSelect = function() {
+  	return new MySelectOptionArray('criterion', 'operation' + this.ident, this.operations, this.operations);
+  };
+  this.makeValueField = function() {
+    var valueField = dce('input');
+    valueField.setAttribute('name', 'value' + this.ident);
+    valueField.setAttribute('type', 'text');
+    setClass(valueField, 'criterion');
+    return valueField;
+  };
+  this.makeRemoveButton = function() {
+    var removeAnchor = dce('a');
+    setClass(removeAnchor, 'remove_criterion');
+    removeAnchor.setAttribute('id', 'remove_criterion' + this.ident);
+    removeAnchor.setAttribute('href', 'Remove criterion ' + this.ident);
     removeAnchor.onclick = function(evt) {
     	self.parent.removeCriterion(self);
-    	return true;
+    	return false;
     };
-    var removeImage = document.createElement('img');
+    var removeImage = dce('img');
     removeImage.setAttribute('border', 0);
+    setClass(removeImage, 'criterion');
     removeImage.setAttribute('src', 'remove-criterion.png');
     removeImage.setAttribute('alt', 'Remove criterion ' + ident);
     removeAnchor.appendChild(removeImage);
-    // self.removeButton.appendChild(removeAnchor);
-    self.div.appendChild(self.fieldSelect.getSelect());
-    self.div.appendChild(self.operationSelect.getSelect());
-    self.div.appendChild(self.valueField);
-    // self.div.appendChild(self.removeButton);
-    self.div.appendChild(removeAnchor);
-    // printMessage('done populate: table = ' + self.table.getName() + '\n');
+    return removeAnchor;
+  };
+  this.populate = function() {
+    // printMessage('populate: table = ' + this.table.getName() + '\n');
+    this.div = dce("div");
+    this.div.setAttribute('class', 'criterion');
+    this.div.setAttribute('id', 'criterion' + this.ident);
+    this.div.viewObject = this;
+    this.fieldSelect = this.makeFieldSelect();
+    this.operationSelect = this.makeOperationSelect();
+    this.valueField = this.makeValueField();
+    this.removeButton = this.makeRemoveButton();
+    this.div.appendChild(this.fieldSelect.getSelect());
+    this.div.appendChild(this.operationSelect.getSelect());
+    this.div.appendChild(this.valueField);
+    // this.div.appendChild(this.removeButton);
+    this.div.appendChild(this.removeButton);
+    // printMessage('done populate: table = ' + this.table.getName() + '\n');
   };
   this.getDiv = function() {
     return this.div;
   };
   this.getURL = function() {
     var url = '';
-    url += this.fieldSelect.getName() + this.ident + '=' + this.fieldSelect.getValue();
-    url += '&' + this.operationSelect.getName() + this.ident + '=' + this.operationSelect.getValue();
-    url += '&' + this.valueField.name + this.ident + '=' + this.valueField.value;
+    url += this.fieldSelect.getName() + '=' + this.fieldSelect.getValue();
+    url += '&' + this.operationSelect.getName() + '=' + this.operationSelect.getValue();
+    url += '&' + this.valueField.name + '=' + this.valueField.value;
     return url;
   }
   this.populate();

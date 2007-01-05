@@ -1,25 +1,26 @@
-function MyOption(name, value) {
-  this.name = name;
-  this.value = value;
-  this.option = document.createElement('option');
+function MyOption(className, controlName, value) {
+  this.option = dce('option');
   this.option.viewObject = this;
-  this.option.setAttribute('label', this.name);
-  this.option.setAttribute('value', this.value);
-  this.option.appendChild(document.createTextNode(this.name));
+  this.option.setAttribute('label', controlName);
+  this.option.setAttribute('value', value);
+  setClass(this.option, className);
+  this.option.appendChild(dctn(controlName));
   this.getOption = function() {
     return this.option;
   };
 }
 
-function MySelect(controlName) {
-  this.select = document.createElement('select');
+function MySelect(className, controlName) {
+  this.className = className;
+  this.select = dce('select');
   this.select.viewObject - this;
   this.select.setAttribute('name', controlName);
+  setClass(this.select, this.className);
   this.getSelect = function() {
     return this.select;
   };
-  this.addOption = function(name, value) {
-    var option = new MyOption(name, value);
+  this.addOption = function(controlName, controlValue) {
+    var option = new MyOption(this.className, controlName, controlValue);
     this.select.appendChild(option.getOption());
   };
   this.addOptionsIter = function(nameIter, valueIter) {
@@ -38,26 +39,26 @@ function MySelect(controlName) {
   };
 }
 
-function MySelectOptionIter(controlName, optionNameIter, optionValueIter) {
+function MySelectOptionIter(className, controlName, optionNameIter, optionValueIter) {
   this.base = MySelect;
-  this.base(controlName);
+  this.base(className, controlName);
   this.select.viewObject = this;
   this.addOptionsIter(optionNameIter, optionValueIter);
 }
 MySelectOptionIter.prototype = new MySelect;
 
-function MySelectOptionArray(controlName, optionNames, optionValues) {
+function MySelectOptionArray(className, controlName, optionNames, optionValues) {
   this.base = MySelect;
-  this.base(controlName);
+  this.base(className, controlName);
   this.select.viewObject = this;
   this.addOptionsArray(optionNames, optionValues);
 }
 MySelectOptionArray.prototype = new MySelect;
 
-function FieldSelect(controlName, table) {
+function FieldSelect(className, controlName, table) {
   this.table = table;
   this.base = MySelect;
-  this.base(controlName);
+  this.base(className, controlName);
   this.select.viewObject = this;
   var self = this;
   this.addOptions = function() {

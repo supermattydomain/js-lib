@@ -72,21 +72,20 @@ function Ajax(url, requestDoneCallback) {
   };
   var self = this;
   this.onreadystatechange = function(evt) {
-    /*
-    printMessage('onreadystatechange: readyState=' + self.req.readyState);
+    // printMessage('onreadystatechange: readyState=' + self.req.readyState);
     if (self.req.responseXML) {
-      printMessage('got XML');
+      // printMessage('got XML');
       if (self.req.responseXML.childNodes) {
-        printMessage('Reached readyState ' + self.req.readyState + '; children=' + self.req.responseXML.childNodes.length);
+        // printMessage('Reached readyState ' + self.req.readyState + '; children=' + self.req.responseXML.childNodes.length);
       } else {
-        printMessage('Reached readyState ' + self.req.readyState + ' but no child nodes yet');
+        // printMessage('Reached readyState ' + self.req.readyState + ' but no child nodes yet');
       }
     } else if (self.req.responseText) {
-      printMessage('Reached readyState ' + self.req.readyState + '; text=' + self.req.responseText.length);
+      // printMessage('Reached readyState ' + self.req.readyState + '; text=' + self.req.responseText.length);
+      showStatus('Read ' + self.req.responseText.length + ' bytes from server...');
     } else {
-      printMessage('No data');
+      // printMessage('No data');
     }
-    */
     if (4 == self.req.readyState) {
       var status;
       try {

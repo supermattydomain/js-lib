@@ -1,24 +1,40 @@
+function removePrefix(val, prefix) {
+	if (val.indexOf(prefix) != 0) {
+		fatal('Prefix ' + prefix + ' not a prefix of value ' + val);
+		return val;
+	}
+	return val.substr(prefix.length);
+}
+
+function changePrefix(val, from, to) {
+  return to + removePrefix(val, from);
+}
+
 // TODO: Belongs in ResultsTable, not here.
 function createFieldDisplay(field) {
   if (field.name == 'path') {
-    var a = document.createElement('a');
-    var text = document.createTextNode(field.value);
-    a.appendChild(text);
-    a.setAttribute('href', field.value);
+    var value = removePrefix(field.value, '/music/');
+    // value = 'file:///M:/' + encodeURI(value);
+    value = 'file:///M:/' + value;
+    // var value = value.replace(/\//g, '\\');
+    var a = dce('a');
+    a.setAttribute('href', value);
+    a.appendChild(dctn(value));
     /*
     a.onclick = function(evt) {
       editFile(field.value);
       return false;
     };
     */
+    // printMessage(value);
     return a;
   }
-  return document.createTextNode(field.value);
+  return dctn(field.value);
 }
 
 function MyTable() {
 
-  this.table = document.createElement('table');
+  this.table = dce('table');
   this.table.viewObject = this;
   setClass(this.table, 'results');
   this.table.setAttribute('id', 'resultstable');
@@ -53,7 +69,7 @@ function MyTable() {
 
   this.makeCell = function(contents) {
     // printMessage('makeCell');
-    var tableCell = document.createElement('td');
+    var tableCell = dce('td');
     setClass(tableCell, 'results');
     tableCell.appendChild(contents);
     tableCell.onmouseover = function(evt) {
@@ -158,9 +174,9 @@ this.findInsertIndex = function(iter) {
 
   this.makeHeadingCell = function(fieldNum, fieldName) {
     // printMessage('columnNum ' + fieldNum);
-    var headingCell = document.createElement('th');
+    var headingCell = dce('th');
     setClass(headingCell, 'results');
-    headingCell.appendChild(document.createTextNode(ucFirstAll(fieldName)));
+    headingCell.appendChild(dctn(ucFirstAll(fieldName)));
     headingCell.onclick = function(evt) {
       // evt = getEventSource(evt);
       // printMessage('makeHeadingCell: heading ' + fieldNum + ' clicked');

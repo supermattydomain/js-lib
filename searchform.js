@@ -15,14 +15,14 @@ function SearchForm(tableName) {
     'is greater than or equal to',
     'is similar to'
   );
-  this.searchForm = document.createElement('form');
+  this.searchForm = dce('form');
   this.searchForm.setAttribute('id', 'searchform');
   this.searchForm.setAttribute('class', 'search');
   this.searchForm.method = 'GET';
   this.searchForm.action = 'search.cgi';
-  this.urlDiv = document.createElement('div');
-  this.urlLink = document.createElement('a');
-  this.urlText = document.createTextNode('');
+  this.urlDiv = dce('div');
+  this.urlLink = dce('a');
+  this.urlText = dctn('');
   this.urlLink.appendChild(this.urlText);
   this.urlDiv.appendChild(this.urlLink);
   this.getForm = function() {
