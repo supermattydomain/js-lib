@@ -20,13 +20,22 @@ function MySelect(className, controlName) {
     return this.select;
   };
   this.addOption = function(controlName, controlValue) {
-    var option = new MyOption(this.className, controlName, controlValue);
-    this.select.appendChild(option.getOption());
+    var newOption = new MyOption(this.className, controlName, controlValue);
+    var i;
+    for (i = 0; i < this.select.childNodes.length; i++) {
+    	var option = this.select.childNodes[i];
+    	if (option.value > newOption.getOption().value) {
+	    	this.select.insertBefore(newOption.getOption(), option);
+    		return;
+    	}
+    }
+    this.select.appendChild(newOption.getOption());
   };
   this.addOptionsIter = function(nameIter, valueIter) {
     while (nameIter.hasMore() && valueIter.hasMore()) {
 	this.addOption(nameIter.getNext(), valueIter.getNext());
     }
+    // this.select.value = this.select.childNodes[0].value;
   };
   this.addOptionsArray = function(nameArray, valueArray) {
     this.addOptionsIter(new ArrayIter(nameArray), new ArrayIter(valueArray));
@@ -75,3 +84,34 @@ function FieldSelect(className, controlName, table) {
   this.addOptions();
 }
 FieldSelect.prototype = new MySelect;
+
+function TableFieldSelect(className, controlName, schema) {
+  this.schema = schema;
+  this.base = MySelect;
+  this.base(className, controlName);
+  this.select.viewObject = this;
+  var self = this;
+  this.addOptions = function() {
+    // printMessage('In TableFieldSelect.addOptions');
+    var tableArgs = new Array();
+    this.schema.enumTables(
+      function(tableArgs) {
+    	var table = tableArgs[0];
+        var fieldArgs = new Array();
+        table.enumFields(
+          function(fieldArgs) {
+            var field = fieldArgs[0];
+            // printMessage('FieldSelect: found field ' + self.table.getName() + '.' + field.getName() + '\n');
+            var label = ucFirst(table.getName()) + ' ' + ucFirst(field.getName());
+            var value = table.getName() + '.' + field.getName();
+            self.addOption(label, value);
+          },
+          fieldArgs
+        );
+      },
+      tableArgs
+    );
+  };
+  this.addOptions();
+}
+TableFieldSelect.prototype = new MySelect;
