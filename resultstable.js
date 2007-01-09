@@ -3,6 +3,27 @@ function ResultsTable() {
   this.base();
   this.table.viewObject = this;
   var self = this;
+  this.createFieldDisplay = function(field) {
+    // printMessage('In ResultsTable.createFieldDisplay');
+    if (field.name == 'path') {
+   	  // FireFox disallows Web pages or their scripts from linking to local file:/// URLs.
+      // var value = removePrefix(field.value, '/music/');
+      // value = 'file:///M:/' + encodeURI(value);
+      // value = 'file:///M:/' + value;
+      // var value = value.replace(/\//g, '\\');
+      var value = field.value;
+      var a = dce('a');
+      a.setAttribute('href', value);
+      a.appendChild(dctn(value));
+      // a.onclick = function(evt) {
+      //   editFile(field.value);
+      //   return false;
+      // };
+      // printMessage(value);
+      return a;
+    }
+    return dctn(field.value);
+  };
   this.addHeading = function(record) {
     if (this.headingRow) {
       return;
@@ -16,7 +37,7 @@ function ResultsTable() {
   this.addRecord = function(record) {
     var iter = new AttributeIter(record);
     // printMessage('Before adding row');
-    self.addRow(iter);
+    this.addRow(iter);
     iter.cleanup();
     // printMessage('Row added.');
   };

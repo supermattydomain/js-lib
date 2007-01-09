@@ -40,3 +40,15 @@ function compareValues(val1, val2) {
   // printMessage('compareValues: ret=' + ret);
   return ret;
 }
+
+function removePrefix(val, prefix) {
+	if (val.indexOf(prefix) != 0) {
+		fatal('Prefix ' + prefix + ' not a prefix of value ' + val);
+		return val;
+	}
+	return val.substr(prefix.length);
+}
+
+function changePrefix(val, from, to) {
+  return to + removePrefix(val, from);
+}
