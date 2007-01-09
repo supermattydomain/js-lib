@@ -86,3 +86,14 @@ function onSchemaFetched(schema) {
 }
 
 schema.fetchSchema(onSchemaFetched);
+
+function cleanup() {
+	if (search) {
+		search.cleanup();
+		search = null;
+	}
+	if (schema) {
+		schema.cleanup();
+		schema = null;
+	}
+}

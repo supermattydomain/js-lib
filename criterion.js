@@ -4,6 +4,7 @@ function SearchCriterion(parent, ident, table, operations) {
   this.ident = ident;
   this.div = null;
   this.fieldSelect = null;
+  this.valueField = null;
   this.operationSelect = null;
   this.table = table;
   this.operations = operations;
@@ -64,5 +65,19 @@ function SearchCriterion(parent, ident, table, operations) {
     url += '&' + this.valueField.name + '=' + this.valueField.value;
     return url;
   }
+  this.cleanup = function() {
+	this.parent = null;
+	this.div = null;
+	if (this.fieldSelect) {
+		this.fieldSelect.cleanup();
+		this.fieldSelect = null;
+	}
+	this.valueField = null;
+	if (this.operationSelect) {
+		this.operationSelect.cleanup();
+		this.operationSelect = null;
+	}
+	this.table = table;
+  };
   this.populate();
 }

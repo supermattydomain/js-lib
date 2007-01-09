@@ -111,4 +111,8 @@ function Ajax(url, requestDoneCallback) {
     this.method = 'POST';
     return this.doRequest(data);
   };
+  this.cleanup = function() {
+	this.doc = null;
+  	this.req = null;
+  };
 }

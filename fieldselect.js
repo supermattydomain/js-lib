@@ -8,6 +8,9 @@ function MyOption(className, controlName, value) {
   this.getOption = function() {
     return this.option;
   };
+  this.cleanup = function() {
+	this.option = null;
+  };
 }
 
 function MySelect(className, controlName) {
@@ -35,7 +38,8 @@ function MySelect(className, controlName) {
     while (nameIter.hasMore() && valueIter.hasMore()) {
 	this.addOption(nameIter.getNext(), valueIter.getNext());
     }
-    // this.select.value = this.select.childNodes[0].value;
+    this.select.selectedIndex = 3;
+    this.select.options[3].selected = true;
   };
   this.addOptionsArray = function(nameArray, valueArray) {
     this.addOptionsIter(new ArrayIter(nameArray), new ArrayIter(valueArray));
@@ -45,6 +49,17 @@ function MySelect(className, controlName) {
   };
   this.getValue = function() {
     return this.select.value;
+  };
+  this.cleanup = function() {
+  	if (!this.select) {
+  		return;
+  	}
+    var i;
+    for (i = 0; i < this.select.options.length; i++) {
+    	this.select.options[i].cleanup();
+    	this.select.options[i] = null;
+    }
+  	this.select = null;
   };
 }
 
@@ -81,6 +96,11 @@ function FieldSelect(className, controlName, table) {
       self.addOption(label, value);
     }, args);
   };
+  this.fieldSelectCleanup = this.cleanup;
+  this.cleanup = function() {
+  	this.fieldSelectCleanup();
+  	this.table = null;
+  };
   this.addOptions();
 }
 FieldSelect.prototype = new MySelect;
@@ -111,6 +131,11 @@ function TableFieldSelect(className, controlName, schema) {
       },
       tableArgs
     );
+  };
+  this.tableFieldSelectCleanup = this.cleanup;
+  this.cleanup = function() {
+    this.tableFieldSelectCleanup();
+    this.schema = null;
   };
   this.addOptions();
 }

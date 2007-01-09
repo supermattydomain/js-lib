@@ -70,6 +70,10 @@ function ChildIter(node) {
     this.currentChild = this.iterNode.firstChild;
     this.iterIndex = 0;
   };
+  this.cleanup = function() {
+  	this.iterNode = null;
+  	this.currentChild = null;
+  };
 }
 
 function AttributeIter(node) {
@@ -78,13 +82,15 @@ function AttributeIter(node) {
   if (node) {
     this.base(this.iterNode.attributes);
   }
+  this.cleanup = function() {
+  	this.iterNode = null;
+  };
 }
 AttributeIter.prototype = new ArrayIter;
 
-function AttributeNameIter(rec) {
-  this.rec = rec;
+function AttributeNameIter(node) {
   this.base = AttributeIter;
-  this.base(this.rec);
+  this.base(node);
   this.AttributeNameIterGetNext = this.getNext;
   this.getNext = function() {
     var next = this.AttributeNameIterGetNext();
@@ -102,13 +108,16 @@ function AttributeNameIter(rec) {
       callback(myargs);
     }, args);
   };
+  this.attributeNameIterCleanup = this.cleanup;
+  this.cleanup = function() {
+  	this.attributeNameIterCleanup();
+  };
 }
 AttributeNameIter.prototype = new AttributeIter;
 
-function AttributeValueIter(rec) {
-  this.rec = rec;
+function AttributeValueIter(node) {
   this.base = AttributeIter;
-  this.base(this.rec);
+  this.base(node);
   this.AttributeValueIterGetNext = this.getNext;
   this.getNext = function() {
     var next = this.AttributeValueIterGetNext();
@@ -125,6 +134,10 @@ function AttributeValueIter(rec) {
       myargs.push(value);
       callback(myargs);
     }, args);
+  };
+  this.attributeValueIterCleanup = this.cleanup;
+  this.cleanup = function() {
+  	this.attributeValueIterCleanup();
   };
 }
 AttributeValueIter.prototype = new AttributeIter;

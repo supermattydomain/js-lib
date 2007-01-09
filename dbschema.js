@@ -3,7 +3,7 @@ function DBField(table, fieldNode) {
   this.table = table;
   this.field = fieldNode;
   if (!this.table || !this.field) {
-    fatal('Bad table and/or field');
+    fatal('DBField: Bad table and/or field');
   }
   this.getName = function() {
     return this.field.getAttribute('Field');
@@ -28,16 +28,19 @@ function DBField(table, fieldNode) {
     printMessage('Unrecognised type "' + type + '" of field ' + this.getName());
     return true;
   };
+  this.cleanup = function() {
+	this.table = null;
+  	this.field = null;
+  };
 }
 
 function DBFieldIter(table) {
-  this.table = table;
   // printMessage('In DBFieldIter constructor');
   if (!table || !table.table) {
-    fatal('Bad table ' + table);
+    fatal('DBFieldIter: Bad table ' + table);
   }
   this.base = ChildIter;
-  this.base(this.table.table);
+  this.base(table.table);
   this.DBFieldIterGetNext = this.getNext;
   this.getNext = function() {
     // printMessage('In DBFieldIter.getNext');
@@ -87,16 +90,19 @@ function DBKey(table, keyNode) {
   	var columnStr = this.key.getAttribute('Column_name');
   	return columnStr.split(',');
   };
+  this.cleanup = function() {
+  	this.table = null;
+  	this.key = null;
+  };
 }
 
 function DBKeyIter(table) {
-  this.table = table;
   // printMessage('In DBKeyIter constructor');
   if (!table || !table.table) {
-    fatal('Bad table ' + table);
+    fatal('DBKeyIter: Bad table ' + table);
   }
   this.base = ChildIter;
-  this.base(this.table.table);
+  this.base(table.table);
   this.DBKeyIterGetNext = this.getNext;
   this.getNext = function() {
     // printMessage('In DBKeyIter.getNext');
@@ -125,8 +131,8 @@ function DBKeyIter(table) {
       }
       // printMessage('Processing node ' + node.nodeName);
       // printNode(node);
-      var field = new DBKey(table, node);
-      myargs.push(field);
+      var key = new DBKey(table, node);
+      myargs.push(key);
       keyCallback(myargs);
     }, args);
   };
@@ -146,13 +152,12 @@ function DBForeignKey(table, foreignKeyNode) {
 DBForeignKey.prototype = new DBKey;
 
 function DBForeignKeyIter(table) {
-  this.table = table;
   // printMessage('In DBForeignKeyIter constructor');
   if (!table || !table.table) {
-    fatal('Bad table ' + table);
+    fatal('DBForeignKeyIter: Bad table ' + table);
   }
   this.base = ChildIter;
-  this.base(this.table.table);
+  this.base(table.table);
   this.DBForeignKeyIterGetNext = this.getNext;
   this.getNext = function() {
     // printMessage('In DBForeignKeyIter.getNext');
@@ -181,8 +186,8 @@ function DBForeignKeyIter(table) {
       }
       // printMessage('Processing node ' + node.nodeName);
       // printNode(node);
-      var field = new DBForeignKey(table, node);
-      myargs.push(field);
+      var key = new DBForeignKey(table, node);
+      myargs.push(key);
       foreignKeyCallback(myargs);
     }, args);
   };
@@ -222,7 +227,9 @@ function DBTable(tableNode) {
   this.enumFields = function(fieldCallback, args) {
     var iter = this.getFieldIter();
     iter.forAll(fieldCallback, args);
-    return iter.getCount();
+    var i = iter.getCount();
+    iter.cleanup();
+    return i;
   };
   this.getKeyIter = function() {
     return new DBKeyIter(this);
@@ -230,7 +237,9 @@ function DBTable(tableNode) {
   this.enumKeys = function(keyCallback, args) {
     var iter = this.getKeyIter();
     iter.forAll(keyCallback, args);
-    return iter.getCount();
+    var i = iter.getCount();
+    iter.cleanup();
+    return i;
   };
   this.getForeignKeyIter = function() {
     return new DBForeignKeyIter(this);
@@ -238,7 +247,14 @@ function DBTable(tableNode) {
   this.enumForeignKeys = function(foreignKeyCallback, args) {
     var iter = this.getForeignKeyIter();
     iter.forAll(foreignKeyCallback, args);
-    return iter.getCount();
+    var i = iter.getCount();
+    iter.cleanup();
+    return i;
+  };
+  this.cleanup = function() {
+  	this.table = null;
+  	this.options = null;
+  	this.fields = null;
   };
 }
 
@@ -300,11 +316,11 @@ function DBSchema(url) {
     if (null == self.database || undefined == self.database) {
       fatal('No database');
     }
-    // printNode(self.database);
-    showStatus('Schema loaded.');
     if (!self.externalCallbackFn) {
       fatal('DBSchema: No external callback');
     }
+    // printNode(self.database);
+    showStatus('Schema loaded.');
     self.externalCallbackFn(self);
   };
   this.fetchSchema = function(externalCallback) {
@@ -338,6 +354,12 @@ function DBSchema(url) {
   this.enumTables = function(tableCallback, args) {
     var iter = this.getTableIter();
     iter.forAll(tableCallback, args);
-    return iter.getCount();
+    var i = iter.getCount();
+    iter.cleanup();
+    return i;
+  };
+  this.cleanup = function() {
+    this.ajax = null;
+    this.database = null;
   };
 }

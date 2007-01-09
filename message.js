@@ -88,6 +88,8 @@ function getEventSource(e) {
   throw 'Cannot find event target';
 }
 
+var nodeTypeText = 3;
+
 function findChildByType(node, type) {
   if (null == node || undefined == node) {
     return null;

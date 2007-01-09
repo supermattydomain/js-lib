@@ -3,6 +3,7 @@ function SearchForm(tableName) {
   var self = this;
   this.tableName = tableName;
   this.table = null;
+  this.urlDiv = null;
   this.criteria = new Array();
   this.maxCriteria = 20;
   this.operations = new Array(
@@ -69,6 +70,7 @@ function SearchForm(tableName) {
   	if (!found) {
   		fatal('Trying to remove criterion that is not a child of mine');
   	}
+  	this.criteria[i].cleanup();
   	delete this.criteria[i];
   	this.criteria.splice(i, 1);
     this.searchForm.removeChild(criterion.getDiv());
@@ -80,6 +82,7 @@ function SearchForm(tableName) {
     }
     var criterion = this.criteria.pop();
     this.searchForm.removeChild(criterion.getDiv());
+    criterion.cleanup();
     delete criterion;
     this.moreButton.disabled = false;
   };
@@ -129,6 +132,21 @@ function SearchForm(tableName) {
       self.searchButton.disabled = false;
       showStatus('Ready.');
     }
+  };
+  this.cleanup = function() {
+  	this.table = null;
+  	this.searchForm = null;
+  	this.urlDiv = null;
+    this.urlLink = null;
+    this.urlText = null;
+    this.moreButton = null;
+    this.fewerButton = null;
+    this.searchButton = null;
+    this.testSearchButton = null;
+    this.resetButton = null;
+    arrayForAll(this.criteria, function(args) {
+    	this.removeCriterion(args[0]);
+    });
   };
   this.searchForm.appendChild(this.urlDiv);
   this.addButtons();

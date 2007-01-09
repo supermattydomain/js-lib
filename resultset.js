@@ -63,4 +63,9 @@ function ResultSet(url) {
     iter.forAll(fieldCallback, args);
     return iter.getCount();
   };
+  this.cleanup = function() {
+  	this.ajax = null;
+  	this.xmlDoc = null;
+  	this.resultSet = null;
+  };
 }
