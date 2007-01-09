@@ -9,7 +9,7 @@ function SearchCriterion(parent, ident, table, operations) {
   this.table = table;
   this.operations = operations;
   this.makeFieldSelect = function() {
-  	return new FieldSelect('criterion', 'field' + this.ident, this.table);
+  	return new FieldSelect('criterion_field', 'field' + this.ident, this.table);
   };
   this.makeOperationSelect = function() {
   	return new MySelectOptionArray('criterion', 'operation' + this.ident, this.operations, this.operations);
@@ -66,8 +66,6 @@ function SearchCriterion(parent, ident, table, operations) {
     return url;
   }
   this.cleanup = function() {
-	this.parent = null;
-	this.div = null;
 	if (this.fieldSelect) {
 		this.fieldSelect.cleanup();
 		this.fieldSelect = null;
@@ -77,7 +75,9 @@ function SearchCriterion(parent, ident, table, operations) {
 		this.operationSelect.cleanup();
 		this.operationSelect = null;
 	}
-	this.table = table;
+	this.table = null;
+	this.parent = null;
+	this.div = null;
   };
   this.populate();
 }

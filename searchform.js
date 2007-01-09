@@ -70,10 +70,10 @@ function SearchForm(tableName) {
   	if (!found) {
   		fatal('Trying to remove criterion that is not a child of mine');
   	}
+    this.searchForm.removeChild(criterion.getDiv());
   	this.criteria[i].cleanup();
   	delete this.criteria[i];
   	this.criteria.splice(i, 1);
-    this.searchForm.removeChild(criterion.getDiv());
     this.moreButton.disabled = false;
   };
   this.removeLastCriterion = function() {

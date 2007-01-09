@@ -38,8 +38,8 @@ function MySelect(className, controlName) {
     while (nameIter.hasMore() && valueIter.hasMore()) {
 	this.addOption(nameIter.getNext(), valueIter.getNext());
     }
-    this.select.selectedIndex = 3;
-    this.select.options[3].selected = true;
+    this.select.selectedIndex = 0;
+    this.select.options[0].selected = true;
   };
   this.addOptionsArray = function(nameArray, valueArray) {
     this.addOptionsIter(new ArrayIter(nameArray), new ArrayIter(valueArray));
@@ -56,7 +56,9 @@ function MySelect(className, controlName) {
   	}
     var i;
     for (i = 0; i < this.select.options.length; i++) {
-    	this.select.options[i].cleanup();
+	if (this.select.options[i].viewObject) {
+	    	this.select.options[i].viewObject.cleanup();
+	}
     	this.select.options[i] = null;
     }
   	this.select = null;
