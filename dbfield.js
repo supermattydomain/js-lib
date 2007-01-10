@@ -25,6 +25,9 @@ function DBField(table, fieldNode) {
     if (type.indexOf('int') >= 0) {
       return true;
     }
+    if (type.indexOf('timestamp') >= 0) {
+      return true;
+    }
     printMessage('Unrecognised type "' + type + '" of field ' + this.getName());
     return true;
   };
