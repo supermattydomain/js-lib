@@ -14,7 +14,8 @@ function SearchForm(tableName) {
     'is less than or equal to',
     'is greater than',
     'is greater than or equal to',
-    'is similar to'
+    'is similar to',
+    'begins with'
   );
   this.searchForm = dce('form');
   this.searchForm.setAttribute('id', 'searchform');
