@@ -54,15 +54,6 @@ function ResultSet(url) {
     iter.forAll(rowCallback, args);
     return iter.getCount();
   };
-  this.getFieldIter = function(resultNode) {
-    var iter = new AttributeIter(resultNode);
-    return iter;
-  };
-  this.enumFields = function(resultNode, fieldCallback, args) {
-    var iter = this.getFieldIter(resultNode);
-    iter.forAll(fieldCallback, args);
-    return iter.getCount();
-  };
   this.cleanup = function() {
   	this.ajax = null;
   	this.xmlDoc = null;

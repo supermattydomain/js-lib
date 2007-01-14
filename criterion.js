@@ -58,12 +58,12 @@ function SearchCriterion(parent, ident, table, operations) {
   this.getDiv = function() {
     return this.div;
   };
+  this.getConstraint = function() {
+  	return new Constraint(this.ident, this.fieldSelect.getValue(), this.operationSelect.getValue(), this.valueField.value);
+  };
   this.getURL = function() {
-    var url = '';
-    url += this.fieldSelect.getName() + '=' + this.fieldSelect.getValue();
-    url += '&' + this.operationSelect.getName() + '=' + this.operationSelect.getValue();
-    url += '&' + this.valueField.name + '=' + this.valueField.value;
-    return url;
+    var constraint = this.getConstraint();
+    return constraint.getURL();
   }
   this.cleanup = function() {
 	if (this.fieldSelect) {

@@ -29,9 +29,14 @@ if (results == undefined || results == null) {
   fatal('Failed to create results table');
 }
 
-function doSearch(searchURL) {
-  var resultSet = new ResultSet(searchURL);
-  resultSet.fetchResults(results.loadResultSet);
+function showArtist(artistName) {
+	printMessage('In showArtist(' + artistName + ')');
+}
+
+function doSearch(query) {
+	var searchURL = query.getURL();
+	var resultSet = new ResultSet(searchURL);
+	resultSet.fetchResults(results.loadResultSet);
 }
 
 function doTestSearch() {
@@ -47,7 +52,7 @@ search.moreButton.onclick = onMoreButton;
 
 function onSearchButton() {
   // printMessage('onSearchButton');
-  doSearch(search.getURL());
+  doSearch(search.getQuery());
 }
 search.searchButton.onclick = onSearchButton;
 
@@ -66,12 +71,6 @@ search.searchForm.onsubmit = function() {
   return false;
 }
 
-var searchDiv = document.getElementById('searchdiv');
-searchDiv.appendChild(search.getForm());
-
-var resultsDiv = document.getElementById('resultsdiv');
-resultsDiv.appendChild(results.getTable());
-
 function sortResults(columnNum) {
   results.setSortColumn(columnNum);
   results.sortTable();
@@ -85,9 +84,7 @@ function onSchemaFetched(schema) {
   search.populate(schema);
 }
 
-schema.fetchSchema(onSchemaFetched);
-
-function cleanup() {
+function cleanupSearchPage() {
 	if (search) {
 		search.cleanup();
 		search = null;
@@ -97,3 +94,9 @@ function cleanup() {
 		schema = null;
 	}
 }
+
+schema.fetchSchema(onSchemaFetched);
+var searchDiv = document.getElementById('searchdiv');
+searchDiv.appendChild(search.getForm());
+var resultsDiv = document.getElementById('resultsdiv');
+resultsDiv.appendChild(results.getTable());

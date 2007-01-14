@@ -1,5 +1,4 @@
 function SearchForm(tableName) {
-  this.searchURLRoot = 'search.cgi?';
   var self = this;
   this.tableName = tableName;
   this.table = null;
@@ -30,18 +29,17 @@ function SearchForm(tableName) {
   this.getForm = function() {
     return this.searchForm;
   };
+  this.getQuery = function() {
+  	var query = new DBQuery();
+  	var i;
+  	for (i = 0; i < this.criteria.length; i++) {
+  		query.addConstraint(this.criteria[i].getConstraint());
+  	}
+  	return query;
+  };
   this.getURL = function() {
-    var url = '';
-    var i;
-    for (i = 0; i < this.criteria.length; i++) {
-      if (url.length != 0) {
-        url += '&';
-      }
-      url += this.criteria[i].getURL();
-    }
-    url = this.searchURLRoot + url + '&format=xml';
-    // TODO: replace with entry field
-    url += '&maxresults=1000';
+  	var query = this.getQuery();
+  	var url = query.getURL();
     // printMessage('SearchForm: Generated URL ' + url);
     this.urlText.nodeValue = url;
     this.urlLink.setAttribute('href', url);
@@ -146,7 +144,7 @@ function SearchForm(tableName) {
     this.testSearchButton = null;
     this.resetButton = null;
     arrayForAll(this.criteria, function(args) {
-    	this.removeCriterion(args[0]);
+    	self.removeCriterion(args[0]);
     });
   };
   this.searchForm.appendChild(this.urlDiv);
