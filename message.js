@@ -1,13 +1,25 @@
+function bad(val) {
+	return (null == val || undefined == val);
+}
+
+function good(val) {
+	return !bad(val);
+}
+
 function dce(tag) {
 	return document.createElement(tag);
 }
 
-function dctn(string) {
-	return document.createTextNode(string);
+function dctn(text) {
+	return document.createTextNode(text);
+}
+
+function sa(node, attrName, attrValue) {
+	node.setAttribute(attrName, attrValue);
 }
 
 function setClass(node, className) {
-  node.setAttribute('class', className);
+  sa(node, 'class', className);
   node.className = className;
 }
 
@@ -15,12 +27,16 @@ function printMessage(str) {
   // doesn't work in Mozilla
   // window.dump(str);
   var output = document.getElementById('messages');
-  if (null == output) {
+  if (bad(output)) {
     output = dce('div');
-    output.setAttribute('id', 'messages');
-    // FIXME: Doesn't work in IE 6.
-    // document.documentElement is not, however, null
-    document.documentElement.appendChild(output);
+    sa(output, 'id', 'messages');
+    if (good(document.documentElement)) {
+    	// FIXME: Doesn't work in IE 6.
+	    // document.documentElement is not, however, null
+	    document.documentElement.appendChild(output);
+    } else {
+    	document.appendChild(output);
+    }
   }
   output.appendChild(dctn(str));
   output.appendChild(dce('br'));
@@ -35,7 +51,7 @@ function showStatus(str) {
   var status = document.getElementById('status');
   if (null == status) {
     status = dce('div');
-    status.setAttribute('id', 'status');
+    sa(status, 'id', 'status');
     // FIXME: Doesn't work in IE 6.
     // document.documentElement is not, however, null
     document.documentElement.appendChild(status);
@@ -109,4 +125,51 @@ function findChildByType(node, type) {
     node = node.nextSibling;
   }
   return null;
+}
+
+function assert(val) {
+	if (!val) {
+		fatal('assertion failed');
+	}
+}
+
+function assertGood(val) {
+	assert(!bad(val));
+}
+
+function dumpArray(val) {
+	var i;
+	for (i = 0; i < val.length; i++) {
+		dumpData(val[i]);
+	}
+}
+
+function dumpObject(obj) {
+   printMessage('{');
+   for (var i in obj) {
+      result += obj_name + "." + i + " = " + obj[i] + "<BR>"
+      printMessage(i + ':');
+      dumpData(obj[i]);
+   }
+   printMessage('}');
+}
+
+function dumpData(val) {
+	if (typeof(val) == 'array') {
+		dumpArray(val);
+	} else if (typeof(val) == 'string') {
+		printMessage(val);
+	} else if (typeof(val) == 'number') {
+		printMessage(val);
+	} else if (typeof(val) == 'object') {
+		if (val instanceof Array) {
+			dumpArray(val);
+		} else if (val instanceof String) {
+			printMessage(val);
+		} else {
+			dumpObject(val);
+		}
+	} else {
+		printMessage(val);
+	}
 }
