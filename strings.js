@@ -1,3 +1,13 @@
+function bad(val) {
+	return (null == val || undefined == val);
+}
+
+function assert(val) {
+	if (bad(val)) {
+		fatal('Undefined or null value');
+	}
+}
+
 function ucFirst(str) {
   if (0 == str.length) {
     return str;
@@ -19,26 +29,57 @@ function ucFirstAll(str) {
 }
 
 function compareValues(val1, val2) {
-  var num1 = Number(val1);
-  var num2 = Number(val2);
-  if (isNaN(num1) || isNaN(num2)) {
-    val1 = val1.toLowerCase();
-    val2 = val2.toLowerCase();
-  } else {
-    val1 = num1;
-    val2 = num2;
-  }
-  // printMessage('compareValues: ' + val1 + ' ' + val2);
-  var ret;
-  if (val1 < val2) {
-    ret = -1;
-  } else if (val1 > val2) {
-    ret = 1;
-  } else {
-    ret = 0;
-  }
-  // printMessage('compareValues: ret=' + ret);
-  return ret;
+	if ('string' != typeof(val1) || 'string' != typeof(val2)) {
+		fatal('Cannot compare non-strings');
+	}
+	// printMessage('In compareValues: ' + val1 + ' ' + val2);
+	var num1 = parseInt(val1);
+	var num2 = parseInt(val2);
+	if (isNaN(num1) || isNaN(num2)) {
+		val1 = val1.toLowerCase();
+		val2 = val2.toLowerCase();
+	} else {
+		val1 = num1;
+		val2 = num2;
+	}
+	// printMessage('compareValues: ' + val1 + ' ' + val2);
+	var ret;
+	if (val1 < val2) {
+		ret = -1;
+	} else if (val1 > val2) {
+		ret = 1;
+	} else {
+		ret = 0;
+	}
+	// printMessage('compareValues(' + val1 + ', ' + val2 + ') => ' + ret);
+	return ret;
+}
+
+function dumpArray(val) {
+	var i;
+	for (i = 0; i < val.length; i++) {
+		dumpData(val[i]);
+	}
+}
+
+function dumpData(val) {
+	if (typeof(val) == 'array') {
+		dumpArray(val);
+	} else if (typeof(val) == 'string') {
+		printMessage(val);
+	} else if (typeof(val) == 'number') {
+		printMessage(val);
+	} else if (typeof(val) == 'object') {
+		if (val instanceof Array) {
+			dumpArray(val);
+		} else if (val instanceof String) {
+			printMessage(val);
+		} else {
+			printMessage(val.toString());
+		}
+	} else {
+		printMessage(val);
+	}
 }
 
 function removePrefix(val, prefix) {
