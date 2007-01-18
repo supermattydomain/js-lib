@@ -1,13 +1,3 @@
-function bad(val) {
-	return (null == val || undefined == val);
-}
-
-function assert(val) {
-	if (bad(val)) {
-		fatal('Undefined or null value');
-	}
-}
-
 function ucFirst(str) {
   if (0 == str.length) {
     return str;
@@ -28,9 +18,9 @@ function ucFirstAll(str) {
   return ret;
 }
 
-function compareValues(val1, val2) {
+function compareStrings(val1, val2) {
 	if ('string' != typeof(val1) || 'string' != typeof(val2)) {
-		fatal('Cannot compare non-strings');
+		fatal('compareStrings: not strings');
 	}
 	// printMessage('In compareValues: ' + val1 + ' ' + val2);
 	var num1 = parseInt(val1);
@@ -55,31 +45,17 @@ function compareValues(val1, val2) {
 	return ret;
 }
 
-function dumpArray(val) {
-	var i;
-	for (i = 0; i < val.length; i++) {
-		dumpData(val[i]);
+function compareValues(val1, val2) {
+	if (bad(val1) || bad(val2)) {
+		fatal('compareValues: bad values');
 	}
-}
-
-function dumpData(val) {
-	if (typeof(val) == 'array') {
-		dumpArray(val);
-	} else if (typeof(val) == 'string') {
-		printMessage(val);
-	} else if (typeof(val) == 'number') {
-		printMessage(val);
-	} else if (typeof(val) == 'object') {
-		if (val instanceof Array) {
-			dumpArray(val);
-		} else if (val instanceof String) {
-			printMessage(val);
-		} else {
-			printMessage(val.toString());
-		}
-	} else {
-		printMessage(val);
+	if (typeof(val1) == 'object') {
+		val1 = val1.toString();
 	}
+	if (typeof(val2) == 'object') {
+		val2 = val2.toString();
+	}
+	return compareStrings(val1, val2);
 }
 
 function removePrefix(val, prefix) {
