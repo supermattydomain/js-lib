@@ -1,8 +1,8 @@
 function MyOption(className, controlName, value) {
   this.option = dce('option');
   this.option.viewObject = this;
-  this.option.setAttribute('label', controlName);
-  this.option.setAttribute('value', value);
+  sa(this.option, 'label', controlName);
+  sa(this.option, 'value', value);
   setClass(this.option, className);
   this.option.appendChild(dctn(controlName));
   this.getOption = function() {
@@ -17,7 +17,7 @@ function MySelect(className, controlName) {
   this.className = className;
   this.select = dce('select');
   this.select.viewObject - this;
-  this.select.setAttribute('name', controlName);
+  sa(this.select, 'name', controlName);
   setClass(this.select, this.className);
   this.getSelect = function() {
     return this.select;
