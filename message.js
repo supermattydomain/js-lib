@@ -23,6 +23,22 @@ function setClass(node, className) {
   node.className = className;
 }
 
+function getDocumentStart() {
+    var bodies = document.getElementsByTagName('body');
+    if (bodies.length) {
+    	return bodies[0];
+    }
+    if (document.documentElement) {
+    	return document.documentElement;
+    }
+    return document;
+}
+
+function appendMessage(node, str) {
+  node.appendChild(dctn(str));
+  node.appendChild(dce('br'));
+}
+
 function printMessage(str) {
   // doesn't work in Mozilla
   // window.dump(str);
@@ -30,16 +46,10 @@ function printMessage(str) {
   if (bad(output)) {
     output = dce('div');
     sa(output, 'id', 'messages');
-    if (good(document.documentElement)) {
-    	// FIXME: Doesn't work in IE 6.
-	    // document.documentElement is not, however, null
-	    document.documentElement.appendChild(output);
-    } else {
-    	document.appendChild(output);
-    }
+	var docStart = getDocumentStart();
+	docStart.insertBefore(output, docStart.firstChild);
   }
-  output.appendChild(dctn(str));
-  output.appendChild(dce('br'));
+  appendMessage(output, str);
 }
 
 function fatal(msg) {
