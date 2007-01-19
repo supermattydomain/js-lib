@@ -157,7 +157,6 @@ function dumpArray(val) {
 function dumpObject(obj) {
    printMessage('{');
    for (var i in obj) {
-      result += obj_name + "." + i + " = " + obj[i] + "<BR>"
       printMessage(i + ':');
       dumpData(obj[i]);
    }
@@ -176,6 +175,8 @@ function dumpData(val) {
 			dumpArray(val);
 		} else if (val instanceof String) {
 			printMessage(val);
+		} else if (val instanceof Node) {
+			printNode(val);
 		} else {
 			dumpObject(val);
 		}
