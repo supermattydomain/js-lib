@@ -18,41 +18,41 @@ function ResultSet(url) {
     self.externalCallbackFn(self);
   };
   this.fetchResults = function(externalCallback) {
-    if (!externalCallback) {
+    if (bad(externalCallback)) {
       fatal('Bad loaded callback');
     }
     this.externalCallbackFn = externalCallback;
     this.ajax = new Ajax(self.url, this.dataCallbackFn);
-    if (null == this.ajax) {
-      printMessage('ResultSet: Cannot create request using URL ' + this.url);
-      return false;
+    if (bad(this.ajax)) {
+      fatal('ResultSet: Cannot create request using URL ' + this.url);
     } else if (!this.ajax.doGet()) {
-      printMessage('ResultSet: Cannot start GET request using URL ' + this.url);
-      return false;
+      fatal('ResultSet: Cannot start GET request using URL ' + this.url);
     }
     showStatus('Retrieving search results...');
     return true;
   };
   this.getNumResults = function() {
-    if (null == this.resultSet) {
+    if (bad(this.resultSet)) {
       return 0;
     }
     return this.resultSet.childNodes.length;
   };
   this.getResultIter = function() {
-    if (null == this.resultSet) {
-      throw 'No resultset loaded';
+    if (bad(this.resultSet)) {
+      fatal('No resultset loaded');
     }
     var iter = new ChildIter(this.resultSet);
     return iter;
   };
   this.enumResults = function(rowCallback, args) {
-    if (null == this.resultSet) {
+    if (bad(this.resultSet)) {
       return 0;
     }
     var iter = this.getResultIter();
     iter.forAll(rowCallback, args);
-    return iter.getCount();
+    var count = iter.getCount();
+    iter.cleanup();
+    return count;
   };
   this.cleanup = function() {
   	this.ajax = null;

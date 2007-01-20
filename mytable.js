@@ -9,6 +9,9 @@ function MyTable() {
   this.getTable = function() {
     return this.table;
   };
+  this.getColumnName = function(i) {
+  	return this.headingRow.cells[i].firstChild.nodeValue;
+  };
   this.updateRowStyles = function() {
     if (this.rowStylesClean == this.table.rows.length) {
       return;
@@ -28,15 +31,14 @@ function MyTable() {
     }
     this.rowStylesClean = this.table.rows.length;
   };
-  this.createFieldDisplay = function(field) {
-    // printMessage('In SortedTable.createFieldDisplay');
-	return field.value;
+  this.createCellContents = function(name, value) {
+	return dctn(value);
   };
-  this.makeCell = function(contents) {
-    // printMessage('makeCell');
+  this.createCell = function(name, value) {
+    // printMessage('MyTable.createCell');
     var tableCell = dce('td');
     setClass(tableCell, 'results');
-    tableCell.appendChild(contents);
+    tableCell.appendChild(this.createCellContents(name, value));
     tableCell.onmouseover = function(evt) {
       tableCell.oldClassName = tableCell.className;
       setClass(tableCell, tableCell.className + '_hover');
@@ -54,18 +56,14 @@ function MyTable() {
     } else {
       setClass(tableRow, 'results_even');
     }
-    var args = new Array();
-    args[0] = tableRow;
     iter.reset();
     iter.forAll(function(myargs) {
       // printMessage('Got field');
-      var tableRow = myargs[0];
-      var field = myargs[1];
-      var contents = self.createFieldDisplay(field);
-      var tableCell = self.makeCell(contents);
+      var field = myargs[0];
+      var tableCell = self.createCell(field.name, field.value);
       tableRow.appendChild(tableCell);
       // printMessage('Added table cell');
-    }, args);
+    }, new Array());
     // printNode(tableRow);
     this.rowStylesClean = index;
     this.updateRowStyles();

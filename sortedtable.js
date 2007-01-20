@@ -6,17 +6,14 @@ function SortedTable() {
   this.table.viewObject = this;
   var self = this;
   this.findInsertIndex = function(iter) {
-    // printMessage('findInsertIndex');
-    if (this.sortColumnNum < 0) {
+    // printMessage('SortedTable.findInsertIndex');
+    if (this.sortColumnNum < 0 || bad(this.sortColumnNum)) {
       return this.table.rows.length;
     }
-    var r;
     var i;
-    for (r = 0; r < this.table.rows.length; r++) {
-      var row = this.table.rows[r];
-      if (this.headingRow == row) {
-        continue;
-      }
+    for (i = (bad(this.headingRow) ? 0 : 1); i < this.table.rows.length; i++) {
+      var row = this.table.rows[i];
+      assert(this.headingRow == row);
       var j;
       iter.reset();
       for (j = 0; j < row.cells.length; j++) {
@@ -24,15 +21,22 @@ function SortedTable() {
           continue;
         }
         var value = iter.getNext();
-        var textNode = findChildByType(row.cells[j], 3);
-        if (compareValues(value, textNode.nodeValue) >= 0) {
-          return i;
+        // var sortValue = row.cells[j].firstChild.sortValue;
+        var sortValue = row.cells[j].sortValue;
+        if (compareValues(value, sortValue) >= 0) {
+        	printMessage('findInsertIndex: ' + i);
+        	return i;
         }
       }
-      i++;
     }
-    // printMessage('findInsertIndex: ' + i);
+    printMessage('SortedTable.findInsertIndex: ' + i);
     return i;
+  };
+  this.sortedTableCreateCell = this.createCell;
+  this.createCell = function(name, value) {
+  	var cell = this.sortedTableCreateCell(name, value);
+    cell.sortValue = value;
+    return cell;
   };
   this.makeHeadingCell = function(fieldNum, fieldName) {
     // printMessage('columnNum ' + fieldNum);
@@ -58,7 +62,7 @@ function SortedTable() {
     return headingCell;
   };
   this.addColumnHeadings = function(iter) {
-    // printMessage('addColumnHeadings');
+    // printMessage('SortedTable.addColumnHeadings');
     if (this.headingRow) {
       return;
     }
@@ -74,40 +78,28 @@ function SortedTable() {
     }, args);
   };
   this.compareCells = function(cell1, cell2) {
-    var node1 = findChildByType(cell1, nodeTypeText);
-    var node2 = findChildByType(cell2, nodeTypeText);
-    if (null == node1 || undefined == node1) {
-      printMessage('compareCells: no child text to compare');
-      printNode(cell1);
-      if (null == node2 || undefined == node2) {
-        ret = 0;
-      } else {
-        ret = -1;
-      }
-    } else if (null == node2 || undefined == node2) {
-      printMessage('compareCells: no child text to compare');
-      printNode(cell2);
-      ret = 1;
-    } else {
-      ret = compareValues(node1.nodeValue, node2.nodeValue);
-    }
+    ret = compareValues(cell1.sortValue, cell2.sortValue);
     // printMessage('compareCells: returning ' + ret);
     return ret;
   };
   this.compareRows = function(row1, row2) {
-    // printMessage('compareRows:');
-    if (row1.cells.length <= self.sortColumnNum) {
+    // printMessage('SortedTable.compareRows');
+  	if (bad(this.sortColumnNum)) {
+  		printMessage('SortedTable.compareRows: bad sort column');
+  		return;
+  	}
+    if (row1.cells.length <= this.sortColumnNum) {
       fatal('compareRows: unsufficient cells in comparison row 1');
     }
-    if (row2.cells.length <= self.sortColumnNum) {
-      fatal('compareRows: unsufficient cells in comparison row 2');
+    if (row2.cells.length <= this.sortColumnNum) {
+      fatal('compareRows: insufficient cells in comparison row 2');
     }
-    var ret = this.compareCells(row1.cells[self.sortColumnNum], row2.cells[self.sortColumnNum]);
+    var ret = this.compareCells(row1.cells[this.sortColumnNum], row2.cells[this.sortColumnNum]);
     // printMessage('compareRows: returning ' + ret);
     return ret;
   };
   this.getSortColumnName = function() {
-    if (this.sortColumnNum < 0) {
+    if (this.sortColumnNum < 0 || bad(this.sortColumnNum)) {
       return 'None';
     }
     var cell = this.headingRow.cells[this.sortColumnNum];
@@ -115,6 +107,7 @@ function SortedTable() {
     return textNode.nodeValue;
   };
   this.tableToArray = function() {
+  	// printMessage('In SortedTable.tableToArray');
     var data = new Array();
     var r;
     var i;
@@ -129,16 +122,21 @@ function SortedTable() {
       data[i] = new Array();
       var j;
       for (j = 0; j < row.cells.length; j++) {
-        var textNode = findChildByType(row.cells[j], 3);
-        data[i][j] = textNode.nodeValue;
+	    var cell = row.cells[j];
+	    if (undefined == cell.sortValue || null == cell.sortValue) {
+	    	printNode(cell);
+	    	fatal('No sort value');
+	    }
+        data[i][j] = cell.sortValue;
       }
       i++;
     }
     return data;
   };
   this.arrayToTable = function(data) {
-    if (data.length != this.table.rows.length - 1) {
-      fatal('Arrays not same size ' + data.length + '/' + this.table.rows.length);
+  	// printMessage('In SortedTable.arrayToTable');
+    if (data.length != this.table.rows.length - (bad(this.headingRow) ? 0 : 1)) {
+      fatal('SortedTable.arrayToTable: Arrays not same size ' + data.length + '/' + this.table.rows.length);
     }
     var r;
     var i;
@@ -147,37 +145,72 @@ function SortedTable() {
       if (row == this.headingRow) {
         continue;
       }
-      var arr = data[i];
       var j;
-      for (j = 0; j < arr.length; j++) {
+      for (j = 0; j < data[i].length; j++) {
         var cell = row.cells[j];
-        var textNode = findChildByType(cell, 3);
-        textNode.nodeValue = arr[j];
+        var newCell = this.createCell(this.getColumnName(j), data[i][j]);
+        row.replaceChild(newCell, cell);
       }
       i++;
     }
   };
-  this.compareArrays = function(arr1, arr2) {
-    // printMessage('compareArrays:');
+  this.compareArrays = function(arr1, arr2, sortColumnNum) {
+    // printMessage('In SortedTable.compareArrays: sort column ' + sortColumnNum);
+    if (bad(sortColumnNum) || sortColumnNum < 0) {
+    	fatal('SortedTable.compareArrays: bad sort column');
+    }
+    assertGood(sortColumnNum);
+    assertGood(arr1);
+    assertGood(arr2);
+    assertGood(arr1.length);
+    assertGood(arr2.length);
     if (arr1.length != arr2.length) {
       fatal('compareArrays: Arrays different sizes');
     }
-    var val1 = arr1[self.sortColumnNum];
-    var val2 = arr2[self.sortColumnNum];
-    return compareValues(val1, val2);
+    if (sortColumnNum < 0) {
+    	fatal('Bad sort column num');
+    }
+    if (sortColumnNum >= arr1.length) {
+    	fatal('compareArrays: insufficient elements');
+    }
+    // printMessage('Array 1:');
+    // dumpData(arr1);
+    // printMessage('Array 2:');
+    // dumpData(arr2);
+    // printMessage(sortColumnNum);
+    var val1 = arr1[sortColumnNum];
+    var val2 = arr2[sortColumnNum];
+    if (val1 == null || val1 == undefined || val2 == null || val2 == undefined) {
+    	fatal('SortedTable.compareArrays: Bad values in comparison arrays');
+    }
+    var ret = compareValues(val1, val2);
+    return ret;
+  };
+  this.dumpData = function(data) {
+  	var i;
+  	for (i = 0; i < data.length; i++) {
+  		dumpData(data[i][this.sortColumnNum]);
+  	}
   };
   this.sortTable = function() {
-    if (this.sortColumnNum < 0 || this.sorted) {
-      return;
+  	// assertGood(this.sortColumnNum);
+    if (bad(this.sortColumnNum) || this.sortColumnNum < 0 || this.sorted) {
+      fatal('Bad sort column');
     }
     showStatus('Sorting results by ' + this.getSortColumnName() + '...');
     var data = this.tableToArray();
-    data.sort(this.compareArrays);
+    var sortColumnNum = this.sortColumnNum;
+    var self = this;
+    data.sort(function(arr1, arr2) {
+    	return self.compareArrays(arr1, arr2, sortColumnNum);
+    });
+    // this.dumpData(data);
     this.arrayToTable(data);
     this.sorted = true;
     showStatus('Results sorted by ' + this.getSortColumnName() + '.');
   };
   this.setSortColumn = function(colNum) {
+  	assertGood(colNum);
     if (this.sortColumnNum == colNum) {
       return;
     }
@@ -194,6 +227,7 @@ function SortedTable() {
   };
   this.SortedTableRemoveColumnIndex = this.removeColumnIndex;
   this.removeColumnIndex = function(columnNum) {
+  	assertGood(columnNum);
     this.SortedTableRemoveColumnIndex(columnNum);
     if (this.sortColumnNum == columnNum) {
       this.sortColumnNum = -1;

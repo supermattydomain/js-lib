@@ -21,19 +21,18 @@ function Ajax(url, requestDoneCallback) {
         }
       }
     }
-    if (null == this.req) {
-      this.error = true;
-      return false;
-    }
+    if (bad(this.req)) {
+    	fatal('Cannot create XMLHttpRequest');
+	}
     this.error = false;
-    return true;
+    return !this.error;
   };
   this.getResponseXML = function() {
     if (this.error) {
       fatal('AJAX: No XML response available due to request error');
     } else if (!this.req) {
       return null;
-    } else if (!this.req.responseXML) {
+    } else if (bad(this.req.responseXML)) {
       printMessage('AJAX: No XML response returned');
       printMessage(this.req.responseText);
       return null;
@@ -52,8 +51,7 @@ function Ajax(url, requestDoneCallback) {
   };
   this.doRequest = function(data) {
     if (false == this.init()) {
-      printMessage('AJAX: Init failed');
-      return false;
+      fatal('AJAX: Init failed');
     }
     this.req.onreadystatechange = this.onreadystatechange;
     if ('POST' == this.method) {
@@ -64,11 +62,8 @@ function Ajax(url, requestDoneCallback) {
       this.req.send(data);
       return true;
     } catch (e) {
-      this.error = true;
-      return false;
     }
-    this.error = true;
-    return false;
+   	fatal('Ajax: Cannot open request');
   };
   var self = this;
   this.onreadystatechange = function(evt) {
