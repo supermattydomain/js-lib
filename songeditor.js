@@ -1,4 +1,4 @@
-function AlbumEditor(record) {
+function SongEditor(record) {
 	this.base = RecordEditor;
 	this.base(record);
 	this.labelName = null;
@@ -23,3 +23,4 @@ function AlbumEditor(record) {
 		}
 	};
 }
+SongEditor.prototype = new RecordEditor;
