@@ -14,7 +14,7 @@ function AlbumList(artistID) {
 	this.describeQuery = function() {
 		var ret = this.albumListDescribeQuery();
 		if (this.artistID) {
-			ret += ' for selected artist';
+			ret += ' for artist ' + this.artistID;
 		}
 		return ret;
 	};

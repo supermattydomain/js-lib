@@ -48,8 +48,11 @@ function TableBrowser(tableName, fieldName) {
 		}
 		return new Array();
 	};
+	this.getQuery = function() {
+		return new DBQuery(this.getConstraints());
+	};
 	this.update = function() {
-		var query = new DBQuery(this.getConstraints());
+		var query = this.getQuery();
 		var url = query.getURL();
 		printMessage('TableBrowser.update: url ' + url);
 		var resultSet;

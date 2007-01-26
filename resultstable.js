@@ -30,19 +30,19 @@ function ResultsTable() {
   	return a;
   };
   this.resultsTableCreateCellContents = this.createCellContents;
-  this.createCellContents = function(name, value) {
+  this.createCellContents = function(fieldName, value) {
     // printMessage('In ResultsTable.createCellContents');
-    if (bad(name) || bad(value)) {
+    if (bad(fieldName) || bad(value)) {
     	fatal('ResultsTable.createCellContents: bad name or value');
     }
-    name = name.toLowerCase();
+    fieldName = fieldName.toLowerCase();
     var ret;
-    if ('path' == name) {
+    if ('path' == fieldName) {
     	ret = this.createCellPath(value);
-    } else if ('artist' == name) {
+    } else if ('artist' == fieldName) {
     	ret = this.createCellArtist(value);
     } else {
-	    ret = this.resultsTableCreateCellContents(name, value);
+	    ret = this.resultsTableCreateCellContents(fieldName, value);
     }
     return ret;
   };

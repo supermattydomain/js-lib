@@ -1,4 +1,5 @@
-function MyTable() {
+function MyTable(tableName) {
+	this.tableName = tableName;
   this.table = dce('table');
   this.table.viewObject = this;
   setClass(this.table, 'results');
@@ -31,14 +32,14 @@ function MyTable() {
     }
     this.rowStylesClean = this.table.rows.length;
   };
-  this.createCellContents = function(name, value) {
+  this.createCellContents = function(fieldName, value) {
 	return dctn(value);
   };
-  this.createCell = function(name, value) {
+  this.createCell = function(fieldName, value) {
     // printMessage('MyTable.createCell');
     var tableCell = dce('td');
     setClass(tableCell, 'results');
-    tableCell.appendChild(this.createCellContents(name, value));
+    tableCell.appendChild(this.createCellContents(fieldName, value));
     tableCell.onmouseover = function(evt) {
       tableCell.oldClassName = tableCell.className;
       setClass(tableCell, tableCell.className + '_hover');

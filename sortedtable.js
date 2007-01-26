@@ -33,8 +33,8 @@ function SortedTable() {
     return i;
   };
   this.sortedTableCreateCell = this.createCell;
-  this.createCell = function(name, value) {
-  	var cell = this.sortedTableCreateCell(name, value);
+  this.createCell = function(fieldName, value) {
+  	var cell = this.sortedTableCreateCell(fieldName, value);
     cell.sortValue = value;
     return cell;
   };

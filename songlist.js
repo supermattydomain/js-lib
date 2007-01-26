@@ -14,7 +14,7 @@ function SongList(albumID) {
 	this.describeQuery = function() {
 		var ret = this.songListDescribeQuery();
 		if (this.albumID) {
-			ret += ' for selected album';
+			ret += ' for album ' + this.albumID;
 		}
 		return ret;
 	};
