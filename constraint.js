@@ -5,9 +5,9 @@ function Constraint(ident, columnName, operation, value) {
 	this.value = value;
 	this.getURL = function() {
 		var url = '';
-		url +=  'field'     + this.ident + '=' + this.columnName;
-		url += '&operation' + this.ident + '=' + this.operation;
-		url += '&value'     + this.ident + '=' + this.value;
+		url +=  'field'     + encodeURIComponent(this.ident) + '=' + encodeURIComponent(this.columnName);
+		url += '&operation' + encodeURIComponent(this.ident) + '=' + encodeURIComponent(this.operation);
+		url += '&value'     + encodeURIComponent(this.ident) + '=' + encodeURIComponent(this.value);
 		return url;
 	};
 }

@@ -1,7 +1,8 @@
-function TableBrowser(tableName, fieldName) {
+function TableBrowser(tableName, fieldName, columnNames) {
 	// printMessage('In TableBrowser constructor');
 	this.tableName = tableName;
 	this.fieldName = fieldName;
+	this.columnNames = columnNames;
 	this.firstLetter = 'a';
 	this.div = dce('div');
 	setClass(this.div, 'browse_results');
@@ -49,7 +50,11 @@ function TableBrowser(tableName, fieldName) {
 		return new Array();
 	};
 	this.getQuery = function() {
-		return new DBQuery(this.getConstraints());
+		var query = new DBQuery(this.getConstraints());
+		if (this.columnNames) {
+			query.setColumnNames(this.columnNames);
+		}
+		return query;
 	};
 	this.update = function() {
 		var query = this.getQuery();

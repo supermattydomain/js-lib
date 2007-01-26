@@ -2,7 +2,7 @@ function SongList(albumID) {
 	// printMessage('In SongList constructor');
 	this.albumID = albumID;
 	this.base = TableBrowser;
-	this.base('song', 'name');
+	this.base('song', 'name', new Array('song.id', 'song.name', 'song.track', 'song.genre'));
 	this.setAlbumId = function(albumID) {
 		if (bad(albumID)) {
 			fatal('SongList: Bad album ID');
