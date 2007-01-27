@@ -26,6 +26,13 @@ function AlbumList(artistID) {
 		}
 		return ret;
 	};
+	this.albumListUpdate = this.update;
+	this.update = function() {
+		if (!this.artistID) {
+			return;
+		}
+		return this.albumListUpdate();
+	};
 	this.update();
 }
 AlbumList.prototype = new TableBrowser;

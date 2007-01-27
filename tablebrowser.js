@@ -59,7 +59,7 @@ function TableBrowser(tableName, fieldName, columnNames) {
 	this.update = function() {
 		var query = this.getQuery();
 		var url = query.getURL();
-		printMessage('TableBrowser.update: url ' + url);
+		// printMessage('TableBrowser.update: url ' + url);
 		var resultSet;
 		try {
 			resultSet = new ResultSet(url);

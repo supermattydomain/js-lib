@@ -26,6 +26,13 @@ function SongList(albumID) {
 		}
 		return ret;
 	};
+	this.songListUpdate = this.update;
+	this.update = function() {
+		if (!this.albumID) {
+			return;
+		}
+		return this.songListUpdate();
+	};
 	this.update();
 }
 SongList.prototype = new TableBrowser;

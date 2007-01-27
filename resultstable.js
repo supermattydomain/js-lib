@@ -29,6 +29,16 @@ function ResultsTable() {
   	};
   	return a;
   };
+  this.createCellAlbum = function(albumName) {
+  	var a = dce('a');
+  	a.setAttribute('href', "javascript:showAlbum('" + albumName + "');");
+  	a.appendChild(dctn(albumName));
+  	a.onclick = function(evt) {
+  		showAlbum(albumName);
+  		return true;
+  	};
+  	return a;
+  };
   this.resultsTableCreateCellContents = this.createCellContents;
   this.createCellContents = function(fieldName, value) {
     // printMessage('In ResultsTable.createCellContents');
@@ -37,10 +47,12 @@ function ResultsTable() {
     }
     fieldName = fieldName.toLowerCase();
     var ret;
-    if ('path' == fieldName) {
+    if ('path' == fieldName || 'song.path' == fieldName) {
     	ret = this.createCellPath(value);
-    } else if ('artist' == fieldName) {
+    } else if ('artist' == fieldName || 'artist.name' == fieldName) {
     	ret = this.createCellArtist(value);
+    } else if ('album.name' == fieldName) {
+    	ret = this.createCellAlbum(value);
     } else {
 	    ret = this.resultsTableCreateCellContents(fieldName, value);
     }
