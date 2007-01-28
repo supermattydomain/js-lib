@@ -39,8 +39,8 @@ function Ajax(url, requestDoneCallback) {
     }
     return this.req.responseXML;
   }
-  this.isSuccessfulStatus = function(status) {
-    return (200 <= status && status <= 299);
+  this.isSuccessfulStatus = function() {
+    return (200 <= this.status && this.status <= 299);
   };
   this.abort = function() {
     if (null != this.req) {
@@ -82,18 +82,17 @@ function Ajax(url, requestDoneCallback) {
       // printMessage('No data');
     }
     if (4 == self.req.readyState) {
-      var status;
       try {
-	status = self.req.status;
-	statusText = self.req.statusText;
+	self.status = self.req.status;
+	self.statusText = self.req.statusText;
       } catch (e) {
-	status = null;
-	statusText = null;
+	self.status = null;
+	self.statusText = null;
       }
-      if (status && self.isSuccessfulStatus(status)) {
+      if (self.isSuccessfulStatus()) {
         self.requestDoneCallback(self);
       } else {
-        printMessage('AJAX: ' + status + ' ' + self.req.statusText + ' for URL ' + self.url);
+        printMessage('AJAX: ' + self.status + ' ' + self.statusText + ' for URL ' + self.url);
         self.error = true;
       }
     }
