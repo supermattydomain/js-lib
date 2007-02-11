@@ -31,7 +31,7 @@ function DBSchema(url) {
     }
     this.externalCallbackFn = externalCallback;
     this.ajax = new Ajax(this.url, this.dataCallbackFn);
-    if (null == this.ajax) {
+    if (bad(this.ajax)) {
       printMessage('DBSchema: Cannot create request using URL ' + this.url);
       return false;
     } else if (!this.ajax.doGet()) {
@@ -42,13 +42,13 @@ function DBSchema(url) {
     return true;
   };
   this.getNumTables = function() {
-    if (!this.database) {
+    if (bad(this.database)) {
       fatal('No database');
     }
     return this.database.childNodes.length;
   };
   this.getTableIter = function() {
-    if (null == this.database) {
+    if (bad(this.database)) {
       fatal('No database');
     }
     return new DBTableIter(this);
