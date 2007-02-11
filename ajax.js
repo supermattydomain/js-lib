@@ -64,6 +64,7 @@ function Ajax(url, requestDoneCallback) {
     } catch (e) {
     }
    	fatal('Ajax: Cannot open request');
+   	return false;
   };
   var self = this;
   this.onreadystatechange = function(evt) {

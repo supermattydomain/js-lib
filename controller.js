@@ -5,7 +5,7 @@ try {
 } catch (e) {
   schema = null;
 }
-if (!schema) {
+if (bad(schema)) {
   fatal('Failed to create schema');
 }
 
@@ -15,7 +15,7 @@ try {
 } catch (e) {
   search = null;
 }
-if (!search) {
+if (bad(search)) {
   fatal('Failed to create search form');
 }
 
@@ -25,7 +25,7 @@ try {
 } catch (e) {
   results = null;
 }
-if (results == undefined || results == null) {
+if (bad(results)) {
   fatal('Failed to create results table');
 }
 
@@ -34,15 +34,35 @@ function showArtist(artistName) {
 }
 
 function doSearch(query) {
-	var searchURL = query.getURL();
-	var resultSet = new ResultSet(searchURL);
-	resultSet.fetchResults(results.loadResultSet);
+	var ex = null;
+	try {
+		results.setWaiting(true);
+		var searchURL = query.getURL();
+		var resultSet = new ResultSet(searchURL);
+		resultSet.fetchResults(results.loadResultSet);
+	} catch (e) {
+		printMessage('Exception occurred while performing search');
+		ex = e;
+	}
+	if (good(ex)) {
+		throw(ex);
+	}
 }
 
 function doTestSearch() {
-  var testSearchURL = "/musicdb/search.cgi?field0=vall.artist&operation0=contains&value0=Squarepusher&format=xml";
-  var resultSet = new ResultSet(testSearchURL);
-  resultSet.fetchResults(results.loadResultSet);
+	var ex = null;
+	try {
+		results.setWaiting(true);
+		var testSearchURL = "/musicdb/search.cgi?field0=vall.artist&operation0=contains&value0=Squarepusher&format=xml";
+		var resultSet = new ResultSet(testSearchURL);
+		resultSet.fetchResults(results.loadResultSet);
+	} catch (e) {
+		printMessage('Exception occurred while performing search');
+		ex = e;
+	}
+	if (good(ex)) {
+		throw(ex);
+	}
 }
 
 function onMoreButton() {
@@ -100,3 +120,4 @@ var searchDiv = document.getElementById('searchdiv');
 searchDiv.appendChild(search.getForm());
 var resultsDiv = document.getElementById('resultsdiv');
 resultsDiv.appendChild(results.getTable());
+search.takeFocus();
