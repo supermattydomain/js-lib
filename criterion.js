@@ -61,6 +61,11 @@ function SearchCriterion(parent, ident, table, operations) {
   this.getConstraint = function() {
   	return new Constraint(this.ident, this.fieldSelect.getValue(), this.operationSelect.getValue(), this.valueField.value);
   };
+  this.takeFocus = function() {
+  	if (good(this.valueField)) {
+  		this.valueField.focus();
+  	}
+  };
   this.cleanup = function() {
 	if (this.fieldSelect) {
 		this.fieldSelect.cleanup();
