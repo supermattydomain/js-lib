@@ -85,8 +85,7 @@ function SortedTable() {
   this.compareRows = function(row1, row2) {
     // printMessage('SortedTable.compareRows');
   	if (bad(this.sortColumnNum)) {
-  		printMessage('SortedTable.compareRows: bad sort column');
-  		return;
+  		fatal('SortedTable.compareRows: bad sort column');
   	}
     if (row1.cells.length <= this.sortColumnNum) {
       fatal('compareRows: unsufficient cells in comparison row 1');
