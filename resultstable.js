@@ -3,6 +3,9 @@ function ResultsTable() {
   this.base();
   this.table.viewObject = this;
   var self = this;
+  this.setWaiting = function(waiting) {
+  	document.body.style.cursor = (waiting ? 'wait' : 'default');
+  };
   this.createCellPath = function(path) {
     // FireFox disallows Web pages or their scripts from linking to local file:/// URLs.
     // var value = removePrefix(field.value, '/music/');
@@ -77,15 +80,25 @@ function ResultsTable() {
   };
   this.loadResultSet = function(resultSet) {
     showStatus('Displaying ' + resultSet.getNumResults() + ' results...');
-    var args = new Array();
-    resultSet.enumResults(function(myargs) {
-      // printMessage('Got result');
-      var resultRecord = myargs[0];
-      // printNode(resultRecord);
-      self.addHeading(resultRecord);
-      self.addRecord(resultRecord);
-    }, args);
-    showStatus(resultSet.getNumResults() + ' results displayed.');
+	var ex;
+	try {
+	    var args = new Array();
+    	resultSet.enumResults(function(myargs) {
+	    	// printMessage('Got result');
+		    var resultRecord = myargs[0];
+		    // printNode(resultRecord);
+		    self.addHeading(resultRecord);
+		    self.addRecord(resultRecord);
+	    }, args);
+	    showStatus(resultSet.getNumResults() + ' results displayed.');
+    } catch (e) {
+    	printMessage('Exception occurred while receiving result set');
+    	ex = e;
+    }
+    self.setWaiting(false);
+    if (ex) {
+    	throw(ex);
+    }
   };
   this.resultsTableCleanup = this.cleanup;
   this.cleanup = function() {
