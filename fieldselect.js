@@ -1,12 +1,12 @@
 function MyOption(className, controlName, value) {
   this.option = dce('option');
-  this.option.viewObject = this;
+  this.prototype = this.option;
   sa(this.option, 'label', controlName);
   sa(this.option, 'value', value);
   setClass(this.option, className);
   this.option.appendChild(dctn(controlName));
   this.getOption = function() {
-    return this.option;
+    return this.prototype;
   };
   this.cleanup = function() {
 	this.option = null;
@@ -16,7 +16,7 @@ function MyOption(className, controlName, value) {
 function MySelect(className, controlName) {
   this.className = className;
   this.select = dce('select');
-  this.select.viewObject - this;
+  this.prototype = this.select;
   sa(this.select, 'name', controlName);
   setClass(this.select, this.className);
   this.getSelect = function() {
@@ -64,6 +64,7 @@ function MySelect(className, controlName) {
   	this.select = null;
   };
 }
+MySelect.prototype = dce('p');
 
 function MySelectOptionIter(className, controlName, optionNameIter, optionValueIter) {
   this.base = MySelect;

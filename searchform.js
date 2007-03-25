@@ -86,7 +86,7 @@ function SearchForm(tableName) {
     this.moreButton.disabled = false;
   };
   this.makeButton = function(name, label) {
-    button = document.createElement('input');
+    var button = document.createElement('input');
     button.setAttribute('id', name + 'Button');
     button.setAttribute('type', 'button');
     button.setAttribute('name', name);
@@ -131,6 +131,11 @@ function SearchForm(tableName) {
       self.searchButton.disabled = false;
       showStatus('Ready.');
     }
+  };
+  this.takeFocus = function() {
+  	if (this.criteria.length) {
+  		this.criteria[0].takeFocus();
+  	}
   };
   this.cleanup = function() {
   	this.table = null;
