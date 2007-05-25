@@ -37,9 +37,14 @@ function showNode(node) {
 
 function showArray(val) {
 	var i;
-	for (i = 0; i < val.length; i++) {
-		showLog(val[i]);
+	showString('[');
+	if (val.length) {
+		showLog(val[0]);
 	}
+	for (i = 1; i < val.length - 1; i++) {
+		showLog(', ' + val[i]);
+	}
+	showString(']');
 }
 
 function showObject(obj) {
@@ -63,16 +68,61 @@ function showLog(val) {
 	} else if (typeof(val) == 'number') {
 		showString(val + '');
 	} else if (typeof(val) == 'object') {
-		if (val instanceof Array) {
-			showArray(val);
-		} else if (val instanceof String) {
-			showString(val);
-		} else if (val instanceof Node) {
-			showNode(val);
-		} else {
-			showObject(val);
+		// showString('got object');
+		try {
+			if (val.message) {
+				showString(val.message);
+				return;
+			}
+		} catch (emessage) {
+			showString('message exception: ' + emessage.message);
 		}
+		try {
+			if (val instanceof Array) {
+				// showString('got Array instance');
+				showArray(val);
+				return;
+			}
+		} catch (earray) {
+			showString('showArray exception: ' + earray.message);
+		}
+		try {
+			if (val instanceof String) {
+				// showString('got String instance');
+				showString(val.toString());
+				return;
+			}
+		} catch (estring) {
+			// showString('toString exception: ' + estring.message);
+		}
+		try {
+			if (val instanceof Node) {
+				// showString('got Node instance');
+				showNode(val);
+				return;
+			}
+		} catch (enode) {
+			// showString('showNode exception: ' + enode.message);
+		}
+		try {
+			// showString('using showObject');
+			showObject(val);
+			return;
+		} catch (eshowobject) {
+			// showString('showObject exception: ' + eshowobject.message);
+		}
+		try {
+			// showString('using toString');
+			showString(val.toString());
+			return;
+		} catch(etostring) {
+			// showString('toString exception: ' + etostring.message);
+		}
+		try { showString(Object.toJSON(val)); } catch (foo) {}
+		try { showString(Object.inspect(val)); } catch (bar) {}
+		showString('Cannot display value');
 	} else {
+		showString("Unrecognised typeof '" + typeof(val) + "'");
 		showString(val);
 	}
 }
