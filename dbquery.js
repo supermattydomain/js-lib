@@ -1,5 +1,5 @@
 function DBQuery(constraints) {
-	this.searchURLRoot = 'search.cgi?';
+	this.searchURLRoot = '../search/search.cgi?';
 	if (constraints && constraints.length) {
 		this.constraints = constraints;
 	} else {

@@ -20,7 +20,7 @@ function SearchForm(tableName) {
   this.searchForm.setAttribute('id', 'searchform');
   this.searchForm.setAttribute('class', 'search');
   this.searchForm.method = 'GET';
-  this.searchForm.action = 'search.cgi';
+  this.searchForm.action = '../search/search.cgi';
   this.urlDiv = dce('div');
   this.urlLink = dce('a');
   this.urlText = dctn('');

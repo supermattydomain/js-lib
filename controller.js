@@ -1,7 +1,7 @@
 var schema;
 
 try {
-  schema = new DBSchema('schema.xml');
+  schema = new DBSchema('../schema/schema.xml');
 } catch (e) {
   schema = null;
 }
@@ -53,7 +53,7 @@ function doTestSearch() {
 	var ex = null;
 	try {
 		results.setWaiting(true);
-		var testSearchURL = "/musicdb/search.cgi?field0=vall.artist&operation0=contains&value0=Squarepusher&format=xml";
+		var testSearchURL = "../search/search.cgi?field0=vall.artist&operation0=contains&value0=Squarepusher&format=xml";
 		var resultSet = new ResultSet(testSearchURL);
 		resultSet.fetchResults(results.loadResultSet);
 	} catch (e) {

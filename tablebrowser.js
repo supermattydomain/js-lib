@@ -6,7 +6,7 @@ function TableBrowser(tableName, fieldName, columnNames) {
 	this.firstLetter = 'a';
 	this.div = dce('div');
 	setClass(this.div, 'browse_results');
-	this.searchURLRoot = 'search.cgi?';
+	this.searchURLRoot = '../search/search.cgi?';
 	this.searchURL = null;
 	var self = this;
 	this.results = new ResultsTable();
