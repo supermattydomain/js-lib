@@ -53,7 +53,7 @@ function doTestSearch() {
 	var ex = null;
 	try {
 		results.setWaiting(true);
-		var testSearchURL = "../search/search.cgi?field0=vall.artist&operation0=contains&value0=Squarepusher&format=xml";
+		var testSearchURL = "/musicdb/search/search.cgi?field0=vall.artist&operation0=contains&value0=Squarepusher&format=xml";
 		var resultSet = new ResultSet(testSearchURL);
 		resultSet.fetchResults(results.loadResultSet);
 	} catch (e) {
