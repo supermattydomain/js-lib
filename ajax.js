@@ -93,7 +93,7 @@ function Ajax(url, requestDoneCallback) {
       if (self.isSuccessfulStatus()) {
         self.requestDoneCallback(self);
       } else {
-        printMessage('AJAX: ' + self.status + ' ' + self.statusText + ' for URL ' + self.url);
+        printMessage('AJAX: Status ' + self.status + " '" + self.statusText + "' for URL '" + self.url + "'");
         self.error = true;
       }
     }
