@@ -2,8 +2,14 @@ function bad(thing) { return (undefined == thing) || (null == thing); }
 function good(thing) { return !bad(thing); }
 
 function showString(msg) {
+	var log = document.getElementById('log');
+	if (bad(log)) {
+		alert('No log div');
+	}
+	log.appendChild(document.createTextNode(msg));
+	log.appendChild(document.createElement('br'));
 	// $('log').appendChild(document.createTextNode(msg));
-	new Insertion.Before('log', msg.escapeHTML() + '<br>');
+	// new Insertion.Before('log', msg.escapeHTML() + '<br>');
 }
 
 function showNode(node) {
@@ -70,7 +76,13 @@ function showLog(val) {
 	} else if (typeof(val) == 'object') {
 		// showString('got object');
 		try {
-			if (val.message) {
+			if (good(val.constructor)) {
+				showString('constructor: ' + val.constructor);
+			}
+		} catch (baz) {
+		}
+		try {
+			if (good(val.message)) {
 				showString(val.message);
 				return;
 			}
@@ -96,6 +108,24 @@ function showLog(val) {
 			// showString('toString exception: ' + estring.message);
 		}
 		try {
+			if (val instanceof XMLDocument) {
+				// showString('got XMLDocument instance');
+				showNode(val);
+				return;
+			}
+		} catch (exmldocument) {
+			// showString('showNode exception: ' + exmldocument.message);
+		}
+		try {
+			if (val instanceof Document) {
+				// showString('got Document instance');
+				showNode(val);
+				return;
+			}
+		} catch (edocument) {
+			// showString('showNode exception: ' + edocument.message);
+		}
+		try {
 			if (val instanceof Node) {
 				// showString('got Node instance');
 				showNode(val);
@@ -118,11 +148,30 @@ function showLog(val) {
 		} catch(etostring) {
 			// showString('toString exception: ' + etostring.message);
 		}
-		try { showString(Object.toJSON(val)); } catch (foo) {}
-		try { showString(Object.inspect(val)); } catch (bar) {}
+		try { showString(Object.toJSON(val)); return; } catch (foo) {}
+		try { showString(Object.inspect(val)); return; } catch (bar) {}
 		showString('Cannot display value');
 	} else {
 		showString("Unrecognised typeof '" + typeof(val) + "'");
 		showString(val);
+	}
+}
+
+function showResponse(resp) {
+	try {
+		// showLog('Got response');
+		// showLog(resp);
+		var ct = resp.getResponseHeader('Content-Type');
+		showLog('Response content type: ' + ct);
+		if (good(resp.responseXML)) {
+			showLog('responseXML:');
+			showLog(resp.responseXML);
+		}
+		if (good(resp.responseText)) {
+			showLog('responseText:');
+			showLog(resp.responseText);
+		}
+	} catch (ee) {
+		showLog('Exception showing response: ' + e.message);
 	}
 }
