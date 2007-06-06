@@ -79,9 +79,74 @@ function ChildIter(node) {
   };
 }
 
+function ChildElementIter(node) {
+  this.iterNode = node;
+  this.iterIndex = 0;
+  if (this.iterNode) {
+    if (undefined == node.firstChild) {
+    	throw("Undefined firstChild");
+    }
+    this.currentChild = node.firstChild;
+  } else {
+    this.currentChild = null;
+  }
+  this.skipNonElements = function() {
+  	while (this.currentChild && this.currentChild.nodeType != 1) {
+  		this.currentChild = this.currentChild.nextSibling;
+  	}
+  	return this.currentChild;
+  };
+  this.skipNonElements();
+  this.getCount = function() {
+    // FIXME: Incorrect; counts whitespace nodes
+    if (this.iterNode.hasChildNodes()) {
+      return this.iterNode.childNodes.length;
+    } else {
+      return 0;
+    }
+  };
+  this.hasMore = function() {
+    this.skipNonElements();
+    return !!this.currentChild;
+  };
+  this.getNext = function() {
+  	this.skipNonElements();
+  	var ret = this.currentChild;
+  	if (this.currentChild) {
+	  	this.currentChild = this.currentChild.nextSibling;
+  		this.iterIndex++;
+	  	this.skipNonElements();
+  	}
+  	return ret;
+  };
+  this.forAll = function(callback, args) {
+    arrayForAll(this.iterNode.childNodes, function(myargs) {
+    	if (1 == myargs[0].nodeType) {
+	    	callback(myargs);
+	    	this.iterIndex++;
+	    }
+    }, args);
+  };
+  this.getIndex = function() {
+    return this.iterIndex;
+  };
+  this.reset = function() {
+    this.currentChild = this.iterNode.firstChild;
+    this.iterIndex = 0;
+    this.skipNonElements();
+  };
+  this.cleanup = function() {
+  	this.iterNode = null;
+  	this.currentChild = null;
+  };
+}
+
 function AttributeIter(node) {
   this.iterNode = node;
   this.base = ArrayIter;
+  if (this.iterNode && !this.iterNode.attributes) {
+  	throw("No attributes");
+  }
   if (node) {
     this.base(this.iterNode.attributes);
   }

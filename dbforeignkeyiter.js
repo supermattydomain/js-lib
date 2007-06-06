@@ -3,7 +3,7 @@ function DBForeignKeyIter(table) {
   if (!table || !table.table) {
     fatal('DBForeignKeyIter: Bad table ' + table);
   }
-  this.base = ChildIter;
+  this.base = ChildElementIter;
   this.base(table.table);
   this.DBForeignKeyIterGetNext = this.getNext;
   this.getNext = function() {

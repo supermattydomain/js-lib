@@ -3,7 +3,7 @@ function DBKeyIter(table) {
   if (!table || !table.table) {
     fatal('DBKeyIter: Bad table ' + table);
   }
-  this.base = ChildIter;
+  this.base = ChildElementIter;
   this.base(table.table);
   this.DBKeyIterGetNext = this.getNext;
   this.getNext = function() {

@@ -35,13 +35,14 @@ function ResultSet(url) {
     if (bad(this.resultSet)) {
       return 0;
     }
+    // FIXME: incorrectly counts text nodes as a result of non-ignored ignorabke whitespace
     return this.resultSet.childNodes.length;
   };
   this.getResultIter = function() {
     if (bad(this.resultSet)) {
       fatal('No resultset loaded');
     }
-    var iter = new ChildIter(this.resultSet);
+    var iter = new ChildElementIter(this.resultSet);
     return iter;
   };
   this.enumResults = function(rowCallback, args) {

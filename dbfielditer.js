@@ -3,7 +3,7 @@ function DBFieldIter(table) {
   if (!table || !table.table) {
     fatal('DBFieldIter: Bad table ' + table);
   }
-  this.base = ChildIter;
+  this.base = ChildElementIter;
   this.base(table.table);
   this.DBFieldIterGetNext = this.getNext;
   this.getNext = function() {

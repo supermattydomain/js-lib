@@ -1,5 +1,5 @@
 function DBTableIter(schema) {
-  this.base = ChildIter;
+  this.base = ChildElementIter;
   this.base(schema.database);
   this.DBTableIterGetNext = this.getNext;
   this.getNext = function() {
