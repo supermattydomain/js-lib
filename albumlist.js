@@ -31,7 +31,7 @@ function AlbumList(artistID) {
 		if (!this.artistID) {
 			return;
 		}
-		return this.albumListUpdate();
+		this.albumListUpdate();
 	};
 	this.update();
 }

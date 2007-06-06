@@ -1,4 +1,5 @@
 function ArtistEditor(artistID) {
+	this.artistID = artistID;
 	this.div = dce('div');
 	this.labelName = null;
 	this.getDiv = function() {

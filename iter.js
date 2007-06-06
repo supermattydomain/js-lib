@@ -83,10 +83,7 @@ function ChildElementIter(node) {
   this.iterNode = node;
   this.iterIndex = 0;
   if (this.iterNode) {
-    if (undefined == node.firstChild) {
-    	throw("Undefined firstChild");
-    }
-    this.currentChild = node.firstChild;
+    this.currentChild = this.iterNode.firstChild;
   } else {
     this.currentChild = null;
   }

@@ -31,7 +31,7 @@ function SongList(albumID) {
 		if (!this.albumID) {
 			return;
 		}
-		return this.songListUpdate();
+		this.songListUpdate();
 	};
 	this.update();
 }
