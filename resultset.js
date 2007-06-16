@@ -6,7 +6,7 @@ function ResultSet(url) {
   this.externalCallbackFn = null;
   var self = this;
   this.dataCallbackFn = function(ajax) {
-    self.xmlDoc = ajax.getResponseXML();
+    self.xmlDoc = ajax.responseXML;
     // showLog('ResultSet: Document child count: ' + self.xmlDoc.childNodes.length);
     var resultSets = self.xmlDoc.getElementsByTagName('resultset');
     self.resultSet = resultSets[0];
@@ -22,13 +22,12 @@ function ResultSet(url) {
       fatal('Bad loaded callback');
     }
     this.externalCallbackFn = externalCallback;
-    this.ajax = new Ajax(self.url, this.dataCallbackFn);
-    if (bad(this.ajax)) {
-      fatal('ResultSet: Cannot create request using URL ' + this.url);
-    } else if (!this.ajax.doGet()) {
-      fatal('ResultSet: Cannot start GET request using URL ' + this.url);
-    }
     showStatus('Retrieving search results...');
+    this.ajax = new Ajax.Request(self.url, {
+	    method: 'get',
+    	onSuccess: this.dataCallbackFn,
+    	onFailure: function() { showLog('search results fetch failed'); }
+    });
     return true;
   };
   this.getNumResults = function() {

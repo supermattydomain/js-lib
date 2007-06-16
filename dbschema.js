@@ -5,7 +5,7 @@ function DBSchema(url) {
   this.externalCallbackFn = null;
   var self = this;
   this.dataCallbackFn = function(ajax) {
-    var xmlDoc = ajax.getResponseXML();
+    var xmlDoc = ajax.responseXML;
     // showLog("DBSchema: Document child count: " + xmlDoc.childNodes.length);
     var databases = xmlDoc.getElementsByTagName('database');
     self.database = databases[0];
@@ -30,15 +30,13 @@ function DBSchema(url) {
       fatal('DBSchema: Bad external callback');
     }
     this.externalCallbackFn = externalCallback;
-    this.ajax = new Ajax(this.url, this.dataCallbackFn);
-    if (bad(this.ajax)) {
-      showLog('DBSchema: Cannot create request using URL ' + this.url);
-      return false;
-    } else if (!this.ajax.doGet()) {
-      showLog('DBSchema: Cannot start GET request using URL ' + this.url);
-      return false;
-    }
     showStatus('Loading schema...');
+    this.ajax = new Ajax.Request(this.url,
+    {
+		method: 'get',
+		onSuccess: this.dataCallbackFn,
+		onFailure: function() { showLog('schema fetch failed'); }
+    });
     return true;
   };
   this.getNumTables = function() {
