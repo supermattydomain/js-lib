@@ -39,7 +39,7 @@ function SearchCriterion(parent, ident, table, operations) {
     return removeAnchor;
   };
   this.populate = function() {
-    // printMessage('populate: table = ' + this.table.getName() + '\n');
+    // showLog('populate: table = ' + this.table.getName() + '\n');
     this.div = dce("div");
     this.div.setAttribute('class', 'criterion');
     this.div.setAttribute('id', 'criterion' + this.ident);
@@ -53,7 +53,7 @@ function SearchCriterion(parent, ident, table, operations) {
     this.div.appendChild(this.valueField);
     // this.div.appendChild(this.removeButton);
     this.div.appendChild(this.removeButton);
-    // printMessage('done populate: table = ' + this.table.getName() + '\n');
+    // showLog('done populate: table = ' + this.table.getName() + '\n');
   };
   this.getDiv = function() {
     return this.div;

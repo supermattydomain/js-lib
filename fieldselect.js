@@ -89,11 +89,11 @@ function FieldSelect(className, controlName, table) {
   this.select.viewObject = this;
   var self = this;
   this.addOptions = function() {
-    // printMessage('In FieldSelect.addOptions table=' + this.table.getName());
+    // showLog('In FieldSelect.addOptions table=' + this.table.getName());
     var args = new Array();
     this.table.enumFields(function(myargs) {
       var field = myargs[0];
-      // printMessage('FieldSelect: found field ' + self.table.getName() + '.' + field.getName() + '\n');
+      // showLog('FieldSelect: found field ' + self.table.getName() + '.' + field.getName() + '\n');
       var label = ucFirst(field.getName());
       var value = self.table.getName() + '.' + field.getName();
       self.addOption(label, value);
@@ -115,7 +115,7 @@ function TableFieldSelect(className, controlName, schema) {
   this.select.viewObject = this;
   var self = this;
   this.addOptions = function() {
-    // printMessage('In TableFieldSelect.addOptions');
+    // showLog('In TableFieldSelect.addOptions');
     var tableArgs = new Array();
     this.schema.enumTables(
       function(tableArgs) {
@@ -124,7 +124,7 @@ function TableFieldSelect(className, controlName, schema) {
         table.enumFields(
           function(fieldArgs) {
             var field = fieldArgs[0];
-            // printMessage('FieldSelect: found field ' + self.table.getName() + '.' + field.getName() + '\n');
+            // showLog('FieldSelect: found field ' + self.table.getName() + '.' + field.getName() + '\n');
             var label = ucFirst(table.getName()) + ' ' + ucFirst(field.getName());
             var value = table.getName() + '.' + field.getName();
             self.addOption(label, value);

@@ -30,7 +30,7 @@ function DBQuery(constraints) {
 		}
 		// TODO: replace with entry field
 		url += '&maxresults=1000';
-		// printMessage('DBQuery: Generated URL ' + url);
+		// showLog('DBQuery: Generated URL ' + url);
 		return url;
 	};
 }

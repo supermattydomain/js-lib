@@ -1,5 +1,5 @@
 function SongList(albumID) {
-	// printMessage('In SongList constructor');
+	// showLog('In SongList constructor');
 	this.albumID = albumID;
 	this.base = TableBrowser;
 	this.base('song', 'name', new Array('song.id', 'song.name', 'song.track', 'song.genre'));

@@ -30,7 +30,7 @@ if (bad(results)) {
 }
 
 function showArtist(artistName) {
-	printMessage('In showArtist(' + artistName + ')');
+	showLog('In showArtist(' + artistName + ')');
 }
 
 function doSearch(query) {
@@ -41,7 +41,7 @@ function doSearch(query) {
 		var resultSet = new ResultSet(searchURL);
 		resultSet.fetchResults(results.loadResultSet);
 	} catch (e) {
-		printMessage('Exception occurred while performing search');
+		showLog('Exception occurred while performing search');
 		ex = e;
 	}
 	if (good(ex)) {
@@ -57,7 +57,7 @@ function doTestSearch() {
 		var resultSet = new ResultSet(testSearchURL);
 		resultSet.fetchResults(results.loadResultSet);
 	} catch (e) {
-		printMessage('Exception occurred while performing search');
+		showLog('Exception occurred while performing search');
 		ex = e;
 	}
 	if (good(ex)) {
@@ -71,7 +71,7 @@ function onMoreButton() {
 search.moreButton.onclick = onMoreButton;
 
 function onSearchButton() {
-  // printMessage('onSearchButton');
+  // showLog('onSearchButton');
   doSearch(search.getQuery());
 }
 search.searchButton.onclick = onSearchButton;
@@ -97,7 +97,7 @@ function sortResults(columnNum) {
 }
 
 function editFile(fileName) {
-  printMessage('Edit file ' + fileName);
+  showLog('Edit file ' + fileName);
 }
 
 function onSchemaFetched(schema) {

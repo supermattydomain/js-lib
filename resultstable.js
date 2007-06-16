@@ -19,7 +19,7 @@ function ResultsTable() {
     //   editFile(field.value);
     //   return false;
     // };
-    // printMessage(value);
+    // showLog(value);
     return a;
   };
   this.createCellArtist = function(artistName) {
@@ -44,7 +44,7 @@ function ResultsTable() {
   };
   this.resultsTableCreateCellContents = this.createCellContents;
   this.createCellContents = function(fieldName, value) {
-    // printMessage('In ResultsTable.createCellContents');
+    // showLog('In ResultsTable.createCellContents');
     if (bad(fieldName) || bad(value)) {
     	fatal('ResultsTable.createCellContents: bad name or value');
     }
@@ -66,17 +66,17 @@ function ResultsTable() {
       return;
     }
     var iter = new AttributeNameIter(record);
-    // printMessage('Before adding column heading');
+    // showLog('Before adding column heading');
     this.addColumnHeadings(iter);
     iter.cleanup();
-    // printMessage('Column heading added.');
+    // showLog('Column heading added.');
   };
   this.addRecord = function(record) {
     var iter = new AttributeIter(record);
-    // printMessage('Before adding row');
+    // showLog('Before adding row');
     this.addRow(iter);
     iter.cleanup();
-    // printMessage('Row added.');
+    // showLog('Row added.');
   };
   this.loadResultSet = function(resultSet) {
     showStatus('Displaying ' + resultSet.getNumResults() + ' results...');
@@ -84,7 +84,7 @@ function ResultsTable() {
 	try {
 	    var args = new Array();
     	resultSet.enumResults(function(myargs) {
-	    	// printMessage('Got result');
+	    	// showLog('Got result');
 		    var resultRecord = myargs[0];
 		    // printNode(resultRecord);
 		    self.addHeading(resultRecord);
@@ -92,7 +92,7 @@ function ResultsTable() {
 	    }, args);
 	    showStatus(resultSet.getNumResults() + ' results displayed.');
     } catch (e) {
-    	printMessage('Exception occurred while receiving result set');
+    	showLog('Exception occurred while receiving result set');
     	ex = e;
     }
     self.setWaiting(false);

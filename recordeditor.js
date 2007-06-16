@@ -27,7 +27,7 @@ function RecordEditor(tableName, record) {
 		this.update();
 	};
 	this.setRecord = function(record) {
-		// printMessage('In RecordEditor.setRecord');
+		// showLog('In RecordEditor.setRecord');
 		if (bad(record)) {
 			fatal('RecordEditor: Bad record');
 		}

@@ -5,7 +5,7 @@ try {
 	songView = null;
 }
 if (!songView) {
-	printMessage('Failed to create song list widget');
+	showLog('Failed to create song list widget');
 }
 
 var songDetails;
@@ -15,7 +15,7 @@ try {
 	songDetails = null;
 }
 if (!songDetails) {
-	printMessage('Failed to create song details widget');
+	showLog('Failed to create song details widget');
 }
 
 var albumView;
@@ -25,7 +25,7 @@ try {
 	albumView = null;
 }
 if (!albumView) {
-	printMessage('Failed to create album list widget');
+	showLog('Failed to create album list widget');
 }
 
 var albumDetails;
@@ -35,7 +35,7 @@ try {
 	albumDetails = null;
 }
 if (!albumDetails) {
-	printMessage('Failed to create album details widget');
+	showLog('Failed to create album details widget');
 }
 
 var artistView;
@@ -45,7 +45,7 @@ try {
 	artistView = null;
 }
 if (!artistView) {
-	printMessage('Failed to create artist list widget');
+	showLog('Failed to create artist list widget');
 }
 
 var artistDetails;
@@ -55,11 +55,11 @@ try {
 	artistDetails = null;
 }
 if (!artistDetails) {
-	printMessage('Failed to create artist details widget');
+	showLog('Failed to create artist details widget');
 }
 
 function showAlbum(albumID) {
-	// printMessage('In showAlbum(' + albumID + ')');
+	// showLog('In showAlbum(' + albumID + ')');
 	if (albumDetails) {
 		albumDetails.setAlbumID(albumID);
 	}
@@ -69,7 +69,7 @@ function showAlbum(albumID) {
 }
 
 function showArtist(artistID) {
-	// printMessage('In showArtist(' + artistID + ')');
+	// showLog('In showArtist(' + artistID + ')');
 	if (artistDetails) {
 		artistDetails.setArtistID(artistID);
 	}

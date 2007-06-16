@@ -13,7 +13,7 @@ function ArtistEditor(artistID) {
 		return this.artistID;
 	};
 	this.setArtistID = function(artistID) {
-		// printMessage('In ArtistEditor.setArtistID');
+		// showLog('In ArtistEditor.setArtistID');
 		if (this.artistID == artistID) {
 			return;
 		}

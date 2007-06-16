@@ -36,7 +36,7 @@ function MyTable(tableName) {
 	return dctn(value);
   };
   this.createCell = function(fieldName, value) {
-    // printMessage('MyTable.createCell');
+    // showLog('MyTable.createCell');
     var tableCell = dce('td');
     setClass(tableCell, 'results');
     tableCell.appendChild(this.createCellContents(fieldName, value));
@@ -50,7 +50,7 @@ function MyTable(tableName) {
     return tableCell;
   };
   this.addRowIndex = function(iter, index) {
-    // printMessage('addRow');
+    // showLog('addRow');
     var tableRow = this.table.insertRow(index);
     if (this.table.rows.length % 2) {
       setClass(tableRow, 'results_odd');
@@ -59,11 +59,11 @@ function MyTable(tableName) {
     }
     iter.reset();
     iter.forAll(function(myargs) {
-      // printMessage('Got field');
+      // showLog('Got field');
       var field = myargs[0];
       var tableCell = self.createCell(field.name, field.value);
       tableRow.appendChild(tableCell);
-      // printMessage('Added table cell');
+      // showLog('Added table cell');
     }, new Array());
     // printNode(tableRow);
     this.rowStylesClean = index;

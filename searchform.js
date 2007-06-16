@@ -40,13 +40,13 @@ function SearchForm(tableName) {
   this.getURL = function() {
   	var query = this.getQuery();
   	var url = query.getURL();
-    // printMessage('SearchForm: Generated URL ' + url);
+    // showLog('SearchForm: Generated URL ' + url);
     this.urlText.nodeValue = url;
     this.urlLink.setAttribute('href', url);
     return url;
   };
   this.addCriterion = function() {
-    // printMessage('In addCriterion');
+    // showLog('In addCriterion');
     if (this.criteria.length >= this.maxCriteria) {
 	return;
     }
@@ -108,22 +108,22 @@ function SearchForm(tableName) {
     this.searchForm.appendChild(this.searchButton);
   }
   this.populate = function(schema) {
-    // printMessage('In SearchForm.populate');
+    // showLog('In SearchForm.populate');
     this.table = null;
     var args = new Array();
     schema.enumTables(function(myargs) {
       var table = myargs[0];
-      // printMessage('searchform: got table ' + table);
+      // showLog('searchform: got table ' + table);
       var tableName = table.getName();
-      // printMessage('table = ' + tableName + '\n');
+      // showLog('table = ' + tableName + '\n');
       if (self.tableName == tableName) {
         self.table = table;
       }
     }, args);
     if (null == self.table) {
-      printMessage('Cannot find table ' + self.tableName);
+      showLog('Cannot find table ' + self.tableName);
     } else {
-      // printMessage('searchform: found table ' + self.tableName);
+      // showLog('searchform: found table ' + self.tableName);
       self.moreButton.disabled = false;
       self.addCriterion();
       self.resetButton.disabled = false;

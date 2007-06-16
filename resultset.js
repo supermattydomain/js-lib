@@ -7,7 +7,7 @@ function ResultSet(url) {
   var self = this;
   this.dataCallbackFn = function(ajax) {
     self.xmlDoc = ajax.getResponseXML();
-    // printMessage('ResultSet: Document child count: ' + self.xmlDoc.childNodes.length);
+    // showLog('ResultSet: Document child count: ' + self.xmlDoc.childNodes.length);
     var resultSets = self.xmlDoc.getElementsByTagName('resultset');
     self.resultSet = resultSets[0];
     // printNode(self.resultSet);

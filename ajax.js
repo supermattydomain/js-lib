@@ -33,8 +33,8 @@ function Ajax(url, requestDoneCallback) {
     } else if (!this.req) {
       return null;
     } else if (bad(this.req.responseXML)) {
-      printMessage('AJAX: No XML response returned');
-      printMessage(this.req.responseText);
+      showLog('AJAX: No XML response returned');
+      showLog(this.req.responseText);
       return null;
     }
     return this.req.responseXML;
@@ -68,19 +68,19 @@ function Ajax(url, requestDoneCallback) {
   };
   var self = this;
   this.onreadystatechange = function(evt) {
-    // printMessage('onreadystatechange: readyState=' + self.req.readyState);
+    // showLog('onreadystatechange: readyState=' + self.req.readyState);
     if (self.req.responseXML) {
-      // printMessage('got XML');
+      // showLog('got XML');
       if (self.req.responseXML.childNodes) {
-        // printMessage('Reached readyState ' + self.req.readyState + '; children=' + self.req.responseXML.childNodes.length);
+        // showLog('Reached readyState ' + self.req.readyState + '; children=' + self.req.responseXML.childNodes.length);
       } else {
-        // printMessage('Reached readyState ' + self.req.readyState + ' but no child nodes yet');
+        // showLog('Reached readyState ' + self.req.readyState + ' but no child nodes yet');
       }
     } else if (self.req.responseText) {
-      // printMessage('Reached readyState ' + self.req.readyState + '; text=' + self.req.responseText.length);
+      // showLog('Reached readyState ' + self.req.readyState + '; text=' + self.req.responseText.length);
       showStatus('Read ' + self.req.responseText.length + ' bytes from server...');
     } else {
-      // printMessage('No data');
+      // showLog('No data');
     }
     if (4 == self.req.readyState) {
       try {
@@ -93,7 +93,7 @@ function Ajax(url, requestDoneCallback) {
       if (self.isSuccessfulStatus()) {
         self.requestDoneCallback(self);
       } else {
-        printMessage('AJAX: Status ' + self.status + " '" + self.statusText + "' for URL '" + self.url + "'");
+        showLog('AJAX: Status ' + self.status + " '" + self.statusText + "' for URL '" + self.url + "'");
         self.error = true;
       }
     }

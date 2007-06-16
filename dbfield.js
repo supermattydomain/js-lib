@@ -1,5 +1,5 @@
 function DBField(table, fieldNode) {
-  // printMessage('In DBField constructor');
+  // showLog('In DBField constructor');
   this.table = table;
   this.field = fieldNode;
   if (!this.table || !this.field) {
@@ -28,7 +28,7 @@ function DBField(table, fieldNode) {
     if (type.indexOf('timestamp') >= 0) {
       return true;
     }
-    printMessage('Unrecognised type "' + type + '" of field ' + this.getName());
+    showLog('Unrecognised type "' + type + '" of field ' + this.getName());
     return true;
   };
   this.cleanup = function() {

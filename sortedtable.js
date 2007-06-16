@@ -6,7 +6,7 @@ function SortedTable() {
   this.table.viewObject = this;
   var self = this;
   this.findInsertIndex = function(iter) {
-    // printMessage('SortedTable.findInsertIndex');
+    // showLog('SortedTable.findInsertIndex');
     if (this.sortColumnNum < 0 || bad(this.sortColumnNum)) {
       return this.table.rows.length;
     }
@@ -24,12 +24,12 @@ function SortedTable() {
         // var sortValue = row.cells[j].firstChild.sortValue;
         var sortValue = row.cells[j].sortValue;
         if (compareValues(value, sortValue) >= 0) {
-        	printMessage('findInsertIndex: ' + i);
+        	showLog('findInsertIndex: ' + i);
         	return i;
         }
       }
     }
-    printMessage('SortedTable.findInsertIndex: ' + i);
+    showLog('SortedTable.findInsertIndex: ' + i);
     return i;
   };
   this.sortedTableCreateCell = this.createCell;
@@ -39,30 +39,30 @@ function SortedTable() {
     return cell;
   };
   this.makeHeadingCell = function(fieldNum, fieldName) {
-    // printMessage('columnNum ' + fieldNum);
+    // showLog('columnNum ' + fieldNum);
     var headingCell = dce('th');
     setClass(headingCell, 'results');
     headingCell.appendChild(dctn(ucFirstAll(fieldName)));
     headingCell.onclick = function(evt) {
       // evt = getEventSource(evt);
-      // printMessage('makeHeadingCell: heading ' + fieldNum + ' clicked');
+      // showLog('makeHeadingCell: heading ' + fieldNum + ' clicked');
       sortResults(fieldNum);
     };
     headingCell.onmouseover = function(evt) {
-      // printMessage('hover');
+      // showLog('hover');
       evt = getEventSource(evt);
       headingCell.oldClassName = headingCell.className;
       setClass(headingCell, headingCell.className + '_hover');
     };
     headingCell.onmouseout = function(evt) {
-      // printMessage('hover');
+      // showLog('hover');
       evt = getEventSource(evt);
       setClass(headingCell, headingCell.oldClassName);
     };
     return headingCell;
   };
   this.addColumnHeadings = function(iter) {
-    // printMessage('SortedTable.addColumnHeadings');
+    // showLog('SortedTable.addColumnHeadings');
     if (this.headingRow) {
       return;
     }
@@ -79,11 +79,11 @@ function SortedTable() {
   };
   this.compareCells = function(cell1, cell2) {
     ret = compareValues(cell1.sortValue, cell2.sortValue);
-    // printMessage('compareCells: returning ' + ret);
+    // showLog('compareCells: returning ' + ret);
     return ret;
   };
   this.compareRows = function(row1, row2) {
-    // printMessage('SortedTable.compareRows');
+    // showLog('SortedTable.compareRows');
   	if (bad(this.sortColumnNum)) {
   		fatal('SortedTable.compareRows: bad sort column');
   	}
@@ -94,7 +94,7 @@ function SortedTable() {
       fatal('compareRows: insufficient cells in comparison row 2');
     }
     var ret = this.compareCells(row1.cells[this.sortColumnNum], row2.cells[this.sortColumnNum]);
-    // printMessage('compareRows: returning ' + ret);
+    // showLog('compareRows: returning ' + ret);
     return ret;
   };
   this.getSortColumnName = function() {
@@ -106,7 +106,7 @@ function SortedTable() {
     return textNode.nodeValue;
   };
   this.tableToArray = function() {
-  	// printMessage('In SortedTable.tableToArray');
+  	// showLog('In SortedTable.tableToArray');
     var data = new Array();
     var r;
     var i;
@@ -133,7 +133,7 @@ function SortedTable() {
     return data;
   };
   this.arrayToTable = function(data) {
-  	// printMessage('In SortedTable.arrayToTable');
+  	// showLog('In SortedTable.arrayToTable');
     if (data.length != this.table.rows.length - (bad(this.headingRow) ? 0 : 1)) {
       fatal('SortedTable.arrayToTable: Arrays not same size ' + data.length + '/' + this.table.rows.length);
     }
@@ -154,7 +154,7 @@ function SortedTable() {
     }
   };
   this.compareArrays = function(arr1, arr2, sortColumnNum) {
-    // printMessage('In SortedTable.compareArrays: sort column ' + sortColumnNum);
+    // showLog('In SortedTable.compareArrays: sort column ' + sortColumnNum);
     if (bad(sortColumnNum) || sortColumnNum < 0) {
     	fatal('SortedTable.compareArrays: bad sort column');
     }
@@ -172,11 +172,11 @@ function SortedTable() {
     if (sortColumnNum >= arr1.length) {
     	fatal('compareArrays: insufficient elements');
     }
-    // printMessage('Array 1:');
+    // showLog('Array 1:');
     // dumpData(arr1);
-    // printMessage('Array 2:');
+    // showLog('Array 2:');
     // dumpData(arr2);
-    // printMessage(sortColumnNum);
+    // showLog(sortColumnNum);
     var val1 = arr1[sortColumnNum];
     var val2 = arr2[sortColumnNum];
     if (val1 == null || val1 == undefined || val2 == null || val2 == undefined) {

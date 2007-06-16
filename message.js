@@ -34,26 +34,8 @@ function getDocumentStart() {
     return document;
 }
 
-function appendMessage(node, str) {
-  node.appendChild(dctn(str));
-  node.appendChild(dce('br'));
-}
-
-function printMessage(str) {
-  // doesn't work in Mozilla
-  // window.dump(str);
-  var output = document.getElementById('messages');
-  if (bad(output)) {
-    output = dce('div');
-    sa(output, 'id', 'messages');
-	var docStart = getDocumentStart();
-	docStart.insertBefore(output, docStart.firstChild);
-  }
-  appendMessage(output, str);
-}
-
 function fatal(msg) {
-  printMessage(msg);
+  showLog(msg);
   throw msg;
 }
 
@@ -71,35 +53,6 @@ function showStatus(str) {
   }
   var textNode = dctn(str);
   status.appendChild(textNode);
-}
-
-function printNode(node) {
-  var tag = '<' + node.nodeName;
-  var i;
-  if (node.attributes) {
-    for (i = 0; i < node.attributes.length; i++) {
-      var attr = node.attributes[i];
-      tag = tag + ' ' + attr.name + '="' + attr.value + '"';
-    }
-  }
-  if (node.hasChildNodes() || node.nodeValue) {
-    tag += '>';
-    printMessage(tag);
-  } else {
-    tag += '/>';
-    printMessage(tag);
-    return;
-  }
-  if (node.hasChildNodes()) {
-    for (i = 0; i < node.childNodes.length; i++) {
-      printNode(node.childNodes[i]);
-    }
-  }
-  if (node.nodeValue) {
-    printMessage(node.nodeValue);
-  }
-  tag = '</' + node.nodeName + '>';
-  printMessage(tag);
 }
 
 function getEventSource(e) {
@@ -145,42 +98,4 @@ function assert(val) {
 
 function assertGood(val) {
 	assert(!bad(val));
-}
-
-function dumpArray(val) {
-	var i;
-	for (i = 0; i < val.length; i++) {
-		dumpData(val[i]);
-	}
-}
-
-function dumpObject(obj) {
-   printMessage('{');
-   for (var i in obj) {
-      printMessage(i + ':');
-      dumpData(obj[i]);
-   }
-   printMessage('}');
-}
-
-function dumpData(val) {
-	if (typeof(val) == 'array') {
-		dumpArray(val);
-	} else if (typeof(val) == 'string') {
-		printMessage(val);
-	} else if (typeof(val) == 'number') {
-		printMessage(val);
-	} else if (typeof(val) == 'object') {
-		if (val instanceof Array) {
-			dumpArray(val);
-		} else if (val instanceof String) {
-			printMessage(val);
-		} else if (val instanceof Node) {
-			printNode(val);
-		} else {
-			dumpObject(val);
-		}
-	} else {
-		printMessage(val);
-	}
 }

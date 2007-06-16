@@ -22,7 +22,7 @@ function compareStrings(val1, val2) {
 	if ('string' != typeof(val1) || 'string' != typeof(val2)) {
 		fatal('compareStrings: not strings');
 	}
-	// printMessage('In compareValues: ' + val1 + ' ' + val2);
+	// showLog('In compareValues: ' + val1 + ' ' + val2);
 	var num1 = parseInt(val1);
 	var num2 = parseInt(val2);
 	if (isNaN(num1) || isNaN(num2)) {
@@ -32,7 +32,7 @@ function compareStrings(val1, val2) {
 		val1 = num1;
 		val2 = num2;
 	}
-	// printMessage('compareValues: ' + val1 + ' ' + val2);
+	// showLog('compareValues: ' + val1 + ' ' + val2);
 	var ret;
 	if (val1 < val2) {
 		ret = -1;
@@ -41,7 +41,7 @@ function compareStrings(val1, val2) {
 	} else {
 		ret = 0;
 	}
-	// printMessage('compareValues(' + val1 + ', ' + val2 + ') => ' + ret);
+	// showLog('compareValues(' + val1 + ', ' + val2 + ') => ' + ret);
 	return ret;
 }
 

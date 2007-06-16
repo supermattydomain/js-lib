@@ -6,7 +6,7 @@ function DBSchema(url) {
   var self = this;
   this.dataCallbackFn = function(ajax) {
     var xmlDoc = ajax.getResponseXML();
-    // printMessage("DBSchema: Document child count: " + xmlDoc.childNodes.length);
+    // showLog("DBSchema: Document child count: " + xmlDoc.childNodes.length);
     var databases = xmlDoc.getElementsByTagName('database');
     self.database = databases[0];
     /*
@@ -32,10 +32,10 @@ function DBSchema(url) {
     this.externalCallbackFn = externalCallback;
     this.ajax = new Ajax(this.url, this.dataCallbackFn);
     if (bad(this.ajax)) {
-      printMessage('DBSchema: Cannot create request using URL ' + this.url);
+      showLog('DBSchema: Cannot create request using URL ' + this.url);
       return false;
     } else if (!this.ajax.doGet()) {
-      printMessage('DBSchema: Cannot start GET request using URL ' + this.url);
+      showLog('DBSchema: Cannot start GET request using URL ' + this.url);
       return false;
     }
     showStatus('Loading schema...');

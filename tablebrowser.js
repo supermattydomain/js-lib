@@ -1,5 +1,5 @@
 function TableBrowser(tableName, fieldName, columnNames) {
-	// printMessage('In TableBrowser constructor');
+	// showLog('In TableBrowser constructor');
 	this.tableName = tableName;
 	this.fieldName = fieldName;
 	this.columnNames = columnNames;
@@ -59,14 +59,14 @@ function TableBrowser(tableName, fieldName, columnNames) {
 	this.update = function() {
 		var query = this.getQuery();
 		var url = query.getURL();
-		// printMessage('TableBrowser.update: url ' + url);
+		// showLog('TableBrowser.update: url ' + url);
 		var resultSet;
 		try {
 			resultSet = new ResultSet(url);
 		} catch (e) {
 		}
 		if (bad(resultSet)) {
-			printMessage('TableBrowser: cannot create result set');
+			showLog('TableBrowser: cannot create result set');
 			return;
 		}
 		resultSet.fetchResults(function() {
@@ -74,7 +74,7 @@ function TableBrowser(tableName, fieldName, columnNames) {
 			self.results.loadResultSet(resultSet);
 		});
 		this.heading.firstChild.nodeValue = this.describeQuery();
-		// printMessage('End of TableBrowser.update');
+		// showLog('End of TableBrowser.update');
 	};
 	this.setFirstLetter = function(firstLetter) {
 		if (bad(firstLetter)) {
@@ -89,5 +89,5 @@ function TableBrowser(tableName, fieldName, columnNames) {
 	this.div.appendChild(this.heading);
 	this.div.appendChild(this.alphaIndex.getDiv());
 	this.div.appendChild(this.results.getTable());
-	// printMessage('End of TableBrowser constructor');
+	// showLog('End of TableBrowser constructor');
 }

@@ -1,5 +1,5 @@
 function arrayForAll(array, elementCallback, args) {
-  // printMessage('arrayForAll(' + array.toString() + ', ' + args.toString() + ')');
+  // showLog('arrayForAll(' + array.toString() + ', ' + args.toString() + ')');
   if (!args) {
   	args = new Array();
   }
