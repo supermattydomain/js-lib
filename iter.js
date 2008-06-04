@@ -4,7 +4,8 @@ function arrayForAll(array, elementCallback, args) {
   	args = new Array();
   }
   var i;
-  for (i = 0; i < array.length; i++) {
+  var l = array.length;
+  for (i = 0; i < l; i++) {
     args.push(array[i]);
     elementCallback(args);
     args.pop();
