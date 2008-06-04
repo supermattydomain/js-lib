@@ -95,9 +95,12 @@ function assertGood(val) {
 	assert(!bad(val));
 }
 
+var badlog_warned = false;
+
 function showString(msg) {
 	var log = document.getElementById('log');
-	if (bad(log)) {
+	if (!badlog_warned && bad(log)) {
+		badlog_warned = true;
 		alert('No log div');
 	}
 	log.appendChild(document.createTextNode(msg));
