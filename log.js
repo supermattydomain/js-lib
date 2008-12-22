@@ -2,11 +2,11 @@ function bad(thing) { return (undefined == thing) || (null == thing); }
 function good(thing) { return !bad(thing); }
 
 function dce(tag) {
-	return document.createElement(tag);
+	return $(document.createElement(tag));
 }
 
 function dctn(text) {
-	return document.createTextNode(text);
+	return $(document.createTextNode(text));
 }
 
 function sa(node, attrName, attrValue) {
@@ -31,6 +31,7 @@ function getDocumentStart() {
 
 function fatal(msg) {
   showLog(msg);
+  alert(msg);
   throw msg;
 }
 
@@ -95,18 +96,30 @@ function assertGood(val) {
 	assert(!bad(val));
 }
 
-var badlog_warned = false;
+function getLogDiv() {
+	return $('logDiv');
+}
+
+function clearLog() {
+	var log = getLogDiv();
+	if (!log) {
+		return;
+	}
+	while (log.firstChild) {
+		log.removeChild(log.firstChild);
+	}
+}
 
 function showString(msg) {
-	var log = document.getElementById('log');
-	if (!badlog_warned && bad(log)) {
-		badlog_warned = true;
-		alert('No log div');
+	var log = getLogDiv();
+	if (log) {
+		log.appendChild(document.createTextNode(msg));
+		log.appendChild(document.createElement('br'));
+		// $('log').appendChild(document.createTextNode(msg));
+		// new Insertion.Before('log', msg.escapeHTML() + '<br>');
+	} else {
+		alert(msg);
 	}
-	log.appendChild(document.createTextNode(msg));
-	log.appendChild(document.createElement('br'));
-	// $('log').appendChild(document.createTextNode(msg));
-	// new Insertion.Before('log', msg.escapeHTML() + '<br>');
 }
 
 function showNode(node) {
