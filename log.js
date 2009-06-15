@@ -29,6 +29,16 @@ function getDocumentStart() {
     return document;
 }
 
+Object.prototype.setDebug = function(debugOn) {
+	this.debug = debugOn;
+};
+
+Object.prototype.debugLog = function(msg) {
+	if (this.debug) {
+		showLog(msg);
+	}
+};
+
 function fatal(msg) {
   showLog(msg);
   alert(msg);
