@@ -14,8 +14,10 @@ function sa(node, attrName, attrValue) {
 }
 
 function setClass(node, className) {
-  sa(node, 'class', className);
-  node.className = className;
+	// Either of these works in Firefox.
+	// First doesn't work in IE, second does.
+	// sa(node, 'class', className);
+	node.className = className;
 }
 
 function getDocumentStart() {
