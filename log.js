@@ -175,13 +175,27 @@ function showArray(val) {
 	showString(']');
 }
 
-function showObject(obj) {
+function showObject(obj, recursive) {
    showString('{');
    for (var i in obj) {
-      showString(i + ':');
-      showLog(obj[i]);
+      if ('object' == typeof(obj[i])) {
+    	  if (recursive) {
+    		  showString(i + ':');
+    		  showLog(obj[i]);
+    	  } else {
+    		  showString(i + ": <object>");
+    	  }
+      } else {
+    	  showString(i + ': ' + obj[i]);
+      }
    }
    showString('}');
+}
+
+function showConstructor(obj) {
+	if (good(obj.constructor)) {
+		showString('constructor: ' + obj.constructor);
+	}
 }
 
 function showLog(val) {
@@ -195,14 +209,12 @@ function showLog(val) {
 		showString(val);
 	} else if (typeof(val) == 'number') {
 		showString(val + '');
+	} else if (typeof(val) == 'function') {
+		showString(val + '');
 	} else if (typeof(val) == 'object') {
 		// showString('got object');
-		try {
-			if (good(val.constructor)) {
-				showString('constructor: ' + val.constructor);
-			}
-		} catch (baz) {
-		}
+		// try { showConstructor(val); } catch (ignored) {};
+		/*
 		try {
 			if (good(val.message)) {
 				showString(val.message);
@@ -211,6 +223,7 @@ function showLog(val) {
 		} catch (emessage) {
 			showString('message exception: ' + emessage.message);
 		}
+		*/
 		try {
 			if (val instanceof Array) {
 				// showString('got Array instance');
@@ -230,15 +243,6 @@ function showLog(val) {
 			// showString('toString exception: ' + estring.message);
 		}
 		try {
-			if (val instanceof XMLDocument) {
-				// showString('got XMLDocument instance');
-				showNode(val);
-				return;
-			}
-		} catch (exmldocument) {
-			// showString('showNode exception: ' + exmldocument.message);
-		}
-		try {
 			if (val instanceof Document) {
 				// showString('got Document instance');
 				showNode(val);
@@ -251,6 +255,7 @@ function showLog(val) {
 			if (val instanceof Node) {
 				// showString('got Node instance');
 				showNode(val);
+				showObject(val, false);
 				return;
 			}
 		} catch (enode) {
