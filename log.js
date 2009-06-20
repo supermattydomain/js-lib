@@ -9,6 +9,10 @@ function dctn(text) {
 	return $(document.createTextNode(text));
 }
 
+function ga(node, attrName) {
+	return node.getAttribute(attrName);
+}
+
 function sa(node, attrName, attrValue) {
 	node.setAttribute(attrName, attrValue);
 }
