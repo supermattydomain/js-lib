@@ -168,14 +168,25 @@ function showNode(node) {
   showString(tag);
 }
 
+function literal(val) {
+	if (typeof(val) == 'string') {
+		return "'" + val + "'";
+	} else {
+		return val;
+	}
+}
+
 function showArray(val) {
 	var i;
 	showString('[');
 	if (val.length) {
-		showLog(val[0]);
+		showLog(literal(val[0]) + ((val.length > 1) ? ',' : ''));
 	}
 	for (i = 1; i < val.length - 1; i++) {
-		showLog(', ' + val[i]);
+		showLog(literal(val[i]) + ',');
+	}
+	for (; i < val.length; i++) {
+		showLog(literal(val[i]));
 	}
 	showString(']');
 }
