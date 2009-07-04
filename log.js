@@ -112,15 +112,20 @@ function assertGood(val) {
 	assert(!bad(val));
 }
 
+var logDivID = 'logDiv';
+
 function getLogDiv() {
-	return $('logDiv');
+	var ret = $(logDivID);
+	if (!ret) {
+		var msg = "No div with id '" + logDivID + "'";
+		alert(msg);
+		throw msg;
+	}
+	return ret;
 }
 
 function clearLog() {
 	var log = getLogDiv();
-	if (!log) {
-		return;
-	}
 	while (log.firstChild) {
 		log.removeChild(log.firstChild);
 	}
@@ -128,14 +133,10 @@ function clearLog() {
 
 function showString(msg) {
 	var log = getLogDiv();
-	if (log) {
-		log.appendChild(document.createTextNode(msg));
-		log.appendChild(document.createElement('br'));
-		// $('log').appendChild(document.createTextNode(msg));
-		// new Insertion.Before('log', msg.escapeHTML() + '<br>');
-	} else {
-		alert(msg);
-	}
+	log.appendChild(document.createTextNode(msg));
+	log.appendChild(document.createElement('br'));
+	// $('log').appendChild(document.createTextNode(msg));
+	// new Insertion.Before('log', msg.escapeHTML() + '<br>');
 }
 
 function showNode(node) {
