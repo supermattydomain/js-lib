@@ -68,18 +68,16 @@ function showStatus(str) {
 }
 
 function getEventSource(e) {
-  if (!e) {
-    e = window.event;
+  if (bad(e) && good(eval('window.event'))) {
+    e = eval('window.event');
   }
-  if (e.srcElement) {
-    return e.srcElement;
-  } else if (e.target) {
-    return e.target;
+  if (good(eval('e.srcElement'))) {
+    return eval('e.srcElement');
+  } else if (good(eval('e.target'))) {
+    return eval('e.target');
   }
   throw 'Cannot find event target';
 }
-
-var nodeTypeText = 3;
 
 function findChildByType(node, type) {
   if (null == node || undefined == node) {
@@ -100,6 +98,12 @@ function findChildByType(node, type) {
     node = node.nextSibling;
   }
   return null;
+}
+
+var nodeTypeText = 3;
+
+function findTextChild(node) {
+	return findChildByType(node, nodeTypeText);
 }
 
 function assert(val) {
@@ -291,8 +295,8 @@ function showLog(val) {
 		} catch(etostring) {
 			// showString('toString exception: ' + etostring.message);
 		}
-		try { showString(Object.toJSON(val)); return; } catch (foo) {}
-		try { showString(Object.inspect(val)); return; } catch (bar) {}
+		try { eval('showString(Object.toJSON(val))'); return; } catch (foo) {}
+		try { eval('showString(Object.inspect(val))'); return; } catch (bar) {}
 		showString('Cannot display value');
 	} else {
 		showString("Unrecognised typeof '" + typeof(val) + "'");
