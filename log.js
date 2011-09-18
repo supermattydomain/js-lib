@@ -2,11 +2,11 @@ function bad(thing) { return (undefined == thing) || (null == thing); }
 function good(thing) { return !bad(thing); }
 
 function dce(tag) {
-	return $(document.createElement(tag));
+	return document.createElement(tag);
 }
 
 function dctn(text) {
-	return $(document.createTextNode(text));
+	return document.createTextNode(text);
 }
 
 function ga(node, attrName) {
@@ -119,7 +119,7 @@ function assertGood(val) {
 var logDivID = 'logDiv';
 
 function getLogDiv() {
-	var ret = $(logDivID);
+	var ret = document.getElementById(logDivID);
 	if (!ret) {
 		var msg = "No div with id '" + logDivID + "'";
 		alert(msg);
