@@ -1,27 +1,8 @@
-function bad(thing) { return (undefined == thing) || (null == thing); }
-function good(thing) { return !bad(thing); }
-
-function dce(tag) {
-	return document.createElement(tag);
+function bad(thing) {
+	return (typeof(thing) === 'undefined') || (null === thing);
 }
-
-function dctn(text) {
-	return document.createTextNode(text);
-}
-
-function ga(node, attrName) {
-	return node.getAttribute(attrName);
-}
-
-function sa(node, attrName, attrValue) {
-	node.setAttribute(attrName, attrValue);
-}
-
-function setClass(node, className) {
-	// Either of these works in Firefox.
-	// First doesn't work in IE, second does.
-	// sa(node, 'class', className);
-	node.className = className;
+function good(thing) {
+	return !bad(thing);
 }
 
 function getDocumentStart() {
@@ -35,19 +16,8 @@ function getDocumentStart() {
     return document;
 }
 
-Object.prototype.setDebug = function(debugOn) {
-	this.debug = debugOn;
-};
-
-Object.prototype.debugLog = function(msg) {
-	if (this.debug) {
-		showLog(msg);
-	}
-};
-
 function fatal(msg) {
-  showLog(msg);
-  alert(msg);
+  debug(msg);
   throw msg;
 }
 
