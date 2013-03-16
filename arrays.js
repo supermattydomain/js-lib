@@ -1,4 +1,5 @@
 Array.prototype.equalsDeep = function(arr) {
+	var i;
 	if (this.length !== arr.length) {
 		return false;
 	}
@@ -14,4 +15,4 @@ Array.prototype.equalsDeep = function(arr) {
 		}
 	}
 	return true;
-}
+};
