@@ -4,7 +4,7 @@
  * @param r Red value, [0..255]
  * @param g Green value, [0..255]
  * @param b Blue value, [0..255]
- * @returns {Array} [ Hue, Saturation, Value ]
+ * @returns {Array} [ Hue [0..360], Saturation [0..1], Value [0..1] ]
  */
 function rgb2hsv(r, g, b) {
 	var minRGB, maxRGB, d, h, diff;
@@ -31,7 +31,7 @@ function rgb2hsv(r, g, b) {
  * @param h Hue, [0..360]
  * @param s Saturation, [0..1]
  * @param v Value, [0..1]
- * @returns {Array} [ Red, Green, Blue ] each in range [0..255]
+ * @returns {Array} [ Red [0..255], Green [0..255], Blue [0..255] ]
  */
 function hsv2rgb(h, s, v) {
 	var r, g, b, i, f, p, q, t;
@@ -86,3 +86,55 @@ function hsv2rgb(h, s, v) {
 	}
 	return [ Math.round(r * 255), Math.round(g * 255), Math.round(b * 255) ];
 }
+
+function Colour() {
+}
+
+function RGBColour(r, g, b) {
+	this.r = r || 0;
+	this.g = g || 0;
+	this.b = b || 0;
+}
+
+RGBColour.prototype = new Colour();
+RGBColour.prototype.toHSB = RGBColour.prototype.toHSV = function() {
+	var hsv = rgb2hsv(this.r, this.g, this.b);
+	return new HSBColour(hsv[0], hsv[1], hsv[2]);
+};
+
+function RGBAColour(r, g, b, a) {
+	RGBColour.call(this, r, g, b);
+	this.a = a || 0;
+}
+
+RGBAColour.prototype = new RGBColour();
+RGBAColour.prototype.toHSBA = RGBAColour.prototype.toHSVA = function() {
+	var hsv = rgb2hsv(this.r, this.g, this.b);
+	return new HSBAColour(hsv[0], hsv[1], hsv[2], this.a);
+};
+
+function HSBColour(h, s, b) {
+	this.h = h || 0;
+	this.s = s || 0;
+	this.b = b || 0;
+}
+
+HSBColour.prototype = new Colour();
+HSBColour.prototype.toRGB = function() {
+	var rgb = hsv2rgb(this.h, this.s, this.b);
+	return new RGBColour(rgb[0], rgb[1], rgb[2]);
+};
+
+function HSBAColour(h, s, b, a) {
+	HSBColour.call(this, h, s, b);
+	this.a = a || 0;
+}
+
+HSBAColour.prototype = new HSBColour();
+HSBAColour.prototype.toRGBA = function() {
+	var rgb = hsv2rgb(this.h, this.s, this.b);
+	return new RGBAColour(rgb[0], rgb[1], rgb[2], this.a);
+};
+
+var HSVColour = HSBColour;
+var HSVAColour = HSBAColour;
