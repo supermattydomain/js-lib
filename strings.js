@@ -1,25 +1,25 @@
 function ucFirst(str) {
-  if (0 == str.length) {
-    return str;
-  }
-  return str.substr(0, 1).toUpperCase() + str.substr(1);
+	if (0 == str.length) {
+		return str;
+	}
+	return str.substr(0, 1).toUpperCase() + str.substr(1);
 }
 
 function ucFirstAll(str) {
-  var words = str.split(' ');
-  var ret;
-  var i;
-  if (words.length) {
-    ret = ucFirst(words[0]);
-  }
-  for (i = 1; i < words.length; i++) {
-    ret = ret + ' ' + ucFirst(words[i]);
-  }
-  return ret;
+	var words = str.split(' ');
+	var ret = '';
+	var i;
+	if (words.length) {
+		ret = ucFirst(words[0]);
+	}
+	for (i = 1; i < words.length; i++) {
+		ret = ret + ' ' + ucFirst(words[i]);
+	}
+	return ret;
 }
 
 function compareStrings(val1, val2) {
-	if ('string' != typeof(val1) || 'string' != typeof(val2)) {
+	if ('string' != typeof (val1) || 'string' != typeof (val2)) {
 		fatal('compareStrings: not strings');
 	}
 	// showLog('In compareValues: ' + val1 + ' ' + val2);
@@ -49,10 +49,10 @@ function compareValues(val1, val2) {
 	if (bad(val1) || bad(val2)) {
 		fatal('compareValues: bad values');
 	}
-	if (typeof(val1) == 'object') {
+	if (typeof (val1) == 'object') {
 		val1 = val1.toString();
 	}
-	if (typeof(val2) == 'object') {
+	if (typeof (val2) == 'object') {
 		val2 = val2.toString();
 	}
 	return compareStrings(val1, val2);
@@ -67,5 +67,5 @@ function removePrefix(val, prefix) {
 }
 
 function changePrefix(val, from, to) {
-  return to + removePrefix(val, from);
+	return to + removePrefix(val, from);
 }
