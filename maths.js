@@ -4,8 +4,26 @@
  * @param max The largest value that should ever be returned. Must be >min.
  * @returns A pseudo-random positive integer in the range [min..max]
  */
-function randomBetween(min, max) {
+function randomFloatBetween(min, max) {
+	return Math.random() * (max - min) + min;
+}
+
+function randomIntBetween(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function sgn(num) {
+	return (num < 0) ? -1 : ((num > 0) ? 1 : 0);
+}
+
+function distance(x1, y1, x2, y2) {
+	var xd = x2 - x1, yd = y2 - y1;
+	return Math.sqrt(xd * xd + yd * yd);
+}
+
+function distanceSq(x1, y1, x2, y2) {
+	var xd = x2 - x1, yd = y2 - y1;
+	return xd * xd + yd * yd;
 }
 
 /**
