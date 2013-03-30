@@ -1,3 +1,12 @@
+function interpolateColour(c1, c2, amount) {
+	return [
+		c1[0] + amount * (c2[0] - c1[0]),
+		c1[1] + amount * (c2[1] - c1[1]),
+		c1[2] + amount * (c2[2] - c1[2]),
+		c1[3] + amount * (c2[3] - c1[3]),
+	];
+}
+
 /**
  * Convert RGB colour to HSV.
  * Based on code found at: http://www.javascripter.net/faq/rgb2hsv.htm
