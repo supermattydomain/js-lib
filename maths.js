@@ -41,3 +41,13 @@ function transformPoint(x, y, m) {
 		m[1] * x + m[3] * y + m[5]
 	];
 }
+
+/**
+ * Calculate the logarithm to the given base of a given number.
+ * @param base The logarithm base to be used
+ * @param number The value whose logarithm to calculate
+ * @returns {Number} The logarithm to the base base of number.
+ */
+function logBase(base, number) {
+    return Math.log(number) / Math.log(base);
+}
