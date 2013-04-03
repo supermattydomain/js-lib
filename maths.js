@@ -51,3 +51,8 @@ function transformPoint(x, y, m) {
 function logBase(base, number) {
     return Math.log(number) / Math.log(base);
 }
+
+function roundPlaces(number, places) {
+	var factor = Math.pow(10, places);
+	return Math.round(number * factor) / factor;
+}
