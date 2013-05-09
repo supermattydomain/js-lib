@@ -69,3 +69,38 @@ function removePrefix(val, prefix) {
 function changePrefix(val, from, to) {
 	return to + removePrefix(val, from);
 }
+
+/**
+ * Return true if the given value is an upper case character.
+ */
+function isUpperCase(c) {
+	return c.charAt(0).toUpperCase() === c;
+}
+
+/**
+ * Return true if the given value is a lower case character.
+ */
+function isLowerCase(c) {
+	return c.charAt(0).toLowerCase() === c;
+}
+
+/**
+ * Return a copy of the given string with initial capitalisation.
+ * @param str The original string, in any case
+ * @returns A string whose initial character (only) is capitalised.
+ */
+function initialCaps(str) {
+	return str.charAt(0).toUpperCase() + str.substr(1, str.length - 1).toLowerCase();
+}
+
+/**
+ * Pad a value with zeroes on the left until it is at least as wide as the given width.
+ * The returned value is never shorter than the given field width.
+ */
+function zeroPad(val, width) {
+	val = '' + val;
+	while (val.length < width) {
+		val = '0' + val;
+	}
+	return val;
+}

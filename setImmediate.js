@@ -1,5 +1,5 @@
 /**
- * window.setZeroTimeout: A version of window.setTimeout that respects a zero timeout argument.
+ * window.setZeroTimeout: A version of window.setTimeout that honours a zero timeout argument.
  * Thanks to David Baron.
  * Found at: http://dbaron.org/log/20100309-faster-timeouts
  */

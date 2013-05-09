@@ -12,7 +12,20 @@ function randomIntBetween(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function sgn(num) {
+function isEven(num) {
+	return (0 === (num % 2));
+}
+
+function isOdd(num) {
+	return (0 !== (num % 2));
+}
+
+// Round a number to an integer, towards zero
+function trunc(x) {
+	return (x < 0) ? Math.ceil(x) : Math.floor(x);
+}
+
+function sign(num) {
 	return (num < 0) ? -1 : ((num > 0) ? 1 : 0);
 }
 
@@ -55,4 +68,30 @@ function logBase(base, number) {
 function roundPlaces(number, places) {
 	var factor = Math.pow(10, places);
 	return Math.round(number * factor) / factor;
+}
+
+/**
+ * Return true if the two given values are each defined
+ * and they are strictly equal.
+ * @param val1 The first value to compare
+ * @param val2 The second value to compare
+ * @returns {Boolean} true if val1 and val2 are defined and equal
+ */
+function definedAndEqual(val1, val2) {
+	return typeof(val1) !== 'undefined'
+		&& typeof(val2) !== 'undefined'
+		&& val1 === val2;
+}
+
+/**
+ * Return true if the two given values are each defined
+ * and they strictly differ from each other.
+ * @param val1 The first value to compare
+ * @param val2 The second value to compare
+ * @returns {Boolean} true if val1 and val2 are defined and inequal
+ */
+function definedAndInequal(val1, val2) {
+	return typeof(val1) !== 'undefined'
+		&& typeof(val2) !== 'undefined'
+		&& val1 !== val2;
 }
