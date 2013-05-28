@@ -1,14 +1,18 @@
-Array.prototype.equalsDeep = function(arr) {
+function arrayEqualsDeep(arr1, arr2) {
 	var i;
-	if (this.length !== arr.length) {
+	if (arr1.length !== arr2.length) {
 		return false; // Lengths differ
 	}
-	for (i = 0; i < this.length; i++) {
-		if (typeof(this[i]) === "array") {
-			if (!this[i].equalsDeep(arr[i])) {
+	for (i = 0; i < arr1.length; i++) {
+		if (typeof(arr1[i]) === "array") {
+			if (typeof(arr2[i]) !== "array") {
+				return false; // Nested array and non-array differ
+			}
+			// Recurse
+			if (!arrayEqualsDeep(arr1[i], arr2[i])) {
 				return false; // Nested arrays differ
 			}
-		} else if (this[i] !== arr[i]) {
+		} else if (arr1[i] !== arr2[i]) {
 			return false; // Non-array elements differ
 		}
 		// Examine next pair of elements

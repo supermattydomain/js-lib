@@ -104,3 +104,25 @@ function zeroPad(val, width) {
 	}
 	return val;
 }
+
+/**
+ * Convert a camelCaseStringLikeThis into a hyphenated-version-like-this.
+ * @param camelCase The camelCase string
+ * @returns The hyphenated version
+ */
+function camelCaseToHyphenated(str) {
+	return str.replace(/([A-Z])/g, function(s, m) {
+		return '-' + m.toLowerCase();
+	});
+}
+
+/**
+ * Convert a hyphenated-string-like-this into a camelCaseVersionLikeThis.
+ * @param str The hyphenated string
+ * @returns The camelCase version
+ */
+function hyphenatedToCamelCase(str) {
+	return str.replace(/-([a-zA-Z])/g, function(s, m) {
+		return m.toUpperCase();
+	});
+}
