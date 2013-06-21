@@ -19,12 +19,15 @@ function ucFirstAll(str) {
 }
 
 function compareStrings(val1, val2) {
-	if ('string' != typeof (val1) || 'string' != typeof (val2)) {
-		fatal('compareStrings: not strings');
+	var ret, num1, num2;
+	if ('string' != typeof (val1)) {
+		val1 = '' + val1;
 	}
-	// showLog('In compareValues: ' + val1 + ' ' + val2);
-	var num1 = parseInt(val1);
-	var num2 = parseInt(val2);
+	if ('string' != typeof (val2)) {
+		val2 = '' + val2;
+	}
+	num1 = parseInt(val1);
+	num2 = parseInt(val2);
 	if (isNaN(num1) || isNaN(num2)) {
 		val1 = val1.toLowerCase();
 		val2 = val2.toLowerCase();
@@ -32,8 +35,6 @@ function compareStrings(val1, val2) {
 		val1 = num1;
 		val2 = num2;
 	}
-	// showLog('compareValues: ' + val1 + ' ' + val2);
-	var ret;
 	if (val1 < val2) {
 		ret = -1;
 	} else if (val1 > val2) {
@@ -41,14 +42,10 @@ function compareStrings(val1, val2) {
 	} else {
 		ret = 0;
 	}
-	// showLog('compareValues(' + val1 + ', ' + val2 + ') => ' + ret);
 	return ret;
 }
 
 function compareValues(val1, val2) {
-	if (bad(val1) || bad(val2)) {
-		fatal('compareValues: bad values');
-	}
 	if (typeof (val1) == 'object') {
 		val1 = val1.toString();
 	}
@@ -60,7 +57,6 @@ function compareValues(val1, val2) {
 
 function removePrefix(val, prefix) {
 	if (val.indexOf(prefix) != 0) {
-		fatal('Prefix ' + prefix + ' not a prefix of value ' + val);
 		return val;
 	}
 	return val.substr(prefix.length);

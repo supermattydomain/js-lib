@@ -39,6 +39,120 @@ function distanceSq(x1, y1, x2, y2) {
 	return xd * xd + yd * yd;
 }
 
+function distanceGt(x1, y1, x2, y2, d) {
+	var xd = Math.abs(x2 - x1), yd = Math.abs(y2 - y1);
+	if (xd > d || yd > d) {
+		return true;
+	}
+	if (xd * xd + yd * yd > d * d) {
+		return true;
+	}
+	return false;
+}
+
+/**
+ * Calculate the greatest common divisor of the given two numbers.
+ * This is the largest number which exactly divides both numbers.
+ * @param a The first number, an integer or rational number.
+ * @param b The second number, an integer or rational number.
+ * @returns The greatest common divisor of the two numbers
+ */
+function gcd(a, b) {
+	var tmp;
+	while (b) {
+		tmp = b;
+		b = a % b;
+		a = tmp;
+	}
+	return a;
+}
+
+/**
+ * Calculate an approximation to the greatest common divisor of the given two numbers.
+ * This is the largest number which exactly or almost exactly divides both numbers.
+ * @param a The first number.
+ * @param b The second number.
+ * @param eta A small number, defining 'almost' above.
+ * @returns A number close to the greatest common divisor of the two numbers.
+ */
+function gcdApprox(a, b, eta) {
+	var tmp;
+	eta = eta || 0.0001;
+	while (b > eta) {
+		tmp = b;
+		b = a % b;
+		a = tmp;
+	}
+	return a;
+}
+
+/**
+ * Calculate the greatest common divisor of the given two integers
+ * using the 'Binary GCD' algorithm (Stein, 1967).
+ * See http://en.wikipedia.org/wiki/Binary_GCD_algorithm
+ * @param a The first integer.
+ * @param b The second integer.
+ * @returns The greatest common divisor of the two numbers
+ */
+function gcdInts(u, v) {
+  var shift, tmp;
+ 
+  /* GCD(0,v) == v; GCD(u,0) == u, GCD(0,0) == 0 */
+  if (u === 0) return v;
+  if (v === 0) return u;
+ 
+  /* Let shift := lg K, where K is the greatest power of 2
+        dividing both u and v. */
+  for (shift = 0; ((u | v) & 1) === 0; ++shift) {
+      u >>= 1;
+      v >>= 1;
+  }
+ 
+  while ((u & 1) === 0)
+      u >>= 1;
+ 
+  /* From here on, u is always odd. */
+  do {
+      /* remove all factors of 2 in v -- they are not common */
+      /*   note: v is not zero, so while will terminate */
+      while ((v & 1) === 0)  /* Loop X */
+          v >>= 1;
+
+      /* Now u and v are both odd. Swap if necessary so u <= v,
+         then set v = v - u (which is even). For bignums, the
+         swapping is just pointer movement, and the subtraction
+         can be done in-place. */
+      if (u > v) {
+          tmp = v; v = u; u = tmp;  // Swap u and v.
+      }
+      v = v - u;                       // Here v >= u.
+  } while (v != 0);
+
+  /* restore common factors of 2 */
+  return u << shift;
+}
+
+/**
+ * Calculate the least common multiple of the given two numbers.
+ * @param a The first number, an integer or rational number.
+ * @param b The second number, an integer or rational number.
+ * @returns The least common multiple of the given two numbers.
+ */
+function lcm(a, b) {
+	return a * b / gcd(a, b);
+}
+
+/**
+ * Calculate an approximation to the least common multiple of the given two numbers.
+ * @param a The first number.
+ * @param b The second number.
+ * @param A small number, defining the closeness of the approximation.
+ * @returns A number close to the least common multiple of the given two numbers.
+ */
+function lcmApprox(a, b, eta) {
+	return a * b / gcdApprox(a, b, eta);
+}
+
 /**
  * Transform the given point by the given affine transformation matrix
  * (expressed as an HTML5 Canvas-style array of six reals),
@@ -65,6 +179,12 @@ function logBase(base, number) {
     return Math.log(number) / Math.log(base);
 }
 
+/**
+ * Round the given number to the given number of decimal places.
+ * @param number The number to be rounded.
+ * @param places The esired number of decimal places.
+ * @returns {Number} The number rounded to the given number of decimal places.
+ */
 function roundPlaces(number, places) {
 	var factor = Math.pow(10, places);
 	return Math.round(number * factor) / factor;
