@@ -205,6 +205,10 @@ RGBColour.prototype.toHSB = RGBColour.prototype.toHSV = function() {
 	var hsv = rgb2hsv(this.r, this.g, this.b);
 	return new HSBColour(hsv[0], hsv[1], hsv[2]);
 };
+RGBColour.prototype.toHSL = function() {
+	var hsl = rgb2hsl(this.r, this.g, this.b);
+	return new HSLColour(hsl[0], hsl[1], hsl[2]);
+};
 
 function RGBAColour(r, g, b, a) {
 	RGBColour.call(this, r, g, b);
@@ -216,12 +220,17 @@ RGBAColour.prototype.toHSBA = RGBAColour.prototype.toHSVA = function() {
 	var hsv = rgb2hsv(this.r, this.g, this.b);
 	return new HSBAColour(hsv[0], hsv[1], hsv[2], this.a);
 };
+RGBAColour.prototype.toHSLA = function() {
+	var hsl = rgb2hsl(this.r, this.g, this.b);
+	return new HSLAColour(hsl[0], hsl[1], hsl[2], this.a);
+};
 
 function HSBColour(h, s, b) {
 	this.h = h || 0;
 	this.s = s || 0;
 	this.b = b || 0;
 }
+var HSVColour = HSBColour;
 
 HSBColour.prototype = new Colour();
 HSBColour.prototype.toRGB = function() {
@@ -233,6 +242,7 @@ function HSBAColour(h, s, b, a) {
 	HSBColour.call(this, h, s, b);
 	this.a = a || 0;
 }
+var HSVAColour = HSBAColour;
 
 HSBAColour.prototype = new HSBColour();
 HSBAColour.prototype.toRGBA = function() {
@@ -240,5 +250,13 @@ HSBAColour.prototype.toRGBA = function() {
 	return new RGBAColour(rgb[0], rgb[1], rgb[2], this.a);
 };
 
-var HSVColour = HSBColour;
-var HSVAColour = HSBAColour;
+function HSLColour(h, s, l) {
+	this.h = h || 0;
+	this.s = s || 0;
+	this.l = l || 0;
+}
+
+function HSLAColour(h, s, l) {
+	HSLColour.call(this, h, s, l);
+	this.a = a || 0;
+}
