@@ -80,6 +80,10 @@ function isLowerCase(c) {
 	return c.charAt(0).toLowerCase() === c;
 }
 
+function isDigit(str) {
+	return (1 === str.length) && str.charCodeAt(0) >= '0'.charCodeAt(0) && str.charCodeAt(0) <= '9'.charCodeAt(0);
+}
+
 /**
  * Return a copy of the given string with initial capitalisation.
  * @param str The original string, in any case
@@ -121,4 +125,54 @@ function hyphenatedToCamelCase(str) {
 	return str.replace(/-([a-zA-Z])/g, function(s, m) {
 		return m.toUpperCase();
 	});
+}
+
+// Workaround for lack of negative start offset support in String.substr in IE
+// Fixed version of code at: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substr
+/**
+ *  Get the substring of a string
+ *  @param  {integer}  start   where to start the substring
+ *  @param  {integer}  length  how many characters to return
+ *  @return {string}
+ */
+if ('ab'.substr(-1) != 'b') {
+	var original = String.prototype.substr, replacement = function(start, length) {
+		// did we get a negative start, calculate how much it is from the beginning of the string
+		if (start < 0) {
+			start = this.length + start;
+		}
+		// call the original function
+		return original.call(this, start, length);
+	};
+	replacement.isPolyfill = true;
+	if (Object.defineProperty) {
+        Object.defineProperty(String.prototype, 'substr', {
+            enumerable: false,
+            configurable: false,
+            writable: false,
+            value: replacement
+        });
+	} else {
+		String.prototype.substr = replacement;
+	}
+}
+
+// Polyfill for String.prototype.endsWith, introduced in Javascript 1.8.5
+if (!String.prototype.endsWith) {
+	var replacement = function (searchString, position) {
+        position = position || this.length;
+        position = position - searchString.length;
+        return this.lastIndexOf(searchString) === position;
+    };
+    replacement.isPolyfill = true;
+    if (Object.defineProperty) {
+        Object.defineProperty(String.prototype, 'endsWith', {
+            enumerable: false,
+            configurable: false,
+            writable: false,
+            value: replacement
+        });
+    } else {
+    	String.prototype.endsWith = replacement;
+    }
 }
