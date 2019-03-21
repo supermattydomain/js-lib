@@ -1,12 +1,12 @@
 /**
  * Set a pixel's rgba values in a canvas ImageData object.
  */
-function setPixel(imageData, x, y, r, g, b, a) {
-	var i = 4 * (y * imageData.width + x);
+function setPixel(imageData, x, y, r, g, b, opacity) {
+	var i = 4 * (Math.round(y) * imageData.width + Math.round(x));
 	imageData.data[i + 0] = r;
 	imageData.data[i + 1] = g;
 	imageData.data[i + 2] = b;
-	imageData.data[i + 3] = a;
+	imageData.data[i + 3] = opacity;
 }
 
 function getPixel(imageData, x, y) {
